@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"os"
 	"testing"
+
+	main "github.com/hannahkm/gopherconus-2025"
 )
 
 func TestMain(m *testing.M) {
@@ -13,7 +15,7 @@ func TestMain(m *testing.M) {
 }
 
 func TestHelloEndpoint(t *testing.T) {
-	server := SetupEndpoints()
+	server := SetupTestingEndpoints()
 	defer server.Close()
 
 	resp, err := http.Get(server.URL + "/hello")
@@ -35,7 +37,7 @@ func TestHelloEndpoint(t *testing.T) {
 		t.Fatalf("Error reading response body: %v", err)
 	}
 
-	var response helloResponse
+	var response main.HelloResponse
 	if err := json.Unmarshal(body, &response); err != nil {
 		t.Fatalf("Error parsing response JSON: %v", err)
 	}

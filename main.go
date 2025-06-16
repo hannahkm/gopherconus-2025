@@ -1,0 +1,30 @@
+package main
+
+import (
+	"encoding/json"
+	"net/http"
+)
+
+func main() {
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/hello", HelloHandler)
+}
+
+type HelloResponse struct {
+	Status  string `json:"status,omitempty"`
+	Message string `json:"message"`
+}
+
+func HelloHandler(w http.ResponseWriter, _ *http.Request) {
+	response := HelloResponse{
+		Message: "Hello World!",
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+
+	err := json.NewEncoder(w).Encode(response)
+	if err != nil {
+		http.Error(w, "Failed to get response", http.StatusInternalServerError)
+	}
+}
