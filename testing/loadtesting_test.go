@@ -7,7 +7,7 @@ import (
 	"os"
 	"testing"
 
-	main "github.com/hannahkm/gopherconus-2025"
+	"github.com/hannahkm/gopherconus-2025/handlers"
 )
 
 func TestMain(m *testing.M) {
@@ -37,7 +37,7 @@ func TestHelloEndpoint(t *testing.T) {
 		t.Fatalf("Error reading response body: %v", err)
 	}
 
-	var response main.HelloResponse
+	var response handlers.HelloResponse
 	if err := json.Unmarshal(body, &response); err != nil {
 		t.Fatalf("Error parsing response JSON: %v", err)
 	}
