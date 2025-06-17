@@ -1,10 +1,10 @@
 services:
   k6-load-test:
     image: grafana/k6:latest
-    stdin_open: true  # equivalent to -i flag
-    network_mode: host  # equivalent to --network="host"
+    stdin_open: true
     environment:
       - BASE_URL=${BASE_URL:-http://host.docker.internal:8080}
+      - INSTRUMENTATION=${INSTRUMENTATION:-default}
     volumes:
       - .:/k6 
     working_dir: /k6

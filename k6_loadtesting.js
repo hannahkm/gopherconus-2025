@@ -16,6 +16,7 @@ export const options = {
 }
 
 const BASE_URL = __ENV.BASE_URL || 'http://localhost:8080';
+const INSTRUMENTATION = __ENV.INSTRUMENTATION
 
 export default function () {
     const res = http.get(BASE_URL)
@@ -24,7 +25,7 @@ export default function () {
         'body says hello': (r) => {
             try {
                 const b = JSON.parse(r.body);
-                return b.message === 'Hello World!'
+                return b.message === `Hello, ${INSTRUMENTATION} instrumentation!`
             } catch (e) {
                 console.log("failed:", e)
                 return false;

@@ -12,7 +12,7 @@ type HelloResponse struct {
 
 func HelloHandler(w http.ResponseWriter, _ *http.Request) {
 	response := HelloResponse{
-		Message: "Hello World!",
+		Message: "Hello, default instrumentation!",
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
