@@ -10,4 +10,6 @@ func main() {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/hello", handlers.HelloHandler)
+
+	http.ListenAndServe(":8080", mux)
 }
