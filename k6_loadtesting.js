@@ -9,9 +9,9 @@ const duration = new Trend('http_request_duration');
 // Set up options for avg load testing
 export const options = {
     stages: [
-        { duration: '15s', target: 30 }, // traffic ramp-up
-        { duration: '45s', target: 30 }, // hold steady
-        { duration: '15s', target: 0 }, // ramp-down to 0 users
+        { duration: '10s', target: 30 }, // traffic ramp-up
+        { duration: '30s', target: 30 }, // hold steady
+        { duration: '10s', target: 0 }, // ramp-down to 0 users
     ]
 }
 

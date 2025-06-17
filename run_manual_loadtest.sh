@@ -1,4 +1,4 @@
-### RUN K6 LOAD TESTING FOR OUR BASELINE -- NO INSTRUMENTATION
+### RUN K6 LOAD TESTING FOR MANUAL INSTRUMENTATION USING OTEL SDKS
 
 #!/bin/bash
 
@@ -15,6 +15,9 @@ if ! command -v k6 >/dev/null 2>&1; then
   brew install k6
 fi
 
+export INSTRUMENTATION="manual"
+export BASE_URL="http://host.docker.internal:8080/hello"
+
 # Start the Go server in background
 echo "Starting HTTP server..."
 go run main.go &
@@ -27,8 +30,6 @@ docker-compose ps
 
 # Wait for all services to start
 sleep 5
-
-export BASE_URL="http://host.docker.internal:8080/hello"
 
 # Run load tests
 docker-compose --profile load-test run --rm k6-load-test
