@@ -2,16 +2,15 @@ package main
 
 import (
 	"net/http"
-	"os"
 
 	"github.com/hannahkm/gopherconus-2025/handlers"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 )
 
 func main() {
-	res, ok := os.LookupEnv("INSTRUMENTATION")
+	handlers.SetupEnv()
 
-	if ok && res == "manual" {
+	if handlers.InstrumentationMethod == "manual" {
 		ManualInstrument()
 		return
 	}
