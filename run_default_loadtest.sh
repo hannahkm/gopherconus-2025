@@ -13,7 +13,10 @@ fi
 if ! command -v k6 >/dev/null 2>&1; then
   echo "k6 is not installed. Installing now..."
   brew install k6
+  go install go.k6.io/xk6@latest
 fi
+
+xk6 build --with github.com/grafana/xk6-output-influxdb
 
 # Start the Go server in background
 echo "Starting HTTP server..."
@@ -21,17 +24,27 @@ go run main.go &
 
 # Start InfluxDB and Grafana
 echo "Starting InfluxDB and Grafana..."
-docker-compose up -d
+docker-compose up -d --remove-orphans
 echo "Waiting for services to initialize..."
 docker-compose ps
 
 # Wait for all services to start
-sleep 5
+sleep 3
 
-export BASE_URL="http://host.docker.internal:8080/hello"
+export BASE_URL="http://localhost:8080/hello"
+export INSTRUMENTATION="default"
 
 # Run load tests
-docker-compose --profile load-test run --rm k6-load-test
+# docker-compose --profile load-test run --rm k6-load-test
+
+export K6_INFLUXDB_ORGANIZATION=gopherconus
+export K6_INFLUXDB_BUCKET=k6testing  
+export K6_INFLUXDB_TOKEN=13NSkxbvAnGSbQIHAzWAQFsNVDXWHD94-NG2taWgmFCJ1FiLiFjjwNe_Vg37sKUc2Cn_kSWYMCR0egexhp3PRg==
+
+# Run with your custom k6 binary:
+./k6 run \
+  --out xk6-influxdb=http://localhost:8086 \
+  k6_loadtesting.js
 
 SERVER_PID=$(lsof -i :8080 -t)
 

@@ -1,33 +1,30 @@
-services:
-  k6-load-test:
-    image: grafana/k6:latest
-    stdin_open: true
-    environment:
-      - BASE_URL=${BASE_URL:-http://host.docker.internal:8080}
-      - INSTRUMENTATION=${INSTRUMENTATION:-default}
-    volumes:
-      - .:/k6 
-    working_dir: /k6
-    command: [
-      "run",
-      "--out=influxdb=http://host.docker.internal:8086/k6",
-      "k6_loadtesting.js"
-    ]
-    profiles:
-      - load-test
+networks:
+  k6:
+  grafana:
   influxdb:
-    image: influxdb:1.8
+
+services:
+  influxdb:
+    image: influxdb:2.7
+    networks:
+      - k6
+      - grafana
+      - influxdb
     ports:
       - "8086:8086"
     environment:
-      - INFLUXDB_DB=k6
-      - INFLUXDB_ADMIN_USER=admin
-      - INFLUXDB_ADMIN_PASSWORD=admin
-      - INFLUXDB_HTTP_AUTH_ENABLED=false
-    volumes:
-      - influxdb-data:/var/lib/influxdb
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=gopherconus
+      - DOCKER_INFLUXDB_INIT_ORG=gopherconus
+      - DOCKER_INFLUXDB_INIT_BUCKET=k6testing
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=13NSkxbvAnGSbQIHAzWAQFsNVDXWHD94-NG2taWgmFCJ1FiLiFjjwNe_Vg37sKUc2Cn_kSWYMCR0egexhp3PRg==
+
   grafana:
     image: grafana/grafana:10.3.3
+    networks:
+      - grafana
+      - influxdb
     ports:
       - "3000:3000"
     environment:
@@ -35,10 +32,21 @@ services:
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
       - GF_INSTALL_PLUGINS=grafana-piechart-panel
     volumes:
-      - grafana-data:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning
-    depends_on:
-      - influxdb
-volumes:
-  influxdb-data:
-  grafana-data:
+      
+  k6-load-test:
+    image: grafana/k6:latest
+    networks:
+      - k6
+    stdin_open: true
+    environment:
+      - BASE_URL=${BASE_URL:-http://host.docker.internal:8080}
+      - INSTRUMENTATION=${INSTRUMENTATION:-default}
+      - K6_INFLUXDB_ORGANIZATION=gopherconus
+      - K6_INFLUXDB_BUCKET=k6testing
+      - K6_INFLUXDB_TOKEN=13NSkxbvAnGSbQIHAzWAQFsNVDXWHD94-NG2taWgmFCJ1FiLiFjjwNe_Vg37sKUc2Cn_kSWYMCR0egexhp3PRg==
+      - K6_INFLUXDB_ADDR=http://host.docker.internal:8086/k6testing
+    volumes:
+      - .:/k6 
+    profiles:
+      - load-test

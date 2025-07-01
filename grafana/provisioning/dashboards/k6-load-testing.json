@@ -1,0 +1,173 @@
+{
+    "annotations": {
+        "list": [
+            {
+                "builtIn": 1,
+                "datasource": {
+                    "type": "datasource",
+                    "uid": "grafana"
+                },
+                "enable": true,
+                "hide": true,
+                "iconColor": "rgba(0, 211, 255, 1)",
+                "name": "Annotations & Alerts",
+                "type": "dashboard"
+            }
+        ]
+    },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "id": null,
+    "links": [],
+    "liveNow": false,
+    "panels": [
+        {
+            "fieldConfig": {
+                "defaults": {
+                    "custom": {
+                        "drawStyle": "line",
+                        "lineInterpolation": "linear",
+                        "barAlignment": 0,
+                        "lineWidth": 1,
+                        "fillOpacity": 0,
+                        "gradientMode": "none",
+                        "spanNulls": false,
+                        "insertNulls": false,
+                        "showPoints": "auto",
+                        "pointSize": 5,
+                        "stacking": {
+                            "mode": "none",
+                            "group": "A"
+                        },
+                        "axisPlacement": "auto",
+                        "axisLabel": "",
+                        "axisColorMode": "text",
+                        "axisBorderShow": false,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "axisCenteredZero": false,
+                        "hideFrom": {
+                            "tooltip": false,
+                            "viz": false,
+                            "legend": false
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "unitScale": true,
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "min": 0,
+                    "unit": "short"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 10,
+                "w": 12,
+                "x": 0,
+                "y": 0
+            },
+            "id": 2,
+            "measurement": "http_request_duration",
+            "options": {
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                },
+                "legend": {
+                    "showLegend": true,
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "calcs": []
+                },
+                "colorMode": "value",
+                "graphMode": "none",
+                "justifyMode": "center",
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [],
+                    "fields": "",
+                    "values": false
+                },
+                "text": {},
+                "textMode": "auto"
+            },
+            "orderByTime": "ASC",
+            "pluginVersion": "8.2.6",
+            "policy": "default",
+            "refId": "A",
+            "resultFormat": "time_series",
+            "title": "Requests Made",
+            "type": "timeseries",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "refId": "A",
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_request_duration\")\n    |> yield(name: \"_results\")"
+                }
+            ],
+            "datasource": {
+                "uid": "P951FEA4DE68E13C5",
+                "type": "influxdb"
+            }
+        }
+    ],
+    "refresh": "5s",
+    "schemaVersion": 38,
+    "style": "dark",
+    "tags": [
+        "k6",
+        "load-testing"
+    ],
+    "templating": {
+        "list": [
+            {
+                "current": {
+                    "selected": false,
+                    "text": "InfluxDB",
+                    "value": "InfluxDB"
+                },
+                "hide": 0,
+                "includeAll": false,
+                "label": "Data Source",
+                "multi": false,
+                "name": "DS_INFLUXDB",
+                "options": [],
+                "query": "influxdb",
+                "queryValue": "",
+                "refresh": 1,
+                "regex": "",
+                "skipUrlSync": false,
+                "type": "datasource"
+            }
+        ]
+    },
+    "time": {
+        "from": "now-15m",
+        "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "",
+    "title": "k6 Load Testing Results",
+    "uid": "k6-load-testing",
+    "version": 1,
+    "weekStart": ""
+}

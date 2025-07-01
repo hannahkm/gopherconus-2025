@@ -1,0 +1,17 @@
+apiVersion: 1
+datasources:
+  - name: InfluxDB
+    type: influxdb
+    access: proxy
+    url: http://host.docker.internal:8086
+    database: k6testing
+    isDefault: true
+    editable: true
+    user: admin
+    password: gopherconus
+    jsonData:
+      version: Flux
+      organization: gopherconus
+      defaultBucket: k6testing
+    secureJsonData:
+      token: 13NSkxbvAnGSbQIHAzWAQFsNVDXWHD94-NG2taWgmFCJ1FiLiFjjwNe_Vg37sKUc2Cn_kSWYMCR0egexhp3PRg==
