@@ -130,13 +130,6 @@
             }
         }
     ],
-    "refresh": "5s",
-    "schemaVersion": 38,
-    "style": "dark",
-    "tags": [
-        "k6",
-        "load-testing"
-    ],
     "templating": {
         "list": [
             {
@@ -160,6 +153,13 @@
             }
         ]
     },
+    "refresh": "5s",
+    "schemaVersion": 38,
+    "style": "dark",
+    "tags": [
+        "k6",
+        "load-testing"
+    ],
     "time": {
         "from": "now-15m",
         "to": "now"

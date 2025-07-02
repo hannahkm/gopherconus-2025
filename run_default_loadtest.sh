@@ -35,13 +35,10 @@ export BASE_URL="http://localhost:8080/hello"
 export INSTRUMENTATION="default"
 
 # Run load tests
-# docker-compose --profile load-test run --rm k6-load-test
-
 export K6_INFLUXDB_ORGANIZATION=gopherconus
 export K6_INFLUXDB_BUCKET=k6testing  
 export K6_INFLUXDB_TOKEN=13NSkxbvAnGSbQIHAzWAQFsNVDXWHD94-NG2taWgmFCJ1FiLiFjjwNe_Vg37sKUc2Cn_kSWYMCR0egexhp3PRg==
 
-# Run with your custom k6 binary:
 ./k6 run \
   --out xk6-influxdb=http://localhost:8086 \
   k6_loadtesting.js

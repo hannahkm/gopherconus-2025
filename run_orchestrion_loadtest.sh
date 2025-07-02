@@ -24,7 +24,7 @@ fi
 orchestrion pin 
 
 export INSTRUMENTATION="orchestrion"
-export BASE_URL="http://host.docker.internal:8080/hello"
+export BASE_URL="http://localhost:8080/hello"
 
 # Start the Go server in background
 echo "Starting HTTP server..."
@@ -32,7 +32,7 @@ orchestrion go run main.go &
 
 # Start InfluxDB and Grafana
 echo "Starting InfluxDB and Grafana..."
-docker-compose up -d
+docker-compose up -d --remove-orphans
 echo "Waiting for services to initialize..."
 docker-compose ps
 
@@ -40,7 +40,13 @@ docker-compose ps
 sleep 5
 
 # Run load tests
-docker-compose --profile load-test run --rm k6-load-test
+export K6_INFLUXDB_ORGANIZATION=gopherconus
+export K6_INFLUXDB_BUCKET=k6testing  
+export K6_INFLUXDB_TOKEN=13NSkxbvAnGSbQIHAzWAQFsNVDXWHD94-NG2taWgmFCJ1FiLiFjjwNe_Vg37sKUc2Cn_kSWYMCR0egexhp3PRg==
+
+./k6 run \
+  --out xk6-influxdb=http://localhost:8086 \
+  k6_loadtesting.js
 
 SERVER_PID=$(lsof -i :8080 -t)
 
