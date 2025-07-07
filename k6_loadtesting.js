@@ -32,13 +32,14 @@ export default function () {
             }
         }
     });
+    var tags = { instrumentation: INSTRUMENTATION, success: success, status: res.status }
 
     if (success) {
-        numSuccess.add(1);
+        numSuccess.add(1, tags);
     } else {
-        numFailure.add(1);
+        numFailure.add(1, tags);
     }
-    duration.add(res.timings.duration);
+    duration.add(res.timings.duration, tags);
 
     // brief sleep between iterations
     sleep(2);

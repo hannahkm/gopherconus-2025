@@ -18,46 +18,17 @@
     "editable": true,
     "fiscalYearStartMonth": 0,
     "graphTooltip": 0,
-    "id": null,
+    "id": 2,
     "links": [],
     "liveNow": false,
     "panels": [
         {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P951FEA4DE68E13C5"
+            },
             "fieldConfig": {
                 "defaults": {
-                    "custom": {
-                        "drawStyle": "line",
-                        "lineInterpolation": "linear",
-                        "barAlignment": 0,
-                        "lineWidth": 1,
-                        "fillOpacity": 0,
-                        "gradientMode": "none",
-                        "spanNulls": false,
-                        "insertNulls": false,
-                        "showPoints": "auto",
-                        "pointSize": 5,
-                        "stacking": {
-                            "mode": "none",
-                            "group": "A"
-                        },
-                        "axisPlacement": "auto",
-                        "axisLabel": "",
-                        "axisColorMode": "text",
-                        "axisBorderShow": false,
-                        "scaleDistribution": {
-                            "type": "linear"
-                        },
-                        "axisCenteredZero": false,
-                        "hideFrom": {
-                            "tooltip": false,
-                            "viz": false,
-                            "legend": false
-                        },
-                        "thresholdsStyle": {
-                            "mode": "off"
-                        }
-                    },
-                    "unitScale": true,
                     "color": {
                         "mode": "thresholds"
                     },
@@ -68,11 +39,300 @@
                             {
                                 "color": "green",
                                 "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
                             }
                         ]
                     },
+                    "unitScale": true
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 7,
+                "w": 6,
+                "x": 0,
+                "y": 0
+            },
+            "id": 3,
+            "options": {
+                "minVizHeight": 75,
+                "minVizWidth": 75,
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "sizing": "auto"
+            },
+            "pluginVersion": "10.3.3",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r.instrumentation == \"default\")\n    |> filter(fn: (r) => r._measurement == \"http_request_duration\")\n    |> yield(name: \"_results\")",
+                    "refId": "A"
+                }
+            ],
+            "title": "Default Duration (ms)",
+            "type": "gauge"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P951FEA4DE68E13C5"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unitScale": true
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 7,
+                "w": 6,
+                "x": 6,
+                "y": 0
+            },
+            "id": 4,
+            "options": {
+                "minVizHeight": 75,
+                "minVizWidth": 75,
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "sizing": "auto"
+            },
+            "pluginVersion": "10.3.3",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r.instrumentation == \"manual\")\n    |> filter(fn: (r) => r._measurement == \"http_request_duration\")\n    |> yield(name: \"_results\")",
+                    "refId": "A"
+                }
+            ],
+            "title": "Manual Instrumentation Duration (ms)",
+            "type": "gauge"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P951FEA4DE68E13C5"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unitScale": true
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 7,
+                "w": 6,
+                "x": 12,
+                "y": 0
+            },
+            "id": 5,
+            "options": {
+                "minVizHeight": 75,
+                "minVizWidth": 75,
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "sizing": "auto"
+            },
+            "pluginVersion": "10.3.3",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r.instrumentation == \"ebpf\")\n    |> filter(fn: (r) => r._measurement == \"http_request_duration\")\n    |> yield(name: \"_results\")",
+                    "refId": "A"
+                }
+            ],
+            "title": "OTel SDK Auto-Instrumentation Duration (ms)",
+            "type": "gauge"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P951FEA4DE68E13C5"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unitScale": true
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 7,
+                "w": 6,
+                "x": 18,
+                "y": 0
+            },
+            "id": 6,
+            "options": {
+                "minVizHeight": 75,
+                "minVizWidth": 75,
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "sizing": "auto"
+            },
+            "pluginVersion": "10.3.3",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r.instrumentation == \"orchestrion\")\n    |> filter(fn: (r) => r._measurement == \"http_request_duration\")\n    |> yield(name: \"_results\")",
+                    "refId": "A"
+                }
+            ],
+            "title": "Orchestrion Auto-Instrumentation Duration (ms)",
+            "type": "gauge"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P951FEA4DE68E13C5"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "custom": {
+                        "axisBorderShow": false,
+                        "axisCenteredZero": false,
+                        "axisColorMode": "text",
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "drawStyle": "line",
+                        "fillOpacity": 0,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "insertNulls": false,
+                        "lineInterpolation": "linear",
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "auto",
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "mappings": [],
                     "min": 0,
-                    "unit": "short"
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unit": "short",
+                    "unitScale": true
                 },
                 "overrides": []
             },
@@ -80,24 +340,20 @@
                 "h": 10,
                 "w": 12,
                 "x": 0,
-                "y": 0
+                "y": 7
             },
             "id": 2,
             "measurement": "http_request_duration",
             "options": {
-                "tooltip": {
-                    "mode": "single",
-                    "sort": "none"
-                },
-                "legend": {
-                    "showLegend": true,
-                    "displayMode": "list",
-                    "placement": "bottom",
-                    "calcs": []
-                },
                 "colorMode": "value",
                 "graphMode": "none",
                 "justifyMode": "center",
+                "legend": {
+                    "calcs": [],
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": true
+                },
                 "orientation": "auto",
                 "reduceOptions": {
                     "calcs": [],
@@ -105,30 +361,36 @@
                     "values": false
                 },
                 "text": {},
-                "textMode": "auto"
+                "textMode": "auto",
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
             },
             "orderByTime": "ASC",
             "pluginVersion": "8.2.6",
             "policy": "default",
             "refId": "A",
             "resultFormat": "time_series",
-            "title": "Requests Made",
-            "type": "timeseries",
             "targets": [
                 {
                     "datasource": {
                         "type": "influxdb",
                         "uid": "P951FEA4DE68E13C5"
                     },
-                    "refId": "A",
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_request_duration\")\n    |> yield(name: \"_results\")"
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_request_duration\")\n    |> yield(name: \"_results\")",
+                    "refId": "A"
                 }
             ],
-            "datasource": {
-                "uid": "P951FEA4DE68E13C5",
-                "type": "influxdb"
-            }
+            "title": "Requests Made",
+            "type": "timeseries"
         }
+    ],
+    "refresh": "5s",
+    "schemaVersion": 39,
+    "tags": [
+        "k6",
+        "load-testing"
     ],
     "templating": {
         "list": [
@@ -136,7 +398,7 @@
                 "current": {
                     "selected": false,
                     "text": "InfluxDB",
-                    "value": "InfluxDB"
+                    "value": "P951FEA4DE68E13C5"
                 },
                 "hide": 0,
                 "includeAll": false,
@@ -153,15 +415,8 @@
             }
         ]
     },
-    "refresh": "5s",
-    "schemaVersion": 38,
-    "style": "dark",
-    "tags": [
-        "k6",
-        "load-testing"
-    ],
     "time": {
-        "from": "now-15m",
+        "from": "now-5m",
         "to": "now"
     },
     "timepicker": {},
