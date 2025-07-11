@@ -30,9 +30,11 @@
             "fieldConfig": {
                 "defaults": {
                     "color": {
-                        "mode": "thresholds"
+                        "mode": "continuous-GrYlRd"
                     },
                     "mappings": [],
+                    "max": 2,
+                    "min": 0,
                     "thresholds": {
                         "mode": "absolute",
                         "steps": [
@@ -63,7 +65,7 @@
                 "orientation": "auto",
                 "reduceOptions": {
                     "calcs": [
-                        "lastNotNull"
+                        "mean"
                     ],
                     "fields": "",
                     "values": false
@@ -94,9 +96,11 @@
             "fieldConfig": {
                 "defaults": {
                     "color": {
-                        "mode": "thresholds"
+                        "mode": "continuous-GrYlRd"
                     },
+                    "fieldMinMax": false,
                     "mappings": [],
+                    "max": 2,
                     "thresholds": {
                         "mode": "absolute",
                         "steps": [
@@ -127,7 +131,7 @@
                 "orientation": "auto",
                 "reduceOptions": {
                     "calcs": [
-                        "lastNotNull"
+                        "mean"
                     ],
                     "fields": "",
                     "values": false
@@ -158,9 +162,10 @@
             "fieldConfig": {
                 "defaults": {
                     "color": {
-                        "mode": "thresholds"
+                        "mode": "continuous-GrYlRd"
                     },
                     "mappings": [],
+                    "max": 2,
                     "thresholds": {
                         "mode": "absolute",
                         "steps": [
@@ -184,70 +189,6 @@
                 "x": 12,
                 "y": 0
             },
-            "id": 5,
-            "options": {
-                "minVizHeight": 75,
-                "minVizWidth": 75,
-                "orientation": "auto",
-                "reduceOptions": {
-                    "calcs": [
-                        "lastNotNull"
-                    ],
-                    "fields": "",
-                    "values": false
-                },
-                "showThresholdLabels": false,
-                "showThresholdMarkers": true,
-                "sizing": "auto"
-            },
-            "pluginVersion": "10.3.3",
-            "targets": [
-                {
-                    "datasource": {
-                        "type": "influxdb",
-                        "uid": "P951FEA4DE68E13C5"
-                    },
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r.instrumentation == \"ebpf\")\n    |> filter(fn: (r) => r._measurement == \"http_request_duration\")\n    |> yield(name: \"_results\")",
-                    "refId": "A"
-                }
-            ],
-            "title": "OTel SDK Auto-Instrumentation Duration (ms)",
-            "type": "gauge"
-        },
-        {
-            "datasource": {
-                "type": "influxdb",
-                "uid": "P951FEA4DE68E13C5"
-            },
-            "fieldConfig": {
-                "defaults": {
-                    "color": {
-                        "mode": "thresholds"
-                    },
-                    "mappings": [],
-                    "thresholds": {
-                        "mode": "absolute",
-                        "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
-                            }
-                        ]
-                    },
-                    "unitScale": true
-                },
-                "overrides": []
-            },
-            "gridPos": {
-                "h": 7,
-                "w": 6,
-                "x": 18,
-                "y": 0
-            },
             "id": 6,
             "options": {
                 "minVizHeight": 75,
@@ -255,7 +196,7 @@
                 "orientation": "auto",
                 "reduceOptions": {
                     "calcs": [
-                        "lastNotNull"
+                        "mean"
                     ],
                     "fields": "",
                     "values": false
@@ -286,7 +227,72 @@
             "fieldConfig": {
                 "defaults": {
                     "color": {
-                        "mode": "thresholds"
+                        "mode": "continuous-GrYlRd"
+                    },
+                    "mappings": [],
+                    "max": 2,
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unitScale": true
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 7,
+                "w": 6,
+                "x": 18,
+                "y": 0
+            },
+            "id": 5,
+            "options": {
+                "minVizHeight": 75,
+                "minVizWidth": 75,
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "mean"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "sizing": "auto"
+            },
+            "pluginVersion": "10.3.3",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r.instrumentation == \"ebpf\")\n    |> filter(fn: (r) => r._measurement == \"http_request_duration\")\n    |> yield(name: \"_results\")",
+                    "refId": "A"
+                }
+            ],
+            "title": "OTel SDK Auto-Instrumentation Duration (ms)",
+            "type": "gauge"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P951FEA4DE68E13C5"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
                     },
                     "custom": {
                         "axisBorderShow": false,
@@ -305,6 +311,9 @@
                         },
                         "insertNulls": false,
                         "lineInterpolation": "linear",
+                        "lineStyle": {
+                            "fill": "solid"
+                        },
                         "lineWidth": 1,
                         "pointSize": 5,
                         "scaleDistribution": {
@@ -337,8 +346,8 @@
                 "overrides": []
             },
             "gridPos": {
-                "h": 10,
-                "w": 12,
+                "h": 11,
+                "w": 13,
                 "x": 0,
                 "y": 7
             },
@@ -349,7 +358,9 @@
                 "graphMode": "none",
                 "justifyMode": "center",
                 "legend": {
-                    "calcs": [],
+                    "calcs": [
+                        "mean"
+                    ],
                     "displayMode": "list",
                     "placement": "bottom",
                     "showLegend": true
