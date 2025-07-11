@@ -23,6 +23,292 @@
     "liveNow": false,
     "panels": [
         {
+            "collapsed": false,
+            "gridPos": {
+                "h": 1,
+                "w": 24,
+                "x": 0,
+                "y": 0
+            },
+            "id": 12,
+            "panels": [],
+            "title": "Average Successful Requests per Second",
+            "type": "row"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P951FEA4DE68E13C5"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "fieldMinMax": false,
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unitScale": true
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 7,
+                "w": 6,
+                "x": 0,
+                "y": 1
+            },
+            "id": 9,
+            "options": {
+                "minVizHeight": 75,
+                "minVizWidth": 75,
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "mean"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "sizing": "auto"
+            },
+            "pluginVersion": "10.3.3",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r.instrumentation == \"default\")\n    |> filter(fn: (r) => r._measurement == \"http_requests_success\")\n    |> aggregateWindow(every: 1s, fn: count, createEmpty: false)",
+                    "refId": "A"
+                }
+            ],
+            "title": "Requests per Second (Default)",
+            "type": "gauge"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P951FEA4DE68E13C5"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "fieldMinMax": false,
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unitScale": true
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 7,
+                "w": 6,
+                "x": 6,
+                "y": 1
+            },
+            "id": 4,
+            "options": {
+                "minVizHeight": 75,
+                "minVizWidth": 75,
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "mean"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "sizing": "auto"
+            },
+            "pluginVersion": "10.3.3",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r.instrumentation == \"manual\")\n    |> filter(fn: (r) => r._measurement == \"http_requests_success\")\n    |> aggregateWindow(every: 1s, fn: count, createEmpty: false)",
+                    "refId": "A"
+                }
+            ],
+            "title": "Requests per Second (Manual)",
+            "type": "gauge"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P951FEA4DE68E13C5"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "fieldMinMax": false,
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unitScale": true
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 7,
+                "w": 6,
+                "x": 12,
+                "y": 1
+            },
+            "id": 10,
+            "options": {
+                "minVizHeight": 75,
+                "minVizWidth": 75,
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "mean"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "sizing": "auto"
+            },
+            "pluginVersion": "10.3.3",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r.instrumentation == \"orchestrion\")\n    |> filter(fn: (r) => r._measurement == \"http_requests_success\")\n    |> aggregateWindow(every: 1s, fn: count, createEmpty: false)",
+                    "refId": "A"
+                }
+            ],
+            "title": "Requests per Second (Orchestrion)",
+            "type": "gauge"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P951FEA4DE68E13C5"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "fieldMinMax": false,
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unitScale": true
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 7,
+                "w": 6,
+                "x": 18,
+                "y": 1
+            },
+            "id": 11,
+            "options": {
+                "minVizHeight": 75,
+                "minVizWidth": 75,
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "mean"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "sizing": "auto"
+            },
+            "pluginVersion": "10.3.3",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r.instrumentation == \"ebpf\")\n    |> filter(fn: (r) => r._measurement == \"http_requests_success\")\n    |> aggregateWindow(every: 1s, fn: count, createEmpty: false)",
+                    "refId": "A"
+                }
+            ],
+            "title": "Requests per Second (eBPF)",
+            "type": "gauge"
+        },
+        {
+            "collapsed": false,
+            "gridPos": {
+                "h": 1,
+                "w": 24,
+                "x": 0,
+                "y": 8
+            },
+            "id": 7,
+            "panels": [],
+            "title": "Average Milliseconds per Request",
+            "type": "row"
+        },
+        {
             "datasource": {
                 "type": "influxdb",
                 "uid": "P951FEA4DE68E13C5"
@@ -56,9 +342,9 @@
                 "h": 7,
                 "w": 6,
                 "x": 0,
-                "y": 0
+                "y": 9
             },
-            "id": 3,
+            "id": 8,
             "options": {
                 "minVizHeight": 75,
                 "minVizWidth": 75,
@@ -98,9 +384,9 @@
                     "color": {
                         "mode": "continuous-GrYlRd"
                     },
-                    "fieldMinMax": false,
                     "mappings": [],
                     "max": 2,
+                    "min": 0,
                     "thresholds": {
                         "mode": "absolute",
                         "steps": [
@@ -122,9 +408,9 @@
                 "h": 7,
                 "w": 6,
                 "x": 6,
-                "y": 0
+                "y": 9
             },
-            "id": 4,
+            "id": 3,
             "options": {
                 "minVizHeight": 75,
                 "minVizWidth": 75,
@@ -187,7 +473,7 @@
                 "h": 7,
                 "w": 6,
                 "x": 12,
-                "y": 0
+                "y": 9
             },
             "id": 6,
             "options": {
@@ -252,7 +538,7 @@
                 "h": 7,
                 "w": 6,
                 "x": 18,
-                "y": 0
+                "y": 9
             },
             "id": 5,
             "options": {
@@ -343,13 +629,62 @@
                     "unit": "short",
                     "unitScale": true
                 },
-                "overrides": []
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "value {instrumentation=\"default\", scenario=\"default\", status=\"200\", success=\"true\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Default"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "value {instrumentation=\"manual\", scenario=\"default\", status=\"200\", success=\"true\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Manual Instrumentation"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "value {instrumentation=\"orchestrion\", scenario=\"default\", status=\"200\", success=\"true\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Orchestrion"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "value {instrumentation=\"ebpf\", scenario=\"default\", status=\"200\", success=\"true\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "eBPF"
+                            }
+                        ]
+                    }
+                ]
             },
             "gridPos": {
                 "h": 11,
                 "w": 13,
                 "x": 0,
-                "y": 7
+                "y": 16
             },
             "id": 2,
             "measurement": "http_request_duration",
@@ -358,9 +693,7 @@
                 "graphMode": "none",
                 "justifyMode": "center",
                 "legend": {
-                    "calcs": [
-                        "mean"
-                    ],
+                    "calcs": [],
                     "displayMode": "list",
                     "placement": "bottom",
                     "showLegend": true
@@ -397,7 +730,7 @@
             "type": "timeseries"
         }
     ],
-    "refresh": "5s",
+    "refresh": false,
     "schemaVersion": 39,
     "tags": [
         "k6",
@@ -427,8 +760,8 @@
         ]
     },
     "time": {
-        "from": "now-5m",
-        "to": "now"
+        "from": "2025-07-11T19:36:03.239Z",
+        "to": "2025-07-11T19:39:33.992Z"
     },
     "timepicker": {},
     "timezone": "",
