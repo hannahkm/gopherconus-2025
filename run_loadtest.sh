@@ -32,28 +32,29 @@ if ! command -v k6 >/dev/null 2>&1; then
   go install go.k6.io/xk6@latest
 fi
 
+# Setup xk6 instance
 xk6 build --with github.com/grafana/xk6-output-influxdb
 
 # Start InfluxDB and Grafana
 echo "Starting InfluxDB and Grafana..."
 docker-compose up -d --remove-orphans
-echo "Waiting for services to initialize..."
 docker-compose ps
 
 for INSTRUMENTATION in "${INSTRUMENTATION_ARRAY[@]}"; do
-    echo "Processing instrumentation: $INSTRUMENTATION"
+    echo ""
+    echo "Testing instrumentation: $INSTRUMENTATION"
     echo "================================================"
 
     export INSTRUMENTATION=$INSTRUMENTATION
 
     # Start the Go server in background
-    echo "Starting HTTP server..."
     if [[ "$INSTRUMENTATION" == "orchestrion" ]]; then
         orchestrion go run main.go &
     else
         go run main.go &
     fi
 
+    # Initialize eBPF if we are using it
     if [[ "$INSTRUMENTATION" == "ebpf" ]]; then
         echo "Starting OTel eBPF..."
         docker-compose --profile ebpf-auto-instrumentation up -d --remove-orphans
@@ -67,6 +68,7 @@ for INSTRUMENTATION in "${INSTRUMENTATION_ARRAY[@]}"; do
     --out xk6-influxdb=http://localhost:8086 \
     k6_loadtesting.js
 
+    # Cleanup
     SERVER_PID=$(lsof -i :8080 -t)
     kill $SERVER_PID
 done
@@ -76,11 +78,7 @@ echo "Load test completed!"
 echo ""
 echo "View the Grafana dashboard at: http://localhost:3000"
 echo ""
-echo "Grafana is pre-configured with InfluxDB data source and a custom k6 dashboard."
 echo "You should see the 'k6 Load Testing Results' dashboard automatically in the K6 folder."
-echo "You can also import additional dashboards for k6:"
-echo "1. Dashboard ID: 2587 (k6 Load Testing Results)"
-echo "2. Dashboard ID: 4411 (k6 Load Testing Results by Endpoint)"
 echo ""
 echo "To stop the visualization services when finished:"
 echo "docker-compose down"
