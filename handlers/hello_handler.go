@@ -17,13 +17,15 @@ func SetupEnv() {
 }
 
 type HelloResponse struct {
-	Status  string `json:"status,omitempty"`
-	Message string `json:"message"`
+	Status     string       `json:"status,omitempty"`
+	Message    string       `json:"message"`
+	SystemInfo *SystemStats `json:"system_info"`
 }
 
 func HelloHandler(w http.ResponseWriter, _ *http.Request) {
 	response := HelloResponse{
-		Message: "Hello, " + InstrumentationMethod + " instrumentation!",
+		Message:    "Hello, " + InstrumentationMethod + " instrumentation!",
+		SystemInfo: getSystemStats(),
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
