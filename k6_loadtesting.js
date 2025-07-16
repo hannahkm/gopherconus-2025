@@ -17,9 +17,9 @@ const networkBytesSent = new Counter('network_bytes_sent');
 // Set up options for avg load testing
 export const options = {
     stages: [
-        { duration: '10s', target: 30 }, // traffic ramp-up
-        { duration: '30s', target: 30 }, // hold steady
-        { duration: '10s', target: 0 }, // ramp-down to 0 users
+        { duration: '15s', target: 100 }, // traffic ramp-up
+        { duration: '30s', target: 100 }, // hold steady
+        { duration: '15s', target: 0 }, // ramp-down to 0 users
     ]
 }
 

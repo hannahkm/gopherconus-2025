@@ -30,6 +30,686 @@
                 "x": 0,
                 "y": 0
             },
+            "id": 17,
+            "panels": [],
+            "title": "System Information",
+            "type": "row"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P951FEA4DE68E13C5"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisBorderShow": false,
+                        "axisCenteredZero": false,
+                        "axisColorMode": "text",
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "drawStyle": "line",
+                        "fillOpacity": 0,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "insertNulls": false,
+                        "lineInterpolation": "smooth",
+                        "lineStyle": {
+                            "fill": "solid"
+                        },
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "never",
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unitScale": true
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 9,
+                "w": 24,
+                "x": 0,
+                "y": 1
+            },
+            "id": 14,
+            "options": {
+                "legend": {
+                    "calcs": [],
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": true
+                },
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"cpu_total\")\n    |> aggregateWindow(every: 1s, fn: mean, createEmpty: false)",
+                    "refId": "A"
+                },
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "hide": false,
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"cpu_user\")\n    |> aggregateWindow(every: 1s, fn: mean, createEmpty: false)\n",
+                    "refId": "B"
+                },
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "hide": false,
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"cpu_system\")\n    |> aggregateWindow(every: 1s, fn: mean, createEmpty: false)",
+                    "refId": "C"
+                },
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "hide": false,
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"cpu_idle\")\n    |> aggregateWindow(every: 1s, fn: mean, createEmpty: false)",
+                    "refId": "D"
+                }
+            ],
+            "title": "CPU Usage %",
+            "transformations": [
+                {
+                    "id": "calculateField",
+                    "options": {
+                        "alias": "% CPU User (Default)",
+                        "binary": {
+                            "left": "value {instrumentation=\"default\", name=\"cpu_user\", scenario=\"default\", status=\"200\", success=\"true\"}",
+                            "operator": "/",
+                            "right": "value {instrumentation=\"default\", name=\"cpu_total\", scenario=\"default\", status=\"200\", success=\"true\"}"
+                        },
+                        "mode": "binary",
+                        "reduce": {
+                            "reducer": "sum"
+                        }
+                    }
+                },
+                {
+                    "id": "calculateField",
+                    "options": {
+                        "alias": "% CPU System (Default)",
+                        "binary": {
+                            "left": "value {instrumentation=\"default\", name=\"cpu_system\", scenario=\"default\", status=\"200\", success=\"true\"}",
+                            "operator": "/",
+                            "right": "value {instrumentation=\"default\", name=\"cpu_total\", scenario=\"default\", status=\"200\", success=\"true\"}"
+                        },
+                        "mode": "binary",
+                        "reduce": {
+                            "reducer": "sum"
+                        }
+                    }
+                },
+                {
+                    "id": "calculateField",
+                    "options": {
+                        "alias": "% CPU Idle (Default)",
+                        "binary": {
+                            "left": "value {instrumentation=\"default\", name=\"cpu_idle\", scenario=\"default\", status=\"200\", success=\"true\"}",
+                            "operator": "/",
+                            "right": "value {instrumentation=\"default\", name=\"cpu_total\", scenario=\"default\", status=\"200\", success=\"true\"}"
+                        },
+                        "mode": "binary",
+                        "reduce": {
+                            "reducer": "sum"
+                        }
+                    }
+                },
+                {
+                    "id": "calculateField",
+                    "options": {
+                        "alias": "% CPU User (manual)",
+                        "binary": {
+                            "left": "value {instrumentation=\"manual\", name=\"cpu_user\", scenario=\"default\", status=\"200\", success=\"true\"}",
+                            "operator": "/",
+                            "right": "value {instrumentation=\"manual\", name=\"cpu_total\", scenario=\"default\", status=\"200\", success=\"true\"}"
+                        },
+                        "mode": "binary",
+                        "reduce": {
+                            "reducer": "sum"
+                        }
+                    }
+                },
+                {
+                    "id": "calculateField",
+                    "options": {
+                        "alias": "% CPU System (manual)",
+                        "binary": {
+                            "left": "value {instrumentation=\"manual\", name=\"cpu_system\", scenario=\"default\", status=\"200\", success=\"true\"}",
+                            "operator": "/",
+                            "right": "value {instrumentation=\"manual\", name=\"cpu_total\", scenario=\"default\", status=\"200\", success=\"true\"}"
+                        },
+                        "mode": "binary",
+                        "reduce": {
+                            "reducer": "sum"
+                        }
+                    }
+                },
+                {
+                    "id": "calculateField",
+                    "options": {
+                        "alias": "% CPU Idle (manual)",
+                        "binary": {
+                            "left": "value {instrumentation=\"manual\", name=\"cpu_idle\", scenario=\"default\", status=\"200\", success=\"true\"}",
+                            "operator": "/",
+                            "right": "value {instrumentation=\"manual\", name=\"cpu_total\", scenario=\"default\", status=\"200\", success=\"true\"}"
+                        },
+                        "mode": "binary",
+                        "reduce": {
+                            "reducer": "sum"
+                        }
+                    }
+                },
+                {
+                    "id": "calculateField",
+                    "options": {
+                        "alias": "% CPU User (Orchestrion)",
+                        "binary": {
+                            "left": "value {instrumentation=\"orchestrion\", name=\"cpu_user\", scenario=\"default\", status=\"200\", success=\"true\"}",
+                            "operator": "/",
+                            "right": "value {instrumentation=\"orchestrion\", name=\"cpu_total\", scenario=\"default\", status=\"200\", success=\"true\"}"
+                        },
+                        "mode": "binary",
+                        "reduce": {
+                            "reducer": "sum"
+                        }
+                    }
+                },
+                {
+                    "id": "calculateField",
+                    "options": {
+                        "alias": "% CPU System (Orchestrion)",
+                        "binary": {
+                            "left": "value {instrumentation=\"orchestrion\", name=\"cpu_system\", scenario=\"default\", status=\"200\", success=\"true\"}",
+                            "operator": "/",
+                            "right": "value {instrumentation=\"orchestrion\", name=\"cpu_total\", scenario=\"default\", status=\"200\", success=\"true\"}"
+                        },
+                        "mode": "binary",
+                        "reduce": {
+                            "reducer": "sum"
+                        }
+                    }
+                },
+                {
+                    "id": "calculateField",
+                    "options": {
+                        "alias": "% CPU Idle (Orchestrion)",
+                        "binary": {
+                            "left": "value {instrumentation=\"orchestrion\", name=\"cpu_idle\", scenario=\"default\", status=\"200\", success=\"true\"}",
+                            "operator": "/",
+                            "right": "value {instrumentation=\"orchestrion\", name=\"cpu_total\", scenario=\"default\", status=\"200\", success=\"true\"}"
+                        },
+                        "mode": "binary",
+                        "reduce": {
+                            "reducer": "sum"
+                        }
+                    }
+                },
+                {
+                    "id": "calculateField",
+                    "options": {
+                        "alias": "% CPU User (eBPF)",
+                        "binary": {
+                            "left": "value {instrumentation=\"ebpf\", name=\"cpu_user\", scenario=\"default\", status=\"200\", success=\"true\"}",
+                            "operator": "/",
+                            "right": "value {instrumentation=\"ebpf\", name=\"cpu_total\", scenario=\"default\", status=\"200\", success=\"true\"}"
+                        },
+                        "mode": "binary",
+                        "reduce": {
+                            "reducer": "sum"
+                        }
+                    }
+                },
+                {
+                    "id": "calculateField",
+                    "options": {
+                        "alias": "% CPU System (eBPF)",
+                        "binary": {
+                            "left": "value {instrumentation=\"ebpf\", name=\"cpu_system\", scenario=\"default\", status=\"200\", success=\"true\"}",
+                            "operator": "/",
+                            "right": "value {instrumentation=\"ebpf\", name=\"cpu_total\", scenario=\"default\", status=\"200\", success=\"true\"}"
+                        },
+                        "mode": "binary",
+                        "reduce": {
+                            "reducer": "sum"
+                        }
+                    }
+                },
+                {
+                    "id": "calculateField",
+                    "options": {
+                        "alias": "% CPU Idle (eBPF)",
+                        "binary": {
+                            "left": "value {instrumentation=\"ebpf\", name=\"cpu_idle\", scenario=\"default\", status=\"200\", success=\"true\"}",
+                            "operator": "/",
+                            "right": "value {instrumentation=\"ebpf\", name=\"cpu_total\", scenario=\"default\", status=\"200\", success=\"true\"}"
+                        },
+                        "mode": "binary",
+                        "reduce": {
+                            "reducer": "sum"
+                        }
+                    }
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {
+                            "value {instrumentation=\"default\", name=\"cpu_idle\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
+                            "value {instrumentation=\"default\", name=\"cpu_system\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
+                            "value {instrumentation=\"default\", name=\"cpu_total\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
+                            "value {instrumentation=\"default\", name=\"cpu_user\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
+                            "value {instrumentation=\"ebpf\", name=\"cpu_idle\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
+                            "value {instrumentation=\"ebpf\", name=\"cpu_system\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
+                            "value {instrumentation=\"ebpf\", name=\"cpu_total\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
+                            "value {instrumentation=\"ebpf\", name=\"cpu_user\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
+                            "value {instrumentation=\"manual\", name=\"cpu_idle\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
+                            "value {instrumentation=\"manual\", name=\"cpu_system\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
+                            "value {instrumentation=\"manual\", name=\"cpu_total\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
+                            "value {instrumentation=\"manual\", name=\"cpu_user\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
+                            "value {instrumentation=\"orchestrion\", name=\"cpu_idle\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
+                            "value {instrumentation=\"orchestrion\", name=\"cpu_system\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
+                            "value {instrumentation=\"orchestrion\", name=\"cpu_total\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
+                            "value {instrumentation=\"orchestrion\", name=\"cpu_user\", scenario=\"default\", status=\"200\", success=\"true\"}": true
+                        },
+                        "includeByName": {},
+                        "indexByName": {},
+                        "renameByName": {}
+                    }
+                }
+            ],
+            "type": "timeseries"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P951FEA4DE68E13C5"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisBorderShow": false,
+                        "axisCenteredZero": false,
+                        "axisColorMode": "text",
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "drawStyle": "line",
+                        "fillOpacity": 0,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "insertNulls": false,
+                        "lineInterpolation": "smooth",
+                        "lineStyle": {
+                            "fill": "solid"
+                        },
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "never",
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unitScale": true
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 11,
+                "w": 24,
+                "x": 0,
+                "y": 10
+            },
+            "id": 18,
+            "options": {
+                "legend": {
+                    "calcs": [],
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": true
+                },
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"memory_total\")\n    |> aggregateWindow(every: 1s, fn: mean, createEmpty: false)",
+                    "refId": "A"
+                },
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "hide": false,
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"memory_used\")\n    |> aggregateWindow(every: 1s, fn: mean, createEmpty: false)\n",
+                    "refId": "B"
+                }
+            ],
+            "title": "Memory Usage %",
+            "transformations": [
+                {
+                    "id": "calculateField",
+                    "options": {
+                        "alias": "% Memory Used (Default)",
+                        "binary": {
+                            "left": "value {instrumentation=\"default\", name=\"memory_used\", scenario=\"default\", status=\"200\", success=\"true\"}",
+                            "operator": "/",
+                            "right": "value {instrumentation=\"default\", name=\"memory_total\", scenario=\"default\", status=\"200\", success=\"true\"}"
+                        },
+                        "mode": "binary",
+                        "reduce": {
+                            "reducer": "sum"
+                        }
+                    }
+                },
+                {
+                    "id": "calculateField",
+                    "options": {
+                        "alias": "% Memory Used (Manual)",
+                        "binary": {
+                            "left": "value {instrumentation=\"manual\", name=\"memory_used\", scenario=\"default\", status=\"200\", success=\"true\"}",
+                            "operator": "/",
+                            "right": "value {instrumentation=\"manual\", name=\"memory_total\", scenario=\"default\", status=\"200\", success=\"true\"}"
+                        },
+                        "mode": "binary",
+                        "reduce": {
+                            "reducer": "sum"
+                        }
+                    }
+                },
+                {
+                    "id": "calculateField",
+                    "options": {
+                        "alias": "% Memory Used (Orchestrion)",
+                        "binary": {
+                            "left": "value {instrumentation=\"orchestrion\", name=\"memory_used\", scenario=\"default\", status=\"200\", success=\"true\"}",
+                            "operator": "/",
+                            "right": "value {instrumentation=\"orchestrion\", name=\"memory_total\", scenario=\"default\", status=\"200\", success=\"true\"}"
+                        },
+                        "mode": "binary",
+                        "reduce": {
+                            "reducer": "sum"
+                        }
+                    }
+                },
+                {
+                    "id": "calculateField",
+                    "options": {
+                        "alias": "% Memory Used (ebpf)",
+                        "binary": {
+                            "left": "value {instrumentation=\"ebpf\", name=\"memory_used\", scenario=\"default\", status=\"200\", success=\"true\"}",
+                            "operator": "/",
+                            "right": "value {instrumentation=\"ebpf\", name=\"memory_total\", scenario=\"default\", status=\"200\", success=\"true\"}"
+                        },
+                        "mode": "binary",
+                        "reduce": {
+                            "reducer": "sum"
+                        }
+                    }
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {
+                            "value {instrumentation=\"default\", name=\"memory_total\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
+                            "value {instrumentation=\"default\", name=\"memory_used\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
+                            "value {instrumentation=\"ebpf\", name=\"memory_total\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
+                            "value {instrumentation=\"ebpf\", name=\"memory_used\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
+                            "value {instrumentation=\"manual\", name=\"memory_total\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
+                            "value {instrumentation=\"manual\", name=\"memory_used\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
+                            "value {instrumentation=\"orchestrion\", name=\"memory_total\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
+                            "value {instrumentation=\"orchestrion\", name=\"memory_used\", scenario=\"default\", status=\"200\", success=\"true\"}": true
+                        },
+                        "includeByName": {},
+                        "indexByName": {},
+                        "renameByName": {}
+                    }
+                }
+            ],
+            "type": "timeseries"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P951FEA4DE68E13C5"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unitScale": true
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 11,
+                "w": 24,
+                "x": 0,
+                "y": 21
+            },
+            "id": 19,
+            "options": {
+                "minVizHeight": 75,
+                "minVizWidth": 75,
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "sizing": "auto"
+            },
+            "pluginVersion": "10.3.3",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"network_bytes_received\")\n    |> aggregateWindow(every: 1s, fn: mean, createEmpty: false)",
+                    "refId": "A"
+                },
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "hide": false,
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"network_bytes_sent\")\n    |> aggregateWindow(every: 1s, fn: mean, createEmpty: false)\n",
+                    "refId": "B"
+                }
+            ],
+            "title": "Bytes Sent/Bytes Received",
+            "transformations": [
+                {
+                    "id": "calculateField",
+                    "options": {
+                        "alias": "Default",
+                        "binary": {
+                            "left": "value {instrumentation=\"default\", name=\"network_bytes_sent\", scenario=\"default\", status=\"200\", success=\"true\"}",
+                            "operator": "/",
+                            "right": "value {instrumentation=\"default\", name=\"network_bytes_received\", scenario=\"default\", status=\"200\", success=\"true\"}"
+                        },
+                        "mode": "binary",
+                        "reduce": {
+                            "reducer": "sum"
+                        }
+                    }
+                },
+                {
+                    "id": "calculateField",
+                    "options": {
+                        "alias": "Manual",
+                        "binary": {
+                            "left": "value {instrumentation=\"manual\", name=\"network_bytes_sent\", scenario=\"default\", status=\"200\", success=\"true\"}",
+                            "operator": "/",
+                            "right": "value {instrumentation=\"manual\", name=\"network_bytes_received\", scenario=\"default\", status=\"200\", success=\"true\"}"
+                        },
+                        "mode": "binary",
+                        "reduce": {
+                            "reducer": "sum"
+                        }
+                    }
+                },
+                {
+                    "id": "calculateField",
+                    "options": {
+                        "alias": "Orchestrion",
+                        "binary": {
+                            "left": "value {instrumentation=\"orchestrion\", name=\"network_bytes_sent\", scenario=\"default\", status=\"200\", success=\"true\"}",
+                            "operator": "/",
+                            "right": "value {instrumentation=\"orchestrion\", name=\"network_bytes_received\", scenario=\"default\", status=\"200\", success=\"true\"}"
+                        },
+                        "mode": "binary",
+                        "reduce": {
+                            "reducer": "sum"
+                        }
+                    }
+                },
+                {
+                    "id": "calculateField",
+                    "options": {
+                        "alias": "eBPF",
+                        "binary": {
+                            "left": "value {instrumentation=\"ebpf\", name=\"network_bytes_sent\", scenario=\"default\", status=\"200\", success=\"true\"}",
+                            "operator": "/",
+                            "right": "value {instrumentation=\"ebpf\", name=\"network_bytes_received\", scenario=\"default\", status=\"200\", success=\"true\"}"
+                        },
+                        "mode": "binary",
+                        "reduce": {
+                            "reducer": "sum"
+                        }
+                    }
+                },
+                {
+                    "id": "organize",
+                    "options": {
+                        "excludeByName": {
+                            "value {instrumentation=\"default\", name=\"network_bytes_received\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
+                            "value {instrumentation=\"default\", name=\"network_bytes_sent\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
+                            "value {instrumentation=\"ebpf\", name=\"network_bytes_received\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
+                            "value {instrumentation=\"ebpf\", name=\"network_bytes_sent\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
+                            "value {instrumentation=\"manual\", name=\"network_bytes_received\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
+                            "value {instrumentation=\"manual\", name=\"network_bytes_sent\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
+                            "value {instrumentation=\"orchestrion\", name=\"network_bytes_received\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
+                            "value {instrumentation=\"orchestrion\", name=\"network_bytes_sent\", scenario=\"default\", status=\"200\", success=\"true\"}": true
+                        },
+                        "includeByName": {},
+                        "indexByName": {},
+                        "renameByName": {}
+                    }
+                }
+            ],
+            "type": "gauge"
+        },
+        {
+            "collapsed": false,
+            "gridPos": {
+                "h": 1,
+                "w": 24,
+                "x": 0,
+                "y": 32
+            },
             "id": 12,
             "panels": [],
             "title": "Average Successful Requests per Second",
@@ -68,7 +748,7 @@
                 "h": 7,
                 "w": 6,
                 "x": 0,
-                "y": 1
+                "y": 33
             },
             "id": 9,
             "options": {
@@ -133,7 +813,7 @@
                 "h": 7,
                 "w": 6,
                 "x": 6,
-                "y": 1
+                "y": 33
             },
             "id": 4,
             "options": {
@@ -198,7 +878,7 @@
                 "h": 7,
                 "w": 6,
                 "x": 12,
-                "y": 1
+                "y": 33
             },
             "id": 10,
             "options": {
@@ -263,7 +943,7 @@
                 "h": 7,
                 "w": 6,
                 "x": 18,
-                "y": 1
+                "y": 33
             },
             "id": 11,
             "options": {
@@ -301,7 +981,7 @@
                 "h": 1,
                 "w": 24,
                 "x": 0,
-                "y": 8
+                "y": 40
             },
             "id": 7,
             "panels": [],
@@ -319,8 +999,6 @@
                         "mode": "continuous-GrYlRd"
                     },
                     "mappings": [],
-                    "max": 2,
-                    "min": 0,
                     "thresholds": {
                         "mode": "absolute",
                         "steps": [
@@ -342,7 +1020,7 @@
                 "h": 7,
                 "w": 6,
                 "x": 0,
-                "y": 9
+                "y": 41
             },
             "id": 8,
             "options": {
@@ -385,8 +1063,6 @@
                         "mode": "continuous-GrYlRd"
                     },
                     "mappings": [],
-                    "max": 2,
-                    "min": 0,
                     "thresholds": {
                         "mode": "absolute",
                         "steps": [
@@ -408,7 +1084,7 @@
                 "h": 7,
                 "w": 6,
                 "x": 6,
-                "y": 9
+                "y": 41
             },
             "id": 3,
             "options": {
@@ -451,7 +1127,6 @@
                         "mode": "continuous-GrYlRd"
                     },
                     "mappings": [],
-                    "max": 2,
                     "thresholds": {
                         "mode": "absolute",
                         "steps": [
@@ -473,7 +1148,7 @@
                 "h": 7,
                 "w": 6,
                 "x": 12,
-                "y": 9
+                "y": 41
             },
             "id": 6,
             "options": {
@@ -516,7 +1191,6 @@
                         "mode": "continuous-GrYlRd"
                     },
                     "mappings": [],
-                    "max": 2,
                     "thresholds": {
                         "mode": "absolute",
                         "steps": [
@@ -538,7 +1212,7 @@
                 "h": 7,
                 "w": 6,
                 "x": 18,
-                "y": 9
+                "y": 41
             },
             "id": 5,
             "options": {
@@ -596,7 +1270,7 @@
                             "viz": false
                         },
                         "insertNulls": false,
-                        "lineInterpolation": "linear",
+                        "lineInterpolation": "smooth",
                         "lineStyle": {
                             "fill": "solid"
                         },
@@ -633,7 +1307,7 @@
                     {
                         "matcher": {
                             "id": "byName",
-                            "options": "value {instrumentation=\"default\", scenario=\"default\", status=\"200\", success=\"true\"}"
+                            "options": "http_requests_success value {instrumentation=\"default\", scenario=\"default\", status=\"200\", success=\"true\"}"
                         },
                         "properties": [
                             {
@@ -645,7 +1319,7 @@
                     {
                         "matcher": {
                             "id": "byName",
-                            "options": "value {instrumentation=\"manual\", scenario=\"default\", status=\"200\", success=\"true\"}"
+                            "options": "http_requests_success value {instrumentation=\"manual\", scenario=\"default\", status=\"200\", success=\"true\"}"
                         },
                         "properties": [
                             {
@@ -657,7 +1331,7 @@
                     {
                         "matcher": {
                             "id": "byName",
-                            "options": "value {instrumentation=\"orchestrion\", scenario=\"default\", status=\"200\", success=\"true\"}"
+                            "options": "http_requests_success value {instrumentation=\"orchestrion\", scenario=\"default\", status=\"200\", success=\"true\"}"
                         },
                         "properties": [
                             {
@@ -669,7 +1343,7 @@
                     {
                         "matcher": {
                             "id": "byName",
-                            "options": "value {instrumentation=\"ebpf\", scenario=\"default\", status=\"200\", success=\"true\"}"
+                            "options": "http_requests_success value {instrumentation=\"ebpf\", scenario=\"default\", status=\"200\", success=\"true\"}"
                         },
                         "properties": [
                             {
@@ -681,10 +1355,10 @@
                 ]
             },
             "gridPos": {
-                "h": 11,
-                "w": 13,
+                "h": 8,
+                "w": 24,
                 "x": 0,
-                "y": 16
+                "y": 48
             },
             "id": 2,
             "measurement": "http_request_duration",
@@ -722,11 +1396,12 @@
                         "type": "influxdb",
                         "uid": "P951FEA4DE68E13C5"
                     },
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_request_duration\")\n    |> yield(name: \"_results\")",
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_requests_success\")\n    |> aggregateWindow(every: 1s, fn: count, createEmpty: false)",
                     "refId": "A"
                 }
             ],
-            "title": "Requests Made",
+            "title": "Successful Requests Made",
+            "transformations": [],
             "type": "timeseries"
         }
     ],
@@ -760,8 +1435,8 @@
         ]
     },
     "time": {
-        "from": "2025-07-11T19:36:03.239Z",
-        "to": "2025-07-11T19:39:33.992Z"
+        "from": "2025-07-16T19:58:54.554Z",
+        "to": "2025-07-16T20:03:26.929Z"
     },
     "timepicker": {},
     "timezone": "",
