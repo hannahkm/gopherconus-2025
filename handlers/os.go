@@ -9,12 +9,14 @@ import (
 	"github.com/mackerelio/go-osstat/cpu"
 	"github.com/mackerelio/go-osstat/memory"
 	"github.com/mackerelio/go-osstat/network"
+	"github.com/mackerelio/go-osstat/uptime"
 )
 
 type SystemStats struct {
 	CPU     CPUStats     `json:"cpu"`
 	Memory  MemoryStats  `json:"memory"`
 	Network NetworkStats `json:"network"`
+	Uptime  UptimeStats  `json:"uptime"`
 }
 
 type CPUStats struct {
@@ -32,6 +34,10 @@ type MemoryStats struct {
 type NetworkStats struct {
 	BytesReceived uint64 `json:"bytes_received"`
 	BytesSent     uint64 `json:"bytes_sent"`
+}
+
+type UptimeStats struct {
+	Milliseconds uint64 `json:"milliseconds"`
 }
 
 func getSystemStats() *SystemStats {
@@ -59,6 +65,12 @@ func getSystemStats() *SystemStats {
 		totalTx += net.TxBytes
 	}
 
+	uptime, err := uptime.Get()
+	if err != nil {
+		fmt.Printf("error getting network stats: %s\n", err)
+		return nil
+	}
+
 	return &SystemStats{
 		CPU: CPUStats{
 			User:   cpu.User,
@@ -73,6 +85,9 @@ func getSystemStats() *SystemStats {
 		Network: NetworkStats{
 			BytesReceived: totalRx,
 			BytesSent:     totalTx,
+		},
+		Uptime: UptimeStats{
+			Milliseconds: uint64(uptime.Milliseconds()),
 		},
 	}
 }

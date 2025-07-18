@@ -13,6 +13,7 @@ const memoryTotal = new Trend('memory_total');
 const memoryUsed = new Trend('memory_used');
 const networkBytesReceived = new Counter('network_bytes_received');
 const networkBytesSent = new Counter('network_bytes_sent');
+const uptime = new Counter('uptime_milliseconds')
 
 // Set up options for avg load testing
 export const options = {
@@ -57,6 +58,7 @@ export default function () {
         memoryUsed.add(systemInfo.memory.used, tags);
         networkBytesReceived.add(systemInfo.network.bytes_received, tags);
         networkBytesSent.add(systemInfo.network.bytes_sent, tags);
+        uptime.add(systemInfo.uptime.milliseconds, tags);
     }
 
     if (success) {

@@ -99,8 +99,8 @@
                 "overrides": []
             },
             "gridPos": {
-                "h": 9,
-                "w": 24,
+                "h": 12,
+                "w": 12,
                 "x": 0,
                 "y": 1
             },
@@ -429,10 +429,10 @@
                 "overrides": []
             },
             "gridPos": {
-                "h": 11,
-                "w": 24,
-                "x": 0,
-                "y": 10
+                "h": 12,
+                "w": 12,
+                "x": 12,
+                "y": 1
             },
             "id": 18,
             "options": {
@@ -557,6 +557,151 @@
             "fieldConfig": {
                 "defaults": {
                     "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisBorderShow": false,
+                        "axisCenteredZero": false,
+                        "axisColorMode": "text",
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "drawStyle": "line",
+                        "fillOpacity": 0,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "insertNulls": false,
+                        "lineInterpolation": "smooth",
+                        "lineStyle": {
+                            "fill": "solid"
+                        },
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "never",
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unitScale": true
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "value {instrumentation=\"default\", scenario=\"default\", status=\"200\", success=\"true\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Default"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "value {instrumentation=\"manual\", scenario=\"default\", status=\"200\", success=\"true\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Manual"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "value {instrumentation=\"orchestrion\", scenario=\"default\", status=\"200\", success=\"true\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Orchestrion"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "value {instrumentation=\"ebpf\", scenario=\"default\", status=\"200\", success=\"true\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "eBPF"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 12,
+                "w": 12,
+                "x": 0,
+                "y": 13
+            },
+            "id": 20,
+            "options": {
+                "legend": {
+                    "calcs": [],
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": true
+                },
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"uptime_milliseconds\")\n    |> aggregateWindow(every: 1s, fn: count, createEmpty: false)",
+                    "refId": "A"
+                }
+            ],
+            "title": "Uptime (milliseconds)",
+            "transformations": [],
+            "type": "timeseries"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P951FEA4DE68E13C5"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
                         "mode": "thresholds"
                     },
                     "mappings": [],
@@ -578,10 +723,10 @@
                 "overrides": []
             },
             "gridPos": {
-                "h": 11,
-                "w": 24,
-                "x": 0,
-                "y": 21
+                "h": 12,
+                "w": 12,
+                "x": 12,
+                "y": 13
             },
             "id": 19,
             "options": {
@@ -708,7 +853,7 @@
                 "h": 1,
                 "w": 24,
                 "x": 0,
-                "y": 32
+                "y": 25
             },
             "id": 12,
             "panels": [],
@@ -748,7 +893,7 @@
                 "h": 7,
                 "w": 6,
                 "x": 0,
-                "y": 33
+                "y": 26
             },
             "id": 9,
             "options": {
@@ -813,7 +958,7 @@
                 "h": 7,
                 "w": 6,
                 "x": 6,
-                "y": 33
+                "y": 26
             },
             "id": 4,
             "options": {
@@ -878,7 +1023,7 @@
                 "h": 7,
                 "w": 6,
                 "x": 12,
-                "y": 33
+                "y": 26
             },
             "id": 10,
             "options": {
@@ -943,7 +1088,7 @@
                 "h": 7,
                 "w": 6,
                 "x": 18,
-                "y": 33
+                "y": 26
             },
             "id": 11,
             "options": {
@@ -981,7 +1126,7 @@
                 "h": 1,
                 "w": 24,
                 "x": 0,
-                "y": 40
+                "y": 33
             },
             "id": 7,
             "panels": [],
@@ -1020,7 +1165,7 @@
                 "h": 7,
                 "w": 6,
                 "x": 0,
-                "y": 41
+                "y": 34
             },
             "id": 8,
             "options": {
@@ -1084,7 +1229,7 @@
                 "h": 7,
                 "w": 6,
                 "x": 6,
-                "y": 41
+                "y": 34
             },
             "id": 3,
             "options": {
@@ -1148,7 +1293,7 @@
                 "h": 7,
                 "w": 6,
                 "x": 12,
-                "y": 41
+                "y": 34
             },
             "id": 6,
             "options": {
@@ -1212,7 +1357,7 @@
                 "h": 7,
                 "w": 6,
                 "x": 18,
-                "y": 41
+                "y": 34
             },
             "id": 5,
             "options": {
@@ -1358,7 +1503,7 @@
                 "h": 8,
                 "w": 24,
                 "x": 0,
-                "y": 48
+                "y": 41
             },
             "id": 2,
             "measurement": "http_request_duration",
@@ -1405,7 +1550,7 @@
             "type": "timeseries"
         }
     ],
-    "refresh": false,
+    "refresh": "auto",
     "schemaVersion": 39,
     "tags": [
         "k6",
@@ -1435,8 +1580,8 @@
         ]
     },
     "time": {
-        "from": "2025-07-16T19:58:54.554Z",
-        "to": "2025-07-16T20:03:26.929Z"
+        "from": "now-5m",
+        "to": "now"
     },
     "timepicker": {},
     "timezone": "",
