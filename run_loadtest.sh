@@ -47,11 +47,11 @@ for INSTRUMENTATION in "${INSTRUMENTATION_ARRAY[@]}"; do
 
     export INSTRUMENTATION=$INSTRUMENTATION
 
-    # Start the Go server in background
+    # Start the Go server
     if [[ "$INSTRUMENTATION" == "orchestrion" ]]; then
-        orchestrion go run main.go &
+        orchestrion go run main.go
     else
-        go run main.go &
+        go run main.go 
     fi
 
     # Initialize eBPF if we are using it
