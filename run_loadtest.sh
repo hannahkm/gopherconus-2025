@@ -47,11 +47,11 @@ for INSTRUMENTATION in "${INSTRUMENTATION_ARRAY[@]}"; do
 
     export INSTRUMENTATION=$INSTRUMENTATION
 
-    # Start the Go server
+    # Start the Go server in background
     if [[ "$INSTRUMENTATION" == "orchestrion" ]]; then
-        orchestrion go run main.go
+        orchestrion go run main.go &
     else
-        go run main.go 
+        go run main.go &
     fi
 
     # Initialize eBPF if we are using it
@@ -61,7 +61,7 @@ for INSTRUMENTATION in "${INSTRUMENTATION_ARRAY[@]}"; do
     fi
 
     # Wait for all services to start
-    sleep 3
+    sleep 10
 
     # Run load tests
     ./k6 run \
