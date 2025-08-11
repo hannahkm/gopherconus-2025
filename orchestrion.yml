@@ -1,0 +1,14 @@
+---
+# yaml-language-server: $schema=https://datadoghq.dev/orchestrion/schema.json
+meta:
+  name: otel-orchestrion
+  description: Enables running the OTel SDK under the hood with Orchestrion
+
+aspects:
+  - id: Error Tracking
+    join-point:
+      all-of:
+        - package-name: main
+        - function-call: DefaultInstrumentation
+    advice:
+      - replace-function: github.com/hannahkm/gopherconus-2025.ManualInstrumentation
