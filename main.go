@@ -14,10 +14,21 @@ func main() {
 		ManualInstrument()
 		return
 	}
+	DefaultInstrumentation()
+}
 
+// Create a simple /hello endpoint. We can also use this as the entry
+// point for autoinstrumenting using Orchestrion + OTel
+func DefaultInstrumentation() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/hello", handlers.HelloHandler)
-	http.ListenAndServe(":8080", mux)
+
+	server := &http.Server{
+		Addr:    ":8080",
+		Handler: mux,
+	}
+
+	server.ListenAndServe()
 }
 
 // Manually instrument our http call using the OTel SDK

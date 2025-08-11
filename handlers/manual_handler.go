@@ -13,7 +13,7 @@ func ManualHandler(w http.ResponseWriter, r *http.Request) {
 	defer span.End()
 
 	response := HelloResponse{
-		Message:    "Hello, manual instrumentation!",
+		Message:    "Hello, " + InstrumentationMethod + " instrumentation!",
 		SystemInfo: getSystemStats(),
 	}
 	w.Header().Set("Content-Type", "application/json")
