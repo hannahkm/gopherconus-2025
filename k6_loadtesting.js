@@ -15,12 +15,17 @@ const networkBytesReceived = new Counter('network_bytes_received');
 const networkBytesSent = new Counter('network_bytes_sent');
 const uptime = new Counter('uptime_milliseconds')
 
-// Set up options for avg load testing
+// Load testing scenarios
 export const options = {
     stages: [
+        // avg load-testing
         { duration: '15s', target: 100 }, // traffic ramp-up
         { duration: '30s', target: 100 }, // hold steady
         { duration: '15s', target: 0 }, // ramp-down to 0 users
+
+        // spike-testing
+        { duration: '10s', target: 1000 }, // sudden jump to 1000 users
+        { duration: '10s', target: 0 }, // drop down to 0 users
     ]
 }
 
