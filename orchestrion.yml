@@ -9,6 +9,6 @@ aspects:
     join-point:
       all-of:
         - package-name: main
-        - function-call: DefaultInstrumentation
+        - function-call: github.com/hannahkm/gopherconus-2025.DefaultInstrumentation
     advice:
       - replace-function: github.com/hannahkm/gopherconus-2025.ManualInstrument
