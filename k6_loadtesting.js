@@ -2,6 +2,7 @@ import { check, sleep } from 'k6';
 import http from 'k6/http';
 import { Counter, Trend } from 'k6/metrics';
 
+const numRequests = new Counter('http_requests');
 const numSuccess = new Counter('http_requests_success');
 const numFailure = new Counter('http_requests_failed');
 const duration = new Trend('http_request_duration');
@@ -11,16 +12,19 @@ const cpuIdle = new Trend('cpu_idle');
 const cpuTotal = new Trend('cpu_total');
 const memoryTotal = new Trend('memory_total');
 const memoryUsed = new Trend('memory_used');
-const networkBytesReceived = new Counter('network_bytes_received');
-const networkBytesSent = new Counter('network_bytes_sent');
 const uptime = new Counter('uptime_milliseconds')
 
-// Set up options for avg load testing
+// Load testing scenarios
 export const options = {
     stages: [
+        // avg load-testing
         { duration: '15s', target: 100 }, // traffic ramp-up
         { duration: '30s', target: 100 }, // hold steady
         { duration: '15s', target: 0 }, // ramp-down to 0 users
+
+        // spike-testing
+        { duration: '10s', target: 1000 }, // sudden jump to 1000 users
+        { duration: '10s', target: 0 }, // drop down to 0 users
     ]
 }
 
@@ -56,11 +60,10 @@ export default function () {
         cpuTotal.add(systemInfo.cpu.total, tags);
         memoryTotal.add(systemInfo.memory.total, tags);
         memoryUsed.add(systemInfo.memory.used, tags);
-        networkBytesReceived.add(systemInfo.network.bytes_received, tags);
-        networkBytesSent.add(systemInfo.network.bytes_sent, tags);
         uptime.add(systemInfo.uptime.milliseconds, tags);
     }
 
+    numRequests.add(1, tags);
     if (success) {
         numSuccess.add(1, tags);
     } else {

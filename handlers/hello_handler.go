@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"math/rand/v2"
 	"net/http"
 	"os"
 )
@@ -23,8 +24,13 @@ type HelloResponse struct {
 }
 
 func HelloHandler(w http.ResponseWriter, _ *http.Request) {
+	// Give a 1/10 chance for the handler to respond with an error
+	instrumentation := InstrumentationMethod
+	if rand.IntN(10) == 0 {
+		instrumentation = "WRONG"
+	}
 	response := HelloResponse{
-		Message:    "Hello, " + InstrumentationMethod + " instrumentation!",
+		Message:    "Hello, " + instrumentation + " instrumentation!",
 		SystemInfo: getSystemStats(),
 	}
 	w.Header().Set("Content-Type", "application/json")
