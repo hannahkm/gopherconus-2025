@@ -11,4 +11,4 @@ aspects:
         - package-name: main
         - function-call: DefaultInstrumentation
     advice:
-      - replace-function: github.com/hannahkm/gopherconus-2025.ManualInstrumentation
+      - replace-function: github.com/hannahkm/gopherconus-2025.ManualInstrument
