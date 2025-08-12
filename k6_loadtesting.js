@@ -2,6 +2,7 @@ import { check, sleep } from 'k6';
 import http from 'k6/http';
 import { Counter, Trend } from 'k6/metrics';
 
+const numRequests = new Counter('http_requests');
 const numSuccess = new Counter('http_requests_success');
 const numFailure = new Counter('http_requests_failed');
 const duration = new Trend('http_request_duration');
@@ -11,8 +12,6 @@ const cpuIdle = new Trend('cpu_idle');
 const cpuTotal = new Trend('cpu_total');
 const memoryTotal = new Trend('memory_total');
 const memoryUsed = new Trend('memory_used');
-const networkBytesReceived = new Counter('network_bytes_received');
-const networkBytesSent = new Counter('network_bytes_sent');
 const uptime = new Counter('uptime_milliseconds')
 
 // Load testing scenarios
@@ -61,11 +60,10 @@ export default function () {
         cpuTotal.add(systemInfo.cpu.total, tags);
         memoryTotal.add(systemInfo.memory.total, tags);
         memoryUsed.add(systemInfo.memory.used, tags);
-        networkBytesReceived.add(systemInfo.network.bytes_received, tags);
-        networkBytesSent.add(systemInfo.network.bytes_sent, tags);
         uptime.add(systemInfo.uptime.milliseconds, tags);
     }
 
+    numRequests.add(1, tags);
     if (success) {
         numSuccess.add(1, tags);
     } else {

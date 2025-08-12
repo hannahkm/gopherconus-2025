@@ -8,15 +8,13 @@ import (
 
 	"github.com/mackerelio/go-osstat/cpu"
 	"github.com/mackerelio/go-osstat/memory"
-	"github.com/mackerelio/go-osstat/network"
 	"github.com/mackerelio/go-osstat/uptime"
 )
 
 type SystemStats struct {
-	CPU     CPUStats     `json:"cpu"`
-	Memory  MemoryStats  `json:"memory"`
-	Network NetworkStats `json:"network"`
-	Uptime  UptimeStats  `json:"uptime"`
+	CPU    CPUStats    `json:"cpu"`
+	Memory MemoryStats `json:"memory"`
+	Uptime UptimeStats `json:"uptime"`
 }
 
 type CPUStats struct {
@@ -29,11 +27,6 @@ type CPUStats struct {
 type MemoryStats struct {
 	Total uint64 `json:"total"`
 	Used  uint64 `json:"used"`
-}
-
-type NetworkStats struct {
-	BytesReceived uint64 `json:"bytes_received"`
-	BytesSent     uint64 `json:"bytes_sent"`
 }
 
 type UptimeStats struct {
@@ -53,18 +46,6 @@ func getSystemStats() *SystemStats {
 		return nil
 	}
 
-	networks, err := network.Get()
-	if err != nil {
-		fmt.Printf("error getting network stats: %s\n", err)
-		return nil
-	}
-
-	var totalRx, totalTx uint64
-	for _, net := range networks {
-		totalRx += net.RxBytes
-		totalTx += net.TxBytes
-	}
-
 	uptime, err := uptime.Get()
 	if err != nil {
 		fmt.Printf("error getting network stats: %s\n", err)
@@ -81,10 +62,6 @@ func getSystemStats() *SystemStats {
 		Memory: MemoryStats{
 			Total: memory.Total,
 			Used:  memory.Used,
-		},
-		Network: NetworkStats{
-			BytesReceived: totalRx,
-			BytesSent:     totalTx,
 		},
 		Uptime: UptimeStats{
 			Milliseconds: uint64(uptime.Milliseconds()),
