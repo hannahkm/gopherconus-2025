@@ -23,7 +23,7 @@ type HelloResponse struct {
 	SystemInfo *SystemStats `json:"system_info"`
 }
 
-func HelloHandler(w http.ResponseWriter, _ *http.Request) {
+func HelloHandler(w http.ResponseWriter, r *http.Request) {
 	// Give a 1/10 chance for the handler to respond with an error
 	instrumentation := InstrumentationMethod
 	if rand.IntN(10) == 0 {

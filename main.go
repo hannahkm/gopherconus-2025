@@ -10,30 +10,33 @@ import (
 func main() {
 	handlers.SetupEnv()
 
+	var handler http.Handler
 	if handlers.InstrumentationMethod == "manual" {
-		ManualInstrument()
-		return
+		handler = ManualInstrument()
+	} else {
+		handler = DefaultInstrumentation()
 	}
-	DefaultInstrumentation()
-}
-
-// Create a simple /hello endpoint. We can also use this as the entry
-// point for autoinstrumenting using Orchestrion + OTel
-func DefaultInstrumentation() {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/hello", handlers.HelloHandler)
 
 	server := &http.Server{
 		Addr:    ":8080",
-		Handler: mux,
+		Handler: handler,
 	}
 
 	server.ListenAndServe()
 }
 
+// Create a simple /hello endpoint. We can also use this as the entry
+// point for autoinstrumenting using Orchestrion + OTel
+func DefaultInstrumentation() http.Handler {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/hello", handlers.HelloHandler)
+
+	return mux
+}
+
 // Manually instrument our http call using the OTel SDK
 // Code inspired by https://opentelemetry.io/docs/languages/go/getting-started
-func ManualInstrument() {
+func ManualInstrument() http.Handler {
 	mux := http.NewServeMux()
 
 	handleFunc := func(pattern string, handlerFunc func(http.ResponseWriter, *http.Request)) {
@@ -45,10 +48,5 @@ func ManualInstrument() {
 
 	handler := otelhttp.NewHandler(mux, "/")
 
-	server := &http.Server{
-		Addr:    ":8080",
-		Handler: handler,
-	}
-
-	server.ListenAndServe()
+	return handler
 }
