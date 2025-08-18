@@ -563,7 +563,7 @@
                         "type": "influxdb",
                         "uid": "P951FEA4DE68E13C5"
                     },
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_request_duration\")\n    |> group(columns: [\"instrumentation\", \"status\"], mode: \"by\")\n    |> yield(name: \"_results\")\n    |> drop(columns: [\"_start\", \"_stop\"])",
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_request_duration\")\n    |> group(columns: [\"instrumentation\", \"status\"], mode: \"by\")\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> yield(name: \"_results\")",
                     "refId": "A"
                 }
             ],

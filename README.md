@@ -22,5 +22,5 @@ You can also pass in "all" to run all four scenarios in sequence.
 
 Running `./run_loadtest.sh` will also start up a Grafana instance at `localhost:3000`. Navigate there to find the 'k6 Load Testing Results' dashboard.
 
-![system info](./example_img/sample_system_info.png)
-![testing info](./example_img/sample_testing_info.png)
+![system info](./example_img/sample_dashboard1.png)
+![testing info](./example_img/sample_dashboard2.png)
