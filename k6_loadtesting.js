@@ -23,9 +23,10 @@ export const options = {
         { duration: '15s', target: 0 }, // ramp-down to 0 users
 
         // spike-testing
-        { duration: '10s', target: 1000 }, // sudden jump to 1000 users
-        { duration: '10s', target: 0 }, // drop down to 0 users
-    ]
+        { duration: '2s', target: 1000 }, // sudden jump to 1000 users
+        { duration: '2s', target: 0 }, // drop down to 0 users
+    ],
+    summaryTrendStats: ['avg', 'min', 'med', 'max', 'p(90)', 'p(95)', 'p(99)', 'p(99.9)', 'count'],
 }
 
 const BASE_URL = __ENV.BASE_URL || 'http://localhost:8080/hello';

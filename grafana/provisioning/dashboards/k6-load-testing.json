@@ -563,11 +563,11 @@
                         "type": "influxdb",
                         "uid": "P951FEA4DE68E13C5"
                     },
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_request_duration\")\n    |> group(columns: [\"instrumentation\", \"status\"], mode: \"by\")\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> yield(name: \"_results\")",
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_request_duration\")\n    |> group(columns: [\"instrumentation\", \"status\"], mode: \"by\")\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)",
                     "refId": "A"
                 }
             ],
-            "title": "Duration (ms/request)",
+            "title": "p99 Duration (ms/request)",
             "transformations": [],
             "type": "timeseries"
         },
@@ -659,7 +659,7 @@
                         "type": "influxdb",
                         "uid": "P951FEA4DE68E13C5"
                     },
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"cpu_total\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 1s, fn: mean, createEmpty: false)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"cpu_total\"}))",
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"cpu_total\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 5s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"cpu_total\"}))",
                     "refId": "A"
                 },
                 {
@@ -668,7 +668,7 @@
                         "uid": "P951FEA4DE68E13C5"
                     },
                     "hide": false,
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"cpu_user\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 1s, fn: mean, createEmpty: false)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"cpu_user\"}))",
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"cpu_user\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 5s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"cpu_user\"}))",
                     "refId": "B"
                 },
                 {
@@ -677,7 +677,7 @@
                         "uid": "P951FEA4DE68E13C5"
                     },
                     "hide": false,
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"cpu_system\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 1s, fn: mean, createEmpty: false)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"cpu_system\"}))",
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"cpu_system\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 5s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"cpu_system\"}))",
                     "refId": "C"
                 },
                 {
@@ -686,7 +686,7 @@
                         "uid": "P951FEA4DE68E13C5"
                     },
                     "hide": false,
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"cpu_idle\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 1s, fn: mean, createEmpty: false)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"cpu_idle\"}))",
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"cpu_idle\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 5s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"cpu_idle\"}))",
                     "refId": "D"
                 }
             ],
@@ -1022,7 +1022,7 @@
                         "type": "influxdb",
                         "uid": "P951FEA4DE68E13C5"
                     },
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"memory_total\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 1s, fn: mean, createEmpty: false)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"memory_total\"}))",
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"memory_total\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"memory_total\"}))",
                     "refId": "A"
                 },
                 {
@@ -1031,11 +1031,11 @@
                         "uid": "P951FEA4DE68E13C5"
                     },
                     "hide": false,
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"memory_used\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 1s, fn: mean, createEmpty: false)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"memory_used\"}))",
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"memory_used\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"memory_used\"}))",
                     "refId": "B"
                 }
             ],
-            "title": "Memory Usage %",
+            "title": "Memory Usage % (p99)",
             "transformations": [
                 {
                     "id": "calculateField",
