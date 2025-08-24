@@ -67,6 +67,7 @@ require (
 	github.com/goccy/go-yaml v1.18.0 // indirect
 	github.com/google/go-tpm v0.9.5 // indirect
 	github.com/hashicorp/go-version v1.7.0 // indirect
+	github.com/lib/pq v1.10.9 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
 	github.com/minio/highwayhash v1.0.3 // indirect
 	github.com/muesli/termenv v0.16.0 // indirect

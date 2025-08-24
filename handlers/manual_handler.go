@@ -5,26 +5,37 @@ import (
 	"math/rand/v2"
 	"net/http"
 
+	dbhandling "github.com/hannahkm/gopherconus-2025/db_handling"
 	"go.opentelemetry.io/otel"
 )
 
 func ManualHandler(w http.ResponseWriter, r *http.Request) {
 	// Give a 1/10 chance for the handler to respond with an error
 	instrumentation := InstrumentationMethod
-	if rand.IntN(10) == 0 {
+	isErr := rand.IntN(10) == 0
+	if isErr {
 		instrumentation = "WRONG"
 	}
 
 	tracer := otel.Tracer("manual")
-	_, span := tracer.Start(r.Context(), "hello")
+	ctx, span := tracer.Start(r.Context(), "hello")
 	defer span.End()
+
+	_, dbSpan := tracer.Start(ctx, "database")
+	errPOST := dbhandling.POST(db, instrumentation, false)
+	_, errGET := dbhandling.GET(db, 5)
+	dbSpan.End()
 
 	response := HelloResponse{
 		Message:    "Hello, " + instrumentation + " instrumentation!",
 		SystemInfo: getSystemStats(),
 	}
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
+	if isErr || errPOST != nil || errGET != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	} else {
+		w.WriteHeader(http.StatusOK)
+	}
 
 	err := json.NewEncoder(w).Encode(response)
 	if err != nil {

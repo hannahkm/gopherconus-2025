@@ -1,14 +1,24 @@
 package main
 
 import (
+	"database/sql"
+	"log"
 	"net/http"
 
 	"github.com/hannahkm/gopherconus-2025/handlers"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 )
 
+var db *sql.DB
+
 func main() {
 	handlers.SetupEnv()
+
+	err := handlers.SetupDB()
+	if err != nil {
+		log.Fatalf("Failed to initialize database: %v", err)
+	}
+	defer handlers.StopDB()
 
 	var handler http.Handler
 	if handlers.InstrumentationMethod == "manual" {
@@ -29,7 +39,9 @@ func main() {
 // point for autoinstrumenting using Orchestrion + OTel
 func DefaultInstrumentation() http.Handler {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/hello", handlers.HelloHandler)
+	mux.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
+		handlers.HelloHandler(w, r)
+	})
 
 	return mux
 }
@@ -44,7 +56,9 @@ func ManualInstrument() http.Handler {
 		handler := otelhttp.WithRouteTag(pattern, http.HandlerFunc(handlerFunc))
 		mux.Handle(pattern, handler)
 	}
-	handleFunc("/hello", handlers.ManualHandler)
+	handleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
+		handlers.ManualHandler(w, r)
+	})
 
 	handler := otelhttp.NewHandler(mux, "/")
 
