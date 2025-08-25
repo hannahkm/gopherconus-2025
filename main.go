@@ -1,15 +1,12 @@
 package main
 
 import (
-	"database/sql"
 	"log"
 	"net/http"
 
 	"github.com/hannahkm/gopherconus-2025/handlers"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 )
-
-var db *sql.DB
 
 func main() {
 	handlers.SetupEnv()
