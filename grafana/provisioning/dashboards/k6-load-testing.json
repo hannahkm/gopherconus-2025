@@ -181,7 +181,7 @@
             },
             "gridPos": {
                 "h": 12,
-                "w": 12,
+                "w": 17,
                 "x": 0,
                 "y": 0
             },
@@ -343,8 +343,8 @@
             },
             "gridPos": {
                 "h": 24,
-                "w": 12,
-                "x": 12,
+                "w": 7,
+                "x": 17,
                 "y": 0
             },
             "id": 31,
@@ -354,7 +354,7 @@
                 "orientation": "auto",
                 "reduceOptions": {
                     "calcs": [
-                        "lastNotNull"
+                        "mean"
                     ],
                     "fields": "",
                     "values": false
@@ -540,7 +540,7 @@
             },
             "gridPos": {
                 "h": 12,
-                "w": 12,
+                "w": 17,
                 "x": 0,
                 "y": 12
             },
@@ -1672,7 +1672,8 @@
                         "mode": "absolute",
                         "steps": [
                             {
-                                "color": "green"
+                                "color": "green",
+                                "value": null
                             }
                         ]
                     },
@@ -1838,7 +1839,8 @@
                         "mode": "absolute",
                         "steps": [
                             {
-                                "color": "green"
+                                "color": "green",
+                                "value": null
                             }
                         ]
                     },
@@ -2037,7 +2039,8 @@
                         "mode": "absolute",
                         "steps": [
                             {
-                                "color": "green"
+                                "color": "green",
+                                "value": null
                             },
                             {
                                 "color": "red",
@@ -2350,7 +2353,7 @@
             "type": "timeseries"
         }
     ],
-    "refresh": "5s",
+    "refresh": "auto",
     "schemaVersion": 39,
     "tags": [
         "k6",
@@ -2387,6 +2390,6 @@
     "timezone": "",
     "title": "k6 Load Testing Results",
     "uid": "k6-load-testing",
-    "version": 3,
+    "version": 1,
     "weekStart": ""
 }
