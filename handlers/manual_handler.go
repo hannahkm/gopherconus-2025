@@ -31,12 +31,15 @@ func ManualHandler(w http.ResponseWriter, r *http.Request) {
 		Message:    "Hello, " + instrumentation + " instrumentation!",
 		SystemInfo: getSystemStats(),
 	}
+
 	w.Header().Set("Content-Type", "application/json")
-	if isErr || errPOST != nil || errGET != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-	} else {
-		w.WriteHeader(http.StatusOK)
+	status := http.StatusOK
+	if isErr {
+		status = http.StatusInternalServerError
+	} else if errPOST != nil || errGET != nil {
+		status = http.StatusBadRequest
 	}
+	w.WriteHeader(status)
 
 	err := json.NewEncoder(w).Encode(response)
 	if err != nil {

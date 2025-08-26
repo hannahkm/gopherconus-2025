@@ -26,7 +26,9 @@ aspects:
                 handler := otelhttp.WithRouteTag(pattern, http.HandlerFunc(handlerFunc))
                 mux.Handle(pattern, handler)
               }
-              handleFunc("/hello", handlers.HelloHandler)
+              handleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
+                handlers.ManualHandler(w, r)
+              })
 
               {{ $ret }} = otelhttp.NewHandler(mux, "/")
             }()

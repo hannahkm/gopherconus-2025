@@ -228,6 +228,164 @@
             "fieldConfig": {
                 "defaults": {
                     "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unitScale": true
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "value {instrumentation=\"default\", scenario=\"default\", status=\"400\", success=\"false\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Default DB Error Rate"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "value {instrumentation=\"default\", scenario=\"default\", status=\"500\", success=\"false\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Default HTTP Error Rate"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "value {instrumentation=\"ebpf\", scenario=\"default\", status=\"400\", success=\"false\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "eBPF DB Error Rate"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "value {instrumentation=\"ebpf\", scenario=\"default\", status=\"500\", success=\"false\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "eBPF HTTP Error Rate"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "value {instrumentation=\"manual\", scenario=\"default\", status=\"400\", success=\"false\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Manual DB Error Rate"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "value {instrumentation=\"manual\", scenario=\"default\", status=\"500\", success=\"false\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Manual HTTP Error Rate"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "value {instrumentation=\"orchestrion\", scenario=\"default\", status=\"400\", success=\"false\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Orchestrion DB Error Rate"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "value {instrumentation=\"orchestrion\", scenario=\"default\", status=\"500\", success=\"false\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Orchestrion HTTP Error Rate"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 24,
+                "w": 12,
+                "x": 12,
+                "y": 0
+            },
+            "id": 31,
+            "options": {
+                "minVizHeight": 75,
+                "minVizWidth": 75,
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "sizing": "auto"
+            },
+            "pluginVersion": "10.3.3",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_requests_failed\")\n    |> aggregateWindow(every: 1s, fn: count, createEmpty: false)",
+                    "refId": "A"
+                }
+            ],
+            "title": "Rate (Avg Requests/Second)",
+            "transformations": [],
+            "type": "gauge"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P951FEA4DE68E13C5"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
                         "mode": "palette-classic"
                     },
                     "custom": {
@@ -383,8 +541,8 @@
             "gridPos": {
                 "h": 12,
                 "w": 12,
-                "x": 12,
-                "y": 0
+                "x": 0,
+                "y": 12
             },
             "id": 19,
             "options": {
@@ -419,7 +577,7 @@
                 "h": 1,
                 "w": 24,
                 "x": 0,
-                "y": 12
+                "y": 24
             },
             "id": 17,
             "panels": [],
@@ -542,7 +700,7 @@
                 "h": 16,
                 "w": 12,
                 "x": 0,
-                "y": 13
+                "y": 25
             },
             "id": 21,
             "options": {
@@ -615,7 +773,19 @@
                         "properties": [
                             {
                                 "id": "displayName",
-                                "value": "Error"
+                                "value": "HTTP Error"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "{instrumentation=\"default\", status=\"400\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "DB Error"
                             }
                         ]
                     }
@@ -625,7 +795,7 @@
                 "h": 8,
                 "w": 12,
                 "x": 12,
-                "y": 13
+                "y": 25
             },
             "id": 23,
             "options": {
@@ -701,7 +871,19 @@
                         "properties": [
                             {
                                 "id": "displayName",
-                                "value": "Error"
+                                "value": "HTTP Error"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "{instrumentation=\"manual\", status=\"400\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "DB Error"
                             }
                         ]
                     }
@@ -711,7 +893,7 @@
                 "h": 8,
                 "w": 12,
                 "x": 12,
-                "y": 21
+                "y": 33
             },
             "id": 24,
             "options": {
@@ -787,7 +969,19 @@
                         "properties": [
                             {
                                 "id": "displayName",
-                                "value": "Error"
+                                "value": "HTTP Error"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "{instrumentation=\"orchestrion\", status=\"400\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "DB Error"
                             }
                         ]
                     }
@@ -797,7 +991,7 @@
                 "h": 8,
                 "w": 12,
                 "x": 0,
-                "y": 29
+                "y": 41
             },
             "id": 25,
             "options": {
@@ -873,7 +1067,19 @@
                         "properties": [
                             {
                                 "id": "displayName",
-                                "value": "Error"
+                                "value": "HTTP Error"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "{instrumentation=\"ebpf\", status=\"400\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "DB Error"
                             }
                         ]
                     }
@@ -883,7 +1089,7 @@
                 "h": 8,
                 "w": 12,
                 "x": 12,
-                "y": 29
+                "y": 41
             },
             "id": 26,
             "options": {
@@ -982,7 +1188,7 @@
                 "h": 14,
                 "w": 12,
                 "x": 0,
-                "y": 37
+                "y": 49
             },
             "id": 18,
             "options": {
@@ -1145,7 +1351,7 @@
                 "h": 7,
                 "w": 6,
                 "x": 12,
-                "y": 37
+                "y": 49
             },
             "id": 27,
             "options": {
@@ -1312,7 +1518,7 @@
                 "h": 7,
                 "w": 6,
                 "x": 18,
-                "y": 37
+                "y": 49
             },
             "id": 30,
             "options": {
@@ -1466,8 +1672,7 @@
                         "mode": "absolute",
                         "steps": [
                             {
-                                "color": "green",
-                                "value": null
+                                "color": "green"
                             }
                         ]
                     },
@@ -1479,7 +1684,7 @@
                 "h": 7,
                 "w": 6,
                 "x": 12,
-                "y": 44
+                "y": 56
             },
             "id": 29,
             "options": {
@@ -1633,8 +1838,7 @@
                         "mode": "absolute",
                         "steps": [
                             {
-                                "color": "green",
-                                "value": null
+                                "color": "green"
                             }
                         ]
                     },
@@ -1646,7 +1850,7 @@
                 "h": 7,
                 "w": 6,
                 "x": 18,
-                "y": 44
+                "y": 56
             },
             "id": 28,
             "options": {
@@ -1833,8 +2037,7 @@
                         "mode": "absolute",
                         "steps": [
                             {
-                                "color": "green",
-                                "value": null
+                                "color": "green"
                             },
                             {
                                 "color": "red",
@@ -1850,7 +2053,7 @@
                 "h": 12,
                 "w": 24,
                 "x": 0,
-                "y": 51
+                "y": 63
             },
             "id": 14,
             "options": {
@@ -2147,7 +2350,7 @@
             "type": "timeseries"
         }
     ],
-    "refresh": "auto",
+    "refresh": "5s",
     "schemaVersion": 39,
     "tags": [
         "k6",
@@ -2184,6 +2387,6 @@
     "timezone": "",
     "title": "k6 Load Testing Results",
     "uid": "k6-load-testing",
-    "version": 1,
+    "version": 3,
     "weekStart": ""
 }
