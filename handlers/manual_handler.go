@@ -20,6 +20,7 @@ func ManualHandler(w http.ResponseWriter, r *http.Request) {
 	tracer := otel.Tracer("manual")
 	ctx, span := tracer.Start(r.Context(), "hello")
 	defer span.End()
+	*r = *r.WithContext(ctx)
 
 	_, dbSpan := tracer.Start(ctx, "database")
 	errPOST := dbhandling.POST(db, instrumentation, false)
