@@ -588,100 +588,6 @@
                             {
                                 "color": "green",
                                 "value": null
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
-                            }
-                        ]
-                    },
-                    "unit": "clockms",
-                    "unitScale": true
-                },
-                "overrides": [
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "{instrumentation=\"manual\", status=\"200\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Success"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "{instrumentation=\"manual\", status=\"500\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Error"
-                            }
-                        ]
-                    }
-                ]
-            },
-            "gridPos": {
-                "h": 8,
-                "w": 12,
-                "x": 12,
-                "y": 13
-            },
-            "id": 24,
-            "options": {
-                "minVizHeight": 75,
-                "minVizWidth": 75,
-                "orientation": "auto",
-                "reduceOptions": {
-                    "calcs": [
-                        "mean"
-                    ],
-                    "fields": "",
-                    "values": false
-                },
-                "showThresholdLabels": false,
-                "showThresholdMarkers": true,
-                "sizing": "auto"
-            },
-            "pluginVersion": "10.3.3",
-            "targets": [
-                {
-                    "datasource": {
-                        "type": "influxdb",
-                        "uid": "P951FEA4DE68E13C5"
-                    },
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_request_duration\")\n    |> filter(fn: (r) => r.instrumentation == \"manual\")\n    |> group(columns: [\"instrumentation\", \"status\"], mode: \"by\")\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)",
-                    "refId": "A"
-                }
-            ],
-            "title": "Manual Durations (ms/req)",
-            "type": "gauge"
-        },
-        {
-            "datasource": {
-                "type": "influxdb",
-                "uid": "P951FEA4DE68E13C5"
-            },
-            "fieldConfig": {
-                "defaults": {
-                    "color": {
-                        "mode": "thresholds"
-                    },
-                    "mappings": [],
-                    "thresholds": {
-                        "mode": "absolute",
-                        "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
                             }
                         ]
                     },
@@ -719,7 +625,7 @@
                 "h": 8,
                 "w": 12,
                 "x": 12,
-                "y": 21
+                "y": 13
             },
             "id": 23,
             "options": {
@@ -768,10 +674,92 @@
                             {
                                 "color": "green",
                                 "value": null
-                            },
+                            }
+                        ]
+                    },
+                    "unit": "clockms",
+                    "unitScale": true
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "{instrumentation=\"manual\", status=\"200\"}"
+                        },
+                        "properties": [
                             {
-                                "color": "red",
-                                "value": 80
+                                "id": "displayName",
+                                "value": "Success"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "{instrumentation=\"manual\", status=\"500\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Error"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 21
+            },
+            "id": 24,
+            "options": {
+                "minVizHeight": 75,
+                "minVizWidth": 75,
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "mean"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "sizing": "auto"
+            },
+            "pluginVersion": "10.3.3",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_request_duration\")\n    |> filter(fn: (r) => r.instrumentation == \"manual\")\n    |> group(columns: [\"instrumentation\", \"status\"], mode: \"by\")\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)",
+                    "refId": "A"
+                }
+            ],
+            "title": "Manual Durations (ms/req)",
+            "type": "gauge"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P951FEA4DE68E13C5"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
                             }
                         ]
                     },
@@ -858,10 +846,6 @@
                             {
                                 "color": "green",
                                 "value": null
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
                             }
                         ]
                     },
@@ -1150,10 +1134,6 @@
                             {
                                 "color": "green",
                                 "value": null
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
                             }
                         ]
                     },
@@ -1321,10 +1301,6 @@
                             {
                                 "color": "green",
                                 "value": null
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
                             }
                         ]
                     },
@@ -1492,10 +1468,6 @@
                             {
                                 "color": "green",
                                 "value": null
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
                             }
                         ]
                     },
@@ -1663,10 +1635,6 @@
                             {
                                 "color": "green",
                                 "value": null
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
                             }
                         ]
                     },
@@ -2179,7 +2147,7 @@
             "type": "timeseries"
         }
     ],
-    "refresh": false,
+    "refresh": "auto",
     "schemaVersion": 39,
     "tags": [
         "k6",
@@ -2209,8 +2177,8 @@
         ]
     },
     "time": {
-        "from": "2025-08-26T00:18:11.929Z",
-        "to": "2025-08-26T00:23:30.819Z"
+        "from": "now-5m",
+        "to": "now"
     },
     "timepicker": {},
     "timezone": "",
