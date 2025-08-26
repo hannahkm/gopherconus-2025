@@ -18,6 +18,4 @@ import (
 	// Ensures `orchestrion` is present in `go.mod` so that builds are repeatable.
 	// Do not remove.
 	_ "github.com/DataDog/orchestrion" // integration
-
-	_ "github.com/DataDog/dd-trace-go/orchestrion/all/v2" // integration
 )
