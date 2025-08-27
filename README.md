@@ -24,3 +24,13 @@ Running `./run_loadtest.sh` will also start up a Grafana instance at `localhost:
 
 ![system info](./example_img/sample_dashboard1.png)
 ![testing info](./example_img/sample_dashboard2.png)
+
+## Read More
+
+Interested in (auto) instrumentation? Here are a couple of blog posts and articles that can help you get started!
+
+1. [OTel's Go Automatic Instrumentation](https://github.com/open-telemetry/opentelemetry-go-instrumentation)
+2. [Datadog's Orchestrion](https://datadoghq.dev/orchestrion/docs/)
+3. [Compile-Time Instrumentation SIG](https://opentelemetry.io/blog/2025/go-compile-time-instrumentation/)
+4. [Flight Recording in Go](https://github.com/golang/go/issues/63185)
+5. [What is eBPF](https://ebpf.io/what-is-ebpf/)
