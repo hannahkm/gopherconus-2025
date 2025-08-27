@@ -32,3 +32,16 @@ aspects:
             {{ $ret }} = otelhttp.NewHandler(mux, "/")
             return {{ $ret }}
           {{- end -}}
+  - id: Setup OTel Database
+    join-point:
+      function-body: 
+        function:
+          - name: SetupDB
+    advice:
+      prepend-statements:
+        imports:
+          db_handlers: github.com/hannahkm/gopherconus-2025/db_handling
+        template: |-
+          var err error
+          db, err = db_handlers.Manual_InitDB()
+          return err

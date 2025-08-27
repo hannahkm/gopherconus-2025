@@ -12,6 +12,7 @@ require (
 	github.com/DataDog/dd-trace-go/v2 v2.1.0 // indirect
 	github.com/DataDog/go-libddwaf/v4 v4.3.0 // indirect
 	github.com/Masterminds/semver/v3 v3.4.0 // indirect
+	github.com/XSAM/otelsql v0.39.0 // indirect
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
 	github.com/blakesmith/ar v0.0.0-20190502131153-809d4375e1fb // indirect
 	github.com/charmbracelet/colorprofile v0.3.1 // indirect

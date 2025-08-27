@@ -22,10 +22,8 @@ func ManualHandler(w http.ResponseWriter, r *http.Request) {
 	defer span.End()
 	*r = *r.WithContext(ctx)
 
-	_, dbSpan := tracer.Start(ctx, "database")
 	errPOST := dbhandling.POST(db, instrumentation, false)
 	_, errGET := dbhandling.GET(db, 5)
-	dbSpan.End()
 
 	response := HelloResponse{
 		Message:    "Hello, " + instrumentation + " instrumentation!",

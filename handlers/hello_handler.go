@@ -23,7 +23,11 @@ func SetupEnv() {
 
 func SetupDB() error {
 	var err error
-	db, err = dbhandling.InitDB()
+	if InstrumentationMethod == "manual" {
+		db, err = dbhandling.Manual_InitDB()
+	} else {
+		db, err = dbhandling.InitDB()
+	}
 	return err
 }
 
