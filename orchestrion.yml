@@ -16,9 +16,14 @@ aspects:
           otelhttp: go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp
           http: net/http
           handlers: github.com/hannahkm/gopherconus-2025/handlers
+          context: context
         template: |-
           {{ $ret := .Function.ResultThatImplements "net/http.Handler" }}
           {{ with $ret }}
+            // Set up OTel Trace Provider
+            shutdown := handlers.SetupTraceProvider()
+            defer shutdown(context.Background())
+
             mux := http.NewServeMux()
             handleFunc := func(pattern string, handlerFunc func(http.ResponseWriter, *http.Request)) {
               // Configure the "http.route" for the HTTP instrumentation.

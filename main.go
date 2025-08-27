@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
 
@@ -18,8 +19,10 @@ func main() {
 	defer handlers.StopDB()
 
 	var handler http.Handler
+	var shutdown func(context.Context) error
 	if handlers.InstrumentationMethod == "manual" {
-		handler = ManualInstrument()
+		handler, shutdown = ManualInstrument()
+		defer shutdown(context.Background())
 	} else {
 		handler = DefaultInstrumentation()
 	}
@@ -45,7 +48,10 @@ func DefaultInstrumentation() http.Handler {
 
 // Manually instrument our http call using the OTel SDK
 // Code inspired by https://opentelemetry.io/docs/languages/go/getting-started
-func ManualInstrument() http.Handler {
+func ManualInstrument() (http.Handler, func(context.Context) error) {
+	// Set up OTel Trace Provider
+	shutdown := handlers.SetupTraceProvider()
+
 	mux := http.NewServeMux()
 
 	handleFunc := func(pattern string, handlerFunc func(http.ResponseWriter, *http.Request)) {
@@ -59,5 +65,5 @@ func ManualInstrument() http.Handler {
 
 	handler := otelhttp.NewHandler(mux, "/")
 
-	return handler
+	return handler, shutdown
 }

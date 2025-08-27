@@ -1,17 +1,24 @@
 package handlers
 
 import (
+	"context"
 	"database/sql"
 	"encoding/json"
+	"log"
 	"math/rand/v2"
 	"net/http"
 	"os"
+
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
+	"go.opentelemetry.io/otel/sdk/trace"
 
 	dbhandling "github.com/hannahkm/gopherconus-2025/db_handling"
 )
 
 var InstrumentationMethod string
 var db *sql.DB
+var provider *trace.TracerProvider
 
 func SetupEnv() {
 	var ok bool
@@ -36,6 +43,23 @@ func StopDB() error {
 		return db.Close()
 	}
 	return nil
+}
+
+func SetupTraceProvider() func(context.Context) error {
+	endpoint := os.Getenv("OTEL_EXPORTER_OTLP_ENDPOINT")
+	if endpoint == "" {
+		endpoint = "http://localhost:4318"
+	}
+	exporter, err := otlptracehttp.New(context.Background(),
+		otlptracehttp.WithInsecure(),
+		otlptracehttp.WithEndpoint(endpoint),
+	)
+	if err != nil {
+		log.Fatalf("Failed to create trace exporter: %v", err)
+	}
+	provider = trace.NewTracerProvider(trace.WithBatcher(exporter))
+	otel.SetTracerProvider(provider)
+	return provider.Shutdown
 }
 
 type HelloResponse struct {

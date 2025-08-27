@@ -28,11 +28,7 @@ exporters:
 
 service:
   pipelines:
-    metrics:
-      receivers: [otlp, datadog/connector]
-      processors: [batch]
-      exporters: [datadog]
     traces:
       receivers: [otlp]
       processors: [batch, resource]
-      exporters: [datadog, datadog/connector]
+      exporters: [datadog]
