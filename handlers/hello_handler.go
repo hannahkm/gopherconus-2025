@@ -64,7 +64,6 @@ func SetupTraceProvider() func(context.Context) error {
 		propagation.TraceContext{},
 		propagation.Baggage{},
 	))
-	log.Printf("OTEL_EXPORTER_OTLP_ENDPOINT: %s", os.Getenv("OTEL_EXPORTER_OTLP_ENDPOINT"))
 
 	exporter, err := otlptracehttp.New(ctx,
 		otlptracehttp.WithInsecure(),
