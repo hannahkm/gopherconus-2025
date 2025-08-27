@@ -65,5 +65,20 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    ports:
+      - 4317:4317 # OTLP gRPC receiver
+      - 4318:4318 # OTLP http receiver
+    environment:
+      - DD_API_KEY=${DD_API_KEY}
+    profiles:
+      - with-instrumentation
+    depends_on:
+      - influxdb
+
 volumes:
   postgres_data:

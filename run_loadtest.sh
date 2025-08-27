@@ -47,6 +47,15 @@ for INSTRUMENTATION in "${INSTRUMENTATION_ARRAY[@]}"; do
 
     export INSTRUMENTATION=$INSTRUMENTATION
 
+    # If we are instrumenting, setup the OTel Collector
+    if [[ "$INSTRUMENTATION" != "default" ]]; then
+        echo "Starting OpenTelemetry Collector for Datadog..."
+        docker-compose --profile with-instrumentation up -d otel-collector
+        
+        export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
+        export OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://localhost:4317
+    fi
+
     # Start the Go server in background
     if [[ "$INSTRUMENTATION" == "orchestrion" ]]; then
         orchestrion go run main.go &
