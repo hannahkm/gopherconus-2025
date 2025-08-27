@@ -8,10 +8,14 @@ import (
 	"math/rand/v2"
 	"net/http"
 	"os"
+	"time"
 
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
+	"go.opentelemetry.io/otel/propagation"
+	"go.opentelemetry.io/otel/sdk/resource"
 	"go.opentelemetry.io/otel/sdk/trace"
+	semconv "go.opentelemetry.io/otel/semconv/v1.20.0"
 
 	dbhandling "github.com/hannahkm/gopherconus-2025/db_handling"
 )
@@ -46,19 +50,42 @@ func StopDB() error {
 }
 
 func SetupTraceProvider() func(context.Context) error {
-	endpoint := os.Getenv("OTEL_EXPORTER_OTLP_ENDPOINT")
-	if endpoint == "" {
-		endpoint = "http://localhost:4318"
+	ctx := context.Background()
+	res, err := resource.New(ctx,
+		resource.WithAttributes(
+			semconv.ServiceName("gopherconus"),
+			semconv.ServiceVersion("1.0.0"),
+		),
+	)
+	if err != nil {
+		log.Fatalf("failed to create resource: %v", err)
 	}
-	exporter, err := otlptracehttp.New(context.Background(),
+	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(
+		propagation.TraceContext{},
+		propagation.Baggage{},
+	))
+	log.Printf("OTEL_EXPORTER_OTLP_ENDPOINT: %s", os.Getenv("OTEL_EXPORTER_OTLP_ENDPOINT"))
+
+	exporter, err := otlptracehttp.New(ctx,
 		otlptracehttp.WithInsecure(),
-		otlptracehttp.WithEndpoint(endpoint),
+		otlptracehttp.WithEndpoint("localhost:4318"),
+		otlptracehttp.WithTimeout(30*time.Second),
 	)
 	if err != nil {
 		log.Fatalf("Failed to create trace exporter: %v", err)
 	}
-	provider = trace.NewTracerProvider(trace.WithBatcher(exporter))
+
+	provider = trace.NewTracerProvider(
+		trace.WithBatcher(exporter,
+			trace.WithBatchTimeout(5*time.Second),
+			trace.WithMaxExportBatchSize(100),
+			trace.WithMaxQueueSize(1000),
+		),
+		trace.WithResource(res),
+	)
+
 	otel.SetTracerProvider(provider)
+
 	return provider.Shutdown
 }
 

@@ -53,7 +53,6 @@ for INSTRUMENTATION in "${INSTRUMENTATION_ARRAY[@]}"; do
         docker-compose --profile with-instrumentation up -d otel-collector --remove-orphans
         
         export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
-        export OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://localhost:4318
     fi
 
     # Start the Go server in background
