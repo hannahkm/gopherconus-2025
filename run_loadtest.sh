@@ -50,7 +50,7 @@ for INSTRUMENTATION in "${INSTRUMENTATION_ARRAY[@]}"; do
     # If we are instrumenting, setup the OTel Collector
     if [[ "$INSTRUMENTATION" != "default" ]]; then
         echo "Starting OpenTelemetry Collector for Datadog..."
-        docker-compose --profile with-instrumentation up -d otel-collector --remove-orphans
+        docker-compose --profile with-instrumentation up -d otel-collector
         
         export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
     fi
@@ -69,7 +69,7 @@ for INSTRUMENTATION in "${INSTRUMENTATION_ARRAY[@]}"; do
     fi
 
     # Wait for all services to start
-    sleep 10
+    sleep 15
 
     # Run load tests
     ./k6 run \

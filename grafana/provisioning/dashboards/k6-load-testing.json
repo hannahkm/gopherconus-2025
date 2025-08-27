@@ -180,7 +180,7 @@
                 ]
             },
             "gridPos": {
-                "h": 12,
+                "h": 13,
                 "w": 17,
                 "x": 0,
                 "y": 0
@@ -342,7 +342,7 @@
                 ]
             },
             "gridPos": {
-                "h": 24,
+                "h": 26,
                 "w": 7,
                 "x": 17,
                 "y": 0
@@ -370,7 +370,7 @@
                         "type": "influxdb",
                         "uid": "P951FEA4DE68E13C5"
                     },
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_requests_failed\")\n    |> aggregateWindow(every: 1s, fn: count, createEmpty: false)",
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_requests_failed\")\n    |> filter(fn: (r) => r.status != \"200\")\n    |> aggregateWindow(every: 1s, fn: count, createEmpty: false)",
                     "refId": "A"
                 }
             ],
@@ -539,10 +539,10 @@
                 ]
             },
             "gridPos": {
-                "h": 12,
+                "h": 13,
                 "w": 17,
                 "x": 0,
-                "y": 12
+                "y": 13
             },
             "id": 19,
             "options": {
@@ -577,7 +577,7 @@
                 "h": 1,
                 "w": 24,
                 "x": 0,
-                "y": 24
+                "y": 26
             },
             "id": 17,
             "panels": [],
@@ -700,7 +700,7 @@
                 "h": 16,
                 "w": 12,
                 "x": 0,
-                "y": 25
+                "y": 27
             },
             "id": 21,
             "options": {
@@ -795,7 +795,7 @@
                 "h": 8,
                 "w": 12,
                 "x": 12,
-                "y": 25
+                "y": 27
             },
             "id": 23,
             "options": {
@@ -893,7 +893,7 @@
                 "h": 8,
                 "w": 12,
                 "x": 12,
-                "y": 33
+                "y": 35
             },
             "id": 24,
             "options": {
@@ -991,7 +991,7 @@
                 "h": 8,
                 "w": 12,
                 "x": 0,
-                "y": 41
+                "y": 43
             },
             "id": 25,
             "options": {
@@ -1089,7 +1089,7 @@
                 "h": 8,
                 "w": 12,
                 "x": 12,
-                "y": 41
+                "y": 43
             },
             "id": 26,
             "options": {
@@ -1188,7 +1188,7 @@
                 "h": 14,
                 "w": 12,
                 "x": 0,
-                "y": 49
+                "y": 51
             },
             "id": 18,
             "options": {
@@ -1351,7 +1351,7 @@
                 "h": 7,
                 "w": 6,
                 "x": 12,
-                "y": 49
+                "y": 51
             },
             "id": 27,
             "options": {
@@ -1518,7 +1518,7 @@
                 "h": 7,
                 "w": 6,
                 "x": 18,
-                "y": 49
+                "y": 51
             },
             "id": 30,
             "options": {
@@ -1685,7 +1685,7 @@
                 "h": 7,
                 "w": 6,
                 "x": 12,
-                "y": 56
+                "y": 58
             },
             "id": 29,
             "options": {
@@ -1852,7 +1852,7 @@
                 "h": 7,
                 "w": 6,
                 "x": 18,
-                "y": 56
+                "y": 58
             },
             "id": 28,
             "options": {
@@ -2056,7 +2056,7 @@
                 "h": 12,
                 "w": 24,
                 "x": 0,
-                "y": 63
+                "y": 65
             },
             "id": 14,
             "options": {
