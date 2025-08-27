@@ -2,24 +2,26 @@ receivers:
   otlp:
     protocols:
       http:
-        endpoint: localhost:4318
+        endpoint: 0.0.0.0:4318
       grpc:
-        endpoint: localhost:4317
-
-  filelog:
-    include_file_path: true
-    poll_interval: 500ms
-    include:
-      - /var/log/**/*example*/*.log
+        endpoint: 0.0.0.0:4317
 
 processors:
   batch:
     send_batch_max_size: 100
     send_batch_size: 10
     timeout: 10s
+  resource:
+    attributes:
+      - key: service.name
+        value: gopherconus
+        action: upsert
+
+connectors:
+  datadog/connector:
 
 exporters:
-  datadog/exporter:
+  datadog:
     api:
       site: datadoghq.com
       key: ${DD_API_KEY}
@@ -27,13 +29,10 @@ exporters:
 service:
   pipelines:
     metrics:
-      receivers: [hostmetrics, otlp, datadog/connector]
-      processors: [batch]
-      exporters: [datadog/exporter]
-    traces:
-      receivers: [otlp]
+      receivers: [otlp, datadog/connector]
       processors: [batch]
       exporters: [datadog]
-  telemetry:
-    logs:
-      level: "info"
+    traces:
+      receivers: [otlp]
+      processors: [batch, resource]
+      exporters: [datadog, datadog/connector]
