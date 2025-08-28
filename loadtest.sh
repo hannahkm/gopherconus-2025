@@ -83,7 +83,7 @@ if [[ "$MODE" == "start" || "$MODE" == "run" ]]; then
                 ;;
         esac
     done
-    
+
     # Default to 'default' if no tests specified
     if [[ ${#TESTS_TO_RUN[@]} -eq 0 ]]; then
         TESTS_TO_RUN=("default")
@@ -102,7 +102,7 @@ case "$MODE" in
         else
             echo "⚠️  Skipping pre-flight checks"
         fi
-        
+
         echo "🚀 Starting Docker services..."
         docker-compose up -d --remove-orphans
         echo ""
@@ -140,13 +140,13 @@ esac
 K6_BINARY="./k6"
 if [[ ! -f "$K6_BINARY" ]]; then
     echo "Building k6 with InfluxDB extension..."
-    
+
     # Install xk6 if needed
     if ! command -v xk6 >/dev/null 2>&1; then
         echo "Installing xk6..."
         go install go.k6.io/xk6/cmd/xk6@latest
     fi
-    
+
     # Build k6 with extensions
     xk6 build --with github.com/grafana/xk6-output-influxdb
 else
@@ -168,13 +168,29 @@ for INSTRUMENTATION in "${TESTS_TO_RUN[@]}"; do
         sleep 5
         echo ""
     fi
-    
+
     echo "Testing instrumentation: $INSTRUMENTATION"
     echo "================================================"
-    
+
     ((TEST_COUNT++))
 
     export INSTRUMENTATION=$INSTRUMENTATION
+
+    # Set the service name for each instrumentation type
+    case "$INSTRUMENTATION" in
+        "manual")
+            export OTEL_SERVICE_NAME="gopherconus-manual"
+            ;;
+        "orchestrion")
+            export OTEL_SERVICE_NAME="gopherconus-orchestrion"
+            ;;
+        "ebpf")
+            export OTEL_SERVICE_NAME="gopherconus-ebpf"
+            ;;
+        "default")
+            export OTEL_SERVICE_NAME="gopherconus-default"
+            ;;
+    esac
 
     # If we are instrumenting, setup the OTel Collector
     if [[ "$INSTRUMENTATION" != "default" ]]; then
@@ -186,19 +202,19 @@ for INSTRUMENTATION in "${TESTS_TO_RUN[@]}"; do
 
     # Start the Go server in background and capture PID
     if [[ "$INSTRUMENTATION" == "orchestrion" ]]; then
-        orchestrion go run main.go &
+        GOTOOLCHAIN=go1.24.1 orchestrion go run main.go &
         SERVER_PID=$!
     elif [[ "$INSTRUMENTATION" == "ebpf" ]]; then
         # Build and run binary for eBPF instrumentation
         echo "Building Go binary for eBPF instrumentation..."
-        go build -o gopherconus-server main.go
+        GOTOOLCHAIN=go1.24.1 go build -o gopherconus-server main.go
         ./gopherconus-server &
         SERVER_PID=$!
     else
-        go run main.go &
+        GOTOOLCHAIN=go1.24.1 go run main.go &
         SERVER_PID=$!
     fi
-    
+
     echo "Started Go server with PID: $SERVER_PID"
 
     # Initialize eBPF if we are using it
@@ -210,7 +226,7 @@ for INSTRUMENTATION in "${TESTS_TO_RUN[@]}"; do
     # Wait for services to start
     echo "Waiting for services to be ready..."
     sleep 5
-    
+
     # Basic health check for the Go server
     for i in {1..12}; do
         if curl -s http://localhost:8080/hello >/dev/null 2>&1; then

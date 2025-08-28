@@ -5,6 +5,43 @@ meta:
   description: Enables running the OTel SDK under the hood with Orchestrion
 
 aspects:
+  # Initialize OTel tracer in init function
+  - id: init OTel tracer
+    join-point:
+      all-of:
+        - package-name: main
+        - function-body:
+            function:
+              - name: main
+              - signature: {}
+    advice:
+      - inject-declarations:
+          imports:
+            handlers: github.com/hannahkm/gopherconus-2025/handlers
+            context: context
+          template: |-
+            var otelShutdown func(context.Context) error
+            
+            func init() {
+              serviceName := handlers.GetServiceName()
+              otelShutdown = handlers.SetupTraceProvider(serviceName)
+            }
+      
+      # Add defer to main function to shutdown tracer
+      - prepend-statements:
+          imports:
+            context: context
+            log: log
+          template: |-
+            defer func() {
+              if otelShutdown != nil {
+                if err := otelShutdown(context.Background()); err != nil {
+                  log.Printf("Error shutting down OTel provider: %v", err)
+                }
+              }
+            }()
+
+  # Modify DefaultInstrumentation to use OTel HTTP instrumentation
   - id: Create OTel handlers
     join-point:
       function-body: 
@@ -16,14 +53,9 @@ aspects:
           otelhttp: go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp
           http: net/http
           handlers: github.com/hannahkm/gopherconus-2025/handlers
-          context: context
         template: |-
           {{ $ret := .Function.ResultThatImplements "net/http.Handler" }}
           {{ with $ret }}
-            // Set up OTel Trace Provider
-            shutdown := handlers.SetupTraceProvider()
-            defer shutdown(context.Background())
-
             mux := http.NewServeMux()
             handleFunc := func(pattern string, handlerFunc func(http.ResponseWriter, *http.Request)) {
               // Configure the "http.route" for the HTTP instrumentation.
@@ -37,6 +69,7 @@ aspects:
             {{ $ret }} = otelhttp.NewHandler(mux, "/")
             return {{ $ret }}
           {{- end -}}
+
   - id: Setup OTel Database
     join-point:
       function-body: 

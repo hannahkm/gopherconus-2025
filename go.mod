@@ -49,6 +49,7 @@ require (
 	github.com/xrash/smetrics v0.0.0-20250705151800-55b8f293f342 // indirect
 	go.opentelemetry.io/collector/featuregate v1.36.0 // indirect
 	go.opentelemetry.io/collector/internal/telemetry v0.130.0 // indirect
+	go.opentelemetry.io/collector/pdata/pprofile v0.130.0 // indirect
 	go.opentelemetry.io/contrib/bridges/otelzap v0.12.0 // indirect
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.37.0 // indirect
 	go.opentelemetry.io/otel/log v0.13.0 // indirect

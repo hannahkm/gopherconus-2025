@@ -53,6 +53,36 @@ func StopDB() error {
 	return nil
 }
 
+func GetServiceName() string {
+	slog.Debug("GetServiceName called", 
+		"OTEL_SERVICE_NAME_env", os.Getenv("OTEL_SERVICE_NAME"),
+		"InstrumentationMethod", InstrumentationMethod)
+	
+	// Check for service name override from environment first
+	if envServiceName := os.Getenv("OTEL_SERVICE_NAME"); envServiceName != "" {
+		slog.Debug("Using service name from OTEL_SERVICE_NAME env var", "service_name", envServiceName)
+		return envServiceName
+	}
+	
+	// Otherwise, use instrumentation method to determine service name
+	var serviceName string
+	switch InstrumentationMethod {
+	case "manual":
+		serviceName = "gopherconus-manual"
+	case "orchestrion":
+		serviceName = "gopherconus-orchestrion"
+	case "ebpf":
+		serviceName = "gopherconus-ebpf"
+	default:
+		serviceName = "gopherconus-default"
+	}
+	
+	slog.Debug("Using service name based on instrumentation method", 
+		"service_name", serviceName, 
+		"instrumentation_method", InstrumentationMethod)
+	return serviceName
+}
+
 func SetupTraceProvider(serviceName string) func(context.Context) error {
 	ctx := context.Background()
 

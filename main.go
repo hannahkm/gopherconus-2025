@@ -95,19 +95,7 @@ func DefaultInstrumentation() http.Handler {
 // Manually instrument our http call using the OTel SDK
 // Code inspired by https://opentelemetry.io/docs/languages/go/getting-started
 func ManualInstrument() (http.Handler, func(context.Context) error) {
-	// Determine service name based on instrumentation method
-	var serviceName string
-	switch handlers.InstrumentationMethod {
-	case "manual":
-		serviceName = "gopherconus-manual"
-	case "orchestrion":
-		serviceName = "gopherconus-orchestrion"
-	case "ebpf":
-		serviceName = "gopherconus-ebpf"
-	default:
-		serviceName = "gopherconus-default"
-	}
-
+	serviceName := handlers.GetServiceName()
 	shutdown := handlers.SetupTraceProvider(serviceName)
 
 	mux := http.NewServeMux()
