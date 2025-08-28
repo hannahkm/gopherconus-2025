@@ -1,4 +1,5 @@
 .env
 k6
+k6-*
 gopherconus-server
 main
