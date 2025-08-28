@@ -30,6 +30,8 @@ To run load tests with all dependencies checked automatically:
 ./loadtest.sh all
 ```
 
+Important: eBPF is only available on Linux kernels. If you do not have one by default, check out available VMs like [Lima](https://lima-vm.io/).
+
 ### Service Management
 
 You can also manage Docker services independently:
