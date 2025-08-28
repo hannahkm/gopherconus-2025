@@ -2,14 +2,36 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
+	"net"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/hannahkm/gopherconus-2025/handlers"
 	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 )
+
+func getAvailablePort() (int, error) {
+	if portEnv := os.Getenv("PORT"); portEnv != "" {
+		port, err := strconv.Atoi(portEnv)
+		if err != nil {
+			return 0, fmt.Errorf("invalid PORT environment variable: %v", err)
+		}
+		return port, nil
+	}
+
+	// Find an available port dynamically
+	listener, err := net.Listen("tcp", ":0")
+	if err != nil {
+		return 0, err
+	}
+	port := listener.Addr().(*net.TCPAddr).Port
+	listener.Close()
+	return port, nil
+}
 
 func setupLogger() *slog.Logger {
 	logLevel := slog.LevelInfo
@@ -70,12 +92,23 @@ func main() {
 		handler = DefaultInstrumentation()
 	}
 
+	port, err := getAvailablePort()
+	if err != nil {
+		slog.Error("Failed to get available port", "error", err)
+		os.Exit(1)
+	}
+
+	addr := fmt.Sprintf(":%d", port)
 	server := &http.Server{
-		Addr:    ":8080",
+		Addr:    addr,
 		Handler: handler,
 	}
 
-	slog.Info("Starting HTTP server", "addr", ":8080")
+	slog.Info("Starting HTTP server", "addr", addr, "port", port)
+
+	// Output port for script consumption
+	fmt.Printf("SERVER_PORT=%d\n", port)
+
 	err = server.ListenAndServe()
 	if err != nil {
 		slog.Error("HTTP server failed", "error", err)

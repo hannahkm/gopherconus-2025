@@ -4,23 +4,36 @@
 
 set -e
 
-# Store PID for cleanup
+# Store PID and PORT for cleanup
 SERVER_PID=""
+SERVER_PORT=""
 
 # Cleanup function
 cleanup() {
     echo "🧹 Cleaning up..."
     if [[ -n "$SERVER_PID" ]] && kill -0 "$SERVER_PID" 2>/dev/null; then
-        echo "Stopping Go server (PID: $SERVER_PID)"
+        echo "Stopping Go server (PID: $SERVER_PID, PORT: $SERVER_PORT)"
         kill "$SERVER_PID" 2>/dev/null || true
         wait "$SERVER_PID" 2>/dev/null || true
+        
+        # Wait for port to be released
+        if [[ -n "$SERVER_PORT" ]]; then
+            echo "Waiting for port $SERVER_PORT to be released..."
+            for i in {1..10}; do
+                if ! lsof -i :"$SERVER_PORT" >/dev/null 2>&1; then
+                    echo "✅ Port $SERVER_PORT released"
+                    break
+                fi
+                sleep 1
+            done
+        fi
     fi
 }
 
 # Set up signal handling
 trap cleanup EXIT INT TERM
 
-export BASE_URL="http://localhost:8080/hello"
+# BASE_URL will be set dynamically after server starts
 export K6_INFLUXDB_ORGANIZATION=gopherconus
 export K6_INFLUXDB_BUCKET=k6testing
 export K6_INFLUXDB_TOKEN=13NSkxbvAnGSbQIHAzWAQFsNVDXWHD94-NG2taWgmFCJ1FiLiFjjwNe_Vg37sKUc2Cn_kSWYMCR0egexhp3PRg==
@@ -200,22 +213,50 @@ for INSTRUMENTATION in "${TESTS_TO_RUN[@]}"; do
         export OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
     fi
 
-    # Start the Go server in background and capture PID
+    # Start the Go server in background and capture PID and PORT
+    echo "Starting Go server for $INSTRUMENTATION instrumentation..."
+    
     if [[ "$INSTRUMENTATION" == "orchestrion" ]]; then
-        GOTOOLCHAIN=go1.24.1 orchestrion go run main.go &
+        SERVER_OUTPUT=$(mktemp)
+        GOTOOLCHAIN=go1.24.1 orchestrion go run main.go > "$SERVER_OUTPUT" 2>&1 &
         SERVER_PID=$!
     elif [[ "$INSTRUMENTATION" == "ebpf" ]]; then
         # Build and run binary for eBPF instrumentation
         echo "Building Go binary for eBPF instrumentation..."
         GOTOOLCHAIN=go1.24.1 go build -o gopherconus-server main.go
-        ./gopherconus-server &
+        SERVER_OUTPUT=$(mktemp)
+        ./gopherconus-server > "$SERVER_OUTPUT" 2>&1 &
         SERVER_PID=$!
     else
-        GOTOOLCHAIN=go1.24.1 go run main.go &
+        SERVER_OUTPUT=$(mktemp)
+        GOTOOLCHAIN=go1.24.1 go run main.go > "$SERVER_OUTPUT" 2>&1 &
         SERVER_PID=$!
     fi
 
-    echo "Started Go server with PID: $SERVER_PID"
+    # Wait for server to output the port
+    echo "Waiting for server to start and output port..."
+    for i in {1..30}; do
+        if [[ -f "$SERVER_OUTPUT" ]] && grep -q "SERVER_PORT=" "$SERVER_OUTPUT"; then
+            SERVER_PORT=$(grep "SERVER_PORT=" "$SERVER_OUTPUT" | cut -d= -f2 | head -1)
+            echo "✅ Server started with PID: $SERVER_PID, PORT: $SERVER_PORT"
+            break
+        fi
+        sleep 1
+    done
+    
+    if [[ -z "$SERVER_PORT" ]]; then
+        echo "❌ Failed to get server port. Server output:"
+        cat "$SERVER_OUTPUT" 2>/dev/null || echo "No output file found"
+        cleanup
+        exit 1
+    fi
+    
+    # Set dynamic BASE_URL
+    export BASE_URL="http://localhost:$SERVER_PORT/hello"
+    echo "Using BASE_URL: $BASE_URL"
+    
+    # Clean up temp output file
+    rm -f "$SERVER_OUTPUT"
 
     # Initialize eBPF if we are using it
     if [[ "$INSTRUMENTATION" == "ebpf" ]]; then
@@ -228,9 +269,10 @@ for INSTRUMENTATION in "${TESTS_TO_RUN[@]}"; do
     sleep 5
 
     # Basic health check for the Go server
+    echo "Performing health check on $BASE_URL..."
     for i in {1..12}; do
-        if curl -s http://localhost:8080/hello >/dev/null 2>&1; then
-            echo "✅ Go server is ready"
+        if curl -s "$BASE_URL" >/dev/null 2>&1; then
+            echo "✅ Go server is ready at $BASE_URL"
             break
         fi
         echo "⏳ Waiting for Go server... ($i/12)"
