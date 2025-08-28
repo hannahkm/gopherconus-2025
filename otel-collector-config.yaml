@@ -1,0 +1,50 @@
+receivers:
+  otlp:
+    protocols:
+      http:
+        endpoint: 0.0.0.0:4318
+      grpc:
+        endpoint: 0.0.0.0:4317
+
+processors:
+  batch:
+    send_batch_max_size: 100
+    send_batch_size: 10
+    timeout: 10s
+  resource:
+    attributes:
+      - key: service.version
+        value: "1.0.0"
+        action: upsert
+
+extensions:
+  health_check: {}
+  pprof:
+    endpoint: 0.0.0.0:1888
+  zpages:
+    endpoint: 0.0.0.0:55679
+
+
+exporters:
+  prometheus:
+    endpoint: "0.0.0.0:8889"
+  otlp:
+    endpoint: jaeger:4317
+    tls:
+      insecure: true
+  # datadog:  # Uncomment these lines and update pipeline below when DD_API_KEY is available
+  #   api:
+  #     site: datadoghq.com
+  #     key: ${DD_API_KEY}
+
+service:
+  extensions: [health_check, pprof, zpages]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch, resource]
+      exporters: [otlp] # Change to [otlp, datadog] when enabling Datadog above
+    metrics:
+      receivers: [otlp]
+      processors: [batch, resource]
+      exporters: [prometheus]

@@ -11,16 +11,59 @@ For each scenario we run load testing using `k6` to observe the overhead introdu
 
 ## How to Use
 
-To run load tests, use `./run_loadtest.sh`. By default, it will run one scenario (1. No instrumentation). In order to run other scenarios, you can pass in one or more of the following options:
+The project includes automated dependency checking and service management through `loadtest.sh`.
 
-1. "default" -- runs without instrumentation
-2. "manual" -- runs with manual instrumentation
-3. "orchestrion" -- runs with Orchestrion auto-instrumentation
-4. "ebpf" -- runs with OTel's eBPF auto-instrumentation
+### Quick Start
 
-You can also pass in "all" to run all four scenarios in sequence.
+To run load tests with all dependencies checked automatically:
 
-Running `./run_loadtest.sh` will also start up a Grafana instance at `localhost:3000`. Navigate there to find the 'k6 Load Testing Results' dashboard.
+```bash
+# Run default scenario (no instrumentation)
+./loadtest.sh
+
+# Run specific instrumentation types
+./loadtest.sh manual
+./loadtest.sh orchestrion
+./loadtest.sh ebpf
+
+# Run all scenarios in sequence
+./loadtest.sh all
+```
+
+### Service Management
+
+You can also manage Docker services independently:
+
+```bash
+# Start all required services (InfluxDB, Grafana, OTel Collector, etc.)
+./loadtest.sh start
+
+# Stop all services
+./loadtest.sh stop
+
+# Skip dependency checks if needed
+./loadtest.sh start --skip-preflight
+./loadtest.sh --skip-preflight default
+```
+
+### Available Test Scenarios
+
+1. **"default"** -- runs without instrumentation (baseline)
+2. **"manual"** -- runs with manual OpenTelemetry instrumentation
+3. **"orchestrion"** -- runs with Datadog's Orchestrion auto-instrumentation
+4. **"ebpf"** -- runs with OTel's eBPF auto-instrumentation
+
+### Pre-flight Checks
+
+The script automatically validates dependencies and services via `pre-flight-checks.sh`, which verifies:
+
+- Required commands (docker, docker-compose, go)
+- Optional tools (k6, xk6, orchestrion)
+- Essential files (docker-compose.yml, main.go, etc.)
+- Docker daemon status
+- Service health checks
+
+Running any load test will start up Grafana at `localhost:3000` where you can find the 'k6 Load Testing Results' dashboard.
 
 ![system info](./example_img/sample_dashboard1.png)
 ![testing info](./example_img/sample_dashboard2.png)
