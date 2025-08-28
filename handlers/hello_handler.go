@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
-	"log"
+	"log/slog"
 	"math/rand/v2"
 	"net/http"
 	"os"
@@ -20,9 +20,11 @@ import (
 	dbhandling "github.com/hannahkm/gopherconus-2025/db_handling"
 )
 
-var InstrumentationMethod string
-var db *sql.DB
-var provider *trace.TracerProvider
+var (
+	InstrumentationMethod string
+	db                    *sql.DB
+	provider              *trace.TracerProvider
+)
 
 func SetupEnv() {
 	var ok bool
@@ -30,6 +32,8 @@ func SetupEnv() {
 	if !ok {
 		InstrumentationMethod = "default"
 	}
+	slog.Info("Environment setup completed",
+		"instrumentation_method", InstrumentationMethod)
 }
 
 func SetupDB() error {
@@ -49,30 +53,56 @@ func StopDB() error {
 	return nil
 }
 
-func SetupTraceProvider() func(context.Context) error {
+func SetupTraceProvider(serviceName string) func(context.Context) error {
 	ctx := context.Background()
+
+	// Check for service name override from environment
+	if envServiceName := os.Getenv("OTEL_SERVICE_NAME"); envServiceName != "" {
+		serviceName = envServiceName
+	}
+
 	res, err := resource.New(ctx,
 		resource.WithAttributes(
-			semconv.ServiceName("gopherconus"),
+			semconv.ServiceName(serviceName),
 			semconv.ServiceVersion("1.0.0"),
 		),
 	)
 	if err != nil {
-		log.Fatalf("failed to create resource: %v", err)
+		slog.Error("Failed to create OTel resource", "error", err)
+		os.Exit(1)
 	}
+	slog.Info("Created OTel resource",
+		"service_name", serviceName,
+		"service_version", "1.0.0")
+
 	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(
 		propagation.TraceContext{},
 		propagation.Baggage{},
 	))
+	slog.Debug("Set OTel text map propagators")
+
+	// Get endpoint from environment variable or use default
+	endpoint := os.Getenv("OTEL_EXPORTER_OTLP_ENDPOINT")
+	if endpoint == "" {
+		endpoint = "localhost:4318"
+	}
+	slog.Info("Configuring OTel exporter",
+		"endpoint", endpoint,
+		"timeout", "30s",
+		"insecure", true)
 
 	exporter, err := otlptracehttp.New(ctx,
 		otlptracehttp.WithInsecure(),
-		otlptracehttp.WithEndpoint("localhost:4318"),
+		otlptracehttp.WithEndpoint(endpoint),
 		otlptracehttp.WithTimeout(30*time.Second),
 	)
 	if err != nil {
-		log.Fatalf("Failed to create trace exporter: %v", err)
+		slog.Error("Failed to create trace exporter",
+			"endpoint", endpoint,
+			"error", err)
+		os.Exit(1)
 	}
+	slog.Info("Successfully created OTel trace exporter", "endpoint", endpoint)
 
 	provider = trace.NewTracerProvider(
 		trace.WithBatcher(exporter,
@@ -82,8 +112,13 @@ func SetupTraceProvider() func(context.Context) error {
 		),
 		trace.WithResource(res),
 	)
+	slog.Info("Created OTel TracerProvider",
+		"batch_timeout", "5s",
+		"max_batch_size", 100,
+		"max_queue_size", 1000)
 
 	otel.SetTracerProvider(provider)
+	slog.Info("Successfully set global OTel TracerProvider")
 
 	return provider.Shutdown
 }
@@ -100,10 +135,24 @@ func HelloHandler(w http.ResponseWriter, r *http.Request) {
 	isErr := rand.IntN(10) == 0
 	if isErr {
 		instrumentation = "WRONG"
+		slog.Debug("Injecting random error for testing", "instrumentation", instrumentation)
 	}
 
-	errPOST := dbhandling.POST(db, instrumentation, false)
-	_, errGET := dbhandling.GET(db, 5)
+	slog.Debug("Processing request",
+		"method", r.Method,
+		"path", r.URL.Path,
+		"instrumentation", instrumentation,
+		"error_injection", isErr)
+
+	errPOST := dbhandling.POST(r.Context(), db, instrumentation, false)
+	if errPOST != nil {
+		slog.Warn("Database POST operation failed", "error", errPOST)
+	}
+
+	_, errGET := dbhandling.GET(r.Context(), db, 5)
+	if errGET != nil {
+		slog.Warn("Database GET operation failed", "error", errGET)
+	}
 
 	response := HelloResponse{
 		Message:    "Hello, " + instrumentation + " instrumentation!",
@@ -114,13 +163,18 @@ func HelloHandler(w http.ResponseWriter, r *http.Request) {
 	status := http.StatusOK
 	if isErr {
 		status = http.StatusInternalServerError
+		slog.Info("Responding with injected error", "status", status)
 	} else if errPOST != nil || errGET != nil {
 		status = http.StatusBadRequest
+		slog.Info("Responding with database error", "status", status)
+	} else {
+		slog.Debug("Responding with success", "status", status)
 	}
 	w.WriteHeader(status)
 
 	err := json.NewEncoder(w).Encode(response)
 	if err != nil {
+		slog.Error("Failed to encode JSON response", "error", err)
 		http.Error(w, "Failed to get response", http.StatusInternalServerError)
 	}
 }

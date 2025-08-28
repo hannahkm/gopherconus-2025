@@ -13,22 +13,38 @@ processors:
     timeout: 10s
   resource:
     attributes:
-      - key: service.name
-        value: gopherconus
+      - key: service.version
+        value: "1.0.0"
         action: upsert
 
-connectors:
-  datadog/connector:
+extensions:
+  health_check: {}
+  pprof:
+    endpoint: 0.0.0.0:1888
+  zpages:
+    endpoint: 0.0.0.0:55679
+
 
 exporters:
-  datadog:
-    api:
-      site: datadoghq.com
-      key: ${DD_API_KEY}
+  prometheus:
+    endpoint: "0.0.0.0:8889"
+  otlp:
+    endpoint: jaeger:4317
+    tls:
+      insecure: true
+  # datadog:  # Uncomment these lines and update pipeline below when DD_API_KEY is available
+  #   api:
+  #     site: datadoghq.com
+  #     key: ${DD_API_KEY}
 
 service:
+  extensions: [health_check, pprof, zpages]
   pipelines:
     traces:
       receivers: [otlp]
       processors: [batch, resource]
-      exporters: [datadog]
+      exporters: [otlp] # Change to [otlp, datadog] when enabling Datadog above
+    metrics:
+      receivers: [otlp]
+      processors: [batch, resource]
+      exporters: [prometheus]

@@ -1,7 +1,9 @@
 package dbhandling
 
 import (
+	"context"
 	"database/sql"
+	"log"
 	"time"
 
 	_ "github.com/lib/pq"
@@ -38,24 +40,28 @@ type Row struct {
 }
 
 // POST one row to the database, including the instrumentation type and if there was an error
-func POST(db *sql.DB, instrumentationType string, hasError bool) error {
+func POST(ctx context.Context, db *sql.DB, instrumentationType string, hasError bool) error {
 	query := `INSERT INTO instrumentation_logs (instrumentation, error_status) VALUES ($1, $2)`
-	_, err := db.Exec(query, instrumentationType, hasError)
+	_, err := db.ExecContext(ctx, query, instrumentationType, hasError)
 	return err
 }
 
 // GET the last n rows from the database
-func GET(db *sql.DB, n int) ([]Row, error) {
-	query := `SELECT id, instrumentation, timestamp, error_status 
-              FROM instrumentation_logs 
-              ORDER BY timestamp DESC 
+func GET(ctx context.Context, db *sql.DB, n int) ([]Row, error) {
+	query := `SELECT id, instrumentation, timestamp, error_status
+              FROM instrumentation_logs
+              ORDER BY timestamp DESC
               LIMIT $1`
 
-	rows, err := db.Query(query, n)
+	rows, err := db.QueryContext(ctx, query, n)
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
+	defer func() {
+		if err := rows.Close(); err != nil {
+			log.Println("Error closing rows:", err)
+		}
+	}()
 
 	var logs []Row
 	for rows.Next() {

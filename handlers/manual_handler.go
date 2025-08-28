@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"log/slog"
 	"math/rand/v2"
 	"net/http"
 
@@ -19,11 +20,28 @@ func ManualHandler(w http.ResponseWriter, r *http.Request) {
 
 	tracer := otel.Tracer("manual")
 	ctx, span := tracer.Start(r.Context(), "hello")
-	defer span.End()
+	defer func() {
+		span.End()
+		slog.Debug("Ended span",
+			"span_name", "hello",
+			"trace_id", span.SpanContext().TraceID().String())
+	}()
 	*r = *r.WithContext(ctx)
 
-	errPOST := dbhandling.POST(db, instrumentation, false)
-	_, errGET := dbhandling.GET(db, 5)
+	slog.Info("Started span",
+		"span_name", "hello",
+		"trace_id", span.SpanContext().TraceID().String(),
+		"span_id", span.SpanContext().SpanID().String())
+
+	errPOST := dbhandling.POST(ctx, db, instrumentation, false)
+	if errPOST != nil {
+		slog.Warn("Database POST operation failed", "error", errPOST)
+	}
+
+	_, errGET := dbhandling.GET(ctx, db, 5)
+	if errGET != nil {
+		slog.Warn("Database GET operation failed", "error", errGET)
+	}
 
 	response := HelloResponse{
 		Message:    "Hello, " + instrumentation + " instrumentation!",

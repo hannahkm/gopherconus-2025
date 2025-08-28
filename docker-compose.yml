@@ -21,26 +21,9 @@ services:
       - GF_INSTALL_PLUGINS=grafana-piechart-panel
     volumes:
       - ./grafana/provisioning:/etc/grafana/provisioning
-
-  go-auto:
-    image: otel/autoinstrumentation-go
-    privileged: true
-    pid: "host"
-    environment:
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
-      - OTEL_GO_AUTO_TARGET_EXE=/usr/local/bin/
-      - OTEL_SERVICE_NAME="ebpf-auto-instrumentation"
-      - OTEL_PROPAGATORS=tracecontext,baggage
-      - OTEL_GO_AUTO_GLOBAL=true
-      - OTEL_GO_AUTO_INCLUDE_DB_STATEMENT=true
-      - OTEL_GO_AUTO_PARSE_DB_STATEMENT=true
-    volumes:
-      - /proc:/host/proc
     depends_on:
-      - otel-collector
-    profiles:
-      - ebpf-auto-instrumentation
-      
+      - influxdb
+
   k6-load-test:
     image: grafana/k6:latest
     stdin_open: true
@@ -52,9 +35,11 @@ services:
       - K6_INFLUXDB_TOKEN=13NSkxbvAnGSbQIHAzWAQFsNVDXWHD94-NG2taWgmFCJ1FiLiFjjwNe_Vg37sKUc2Cn_kSWYMCR0egexhp3PRg==
       - K6_INFLUXDB_ADDR=http://host.docker.internal:8086/k6testing
     volumes:
-      - .:/k6 
+      - .:/k6
     profiles:
       - load-test
+    depends_on:
+      - otel-collector
 
   postgres:
     image: postgres:15
@@ -67,22 +52,64 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "6831:6831/udp" # Jaeger UDP port for agent
+      - "16686:16686" # Jaeger Web UI
+      - "14268:14268" # Jaeger HTTP port for spans
+
   otel-collector:
     image: otel/opentelemetry-collector-contrib
-    command: --config /otel-local-config.yaml
+    command: ["--config=/etc/otel-collector-config.yaml"]
     volumes:
-      - ./otel-collector-config.yaml:/otel-local-config.yaml
-    ports:    
-      - 8888:8888 # Prometheus metrics exposed by the Collector
-      - 8889:8889 # Prometheus exporter metrics
-      - 4317:4317 # OTLP gRPC receiver
-      - 4318:4318 # OTLP http receiver
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    ports:
+      - "1888:1888" # pprof extension
+      - "8888:8888" # Prometheus metrics exposed by the Collector
+      - "8889:8889" # Prometheus exporter metrics
+      - "13133:13133" # health_check extension
+      - "4317:4317" # OTLP gRPC receiver
+      - "4318:4318" # OTLP http receiver
+      - "55679:55679" # zpages extension
     environment:
       - DD_API_KEY=${DD_API_KEY}
     profiles:
       - with-instrumentation
+      - ebpf-auto-instrumentation
     depends_on:
       - influxdb
+      - jaeger
+      - prometheus
+
+  go-auto:
+    image: otel/autoinstrumentation-go
+    privileged: true
+    pid: "host"
+    network_mode: "host"
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318
+      - OTEL_GO_AUTO_TARGET_EXE=gopherconus-server
+      - OTEL_SERVICE_NAME="gopherconus-ebpf"
+      - OTEL_PROPAGATORS=tracecontext,baggage
+      - OTEL_GO_AUTO_GLOBAL=true
+      - OTEL_GO_AUTO_INCLUDE_DB_STATEMENT=true
+      - OTEL_GO_AUTO_PARSE_DB_STATEMENT=true
+    volumes:
+      - /proc:/host/proc
+      - .:/workspace
+    working_dir: /workspace
+    profiles:
+      - ebpf-auto-instrumentation
+    depends_on:
+      - otel-collector
 
 volumes:
   postgres_data:
