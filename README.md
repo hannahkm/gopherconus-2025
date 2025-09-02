@@ -1,16 +1,5 @@
 # gopherconus-2025
 
-## TODO
-
-This project is still very much a work in progress, even after GopherCon is over! Upcoming work to:
-
-- [ ] Better incorporate the demo with a Linux VM, such as Lima
-- [ ] Enable parallel, continuous runs of the code (currently, all scenarios run in sequence)
-- [ ] More metrics! Specifically, we want a whole lot more of Go runtime metrics, like allocations and GC activity. 
-- [ ] Integration with DataDog dashboards to visualize traces
-
-## About
-
 This repo tests four different scenarios for running the same web script:
 
 1. No instrumentation
