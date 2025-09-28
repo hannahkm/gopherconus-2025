@@ -30,7 +30,7 @@ export const options = {
 }
 
 const BASE_URL = __ENV.BASE_URL || 'http://localhost:8080/hello';
-const INSTRUMENTATION = __ENV.INSTRUMENTATION
+const INSTRUMENTATION = __ENV.INSTRUMENTATION || 'default';
 
 export default function () {
     const res = http.get(BASE_URL)
@@ -49,9 +49,9 @@ export default function () {
     });
 
     var tags = {
-        instrumentation: INSTRUMENTATION,
-        success: success,
-        status: res.status,
+        instrumentation: String(INSTRUMENTATION),
+        success: Boolean(success),
+        status: Number(res.status),
     }
 
     if (systemInfo) {

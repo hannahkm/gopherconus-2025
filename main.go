@@ -23,13 +23,14 @@ func getAvailablePort() (int, error) {
 		return port, nil
 	}
 
-	// Find an available port dynamically
 	listener, err := net.Listen("tcp", ":0")
 	if err != nil {
 		return 0, err
 	}
 	port := listener.Addr().(*net.TCPAddr).Port
-	listener.Close()
+	if err := listener.Close(); err != nil {
+		return 0, err
+	}
 	return port, nil
 }
 
@@ -106,7 +107,6 @@ func main() {
 
 	slog.Info("Starting HTTP server", "addr", addr, "port", port)
 
-	// Output port for script consumption
 	fmt.Printf("SERVER_PORT=%d\n", port)
 
 	err = server.ListenAndServe()

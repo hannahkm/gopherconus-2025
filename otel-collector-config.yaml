@@ -24,7 +24,6 @@ extensions:
   zpages:
     endpoint: 0.0.0.0:55679
 
-
 exporters:
   prometheus:
     endpoint: "0.0.0.0:8889"
@@ -37,14 +36,53 @@ exporters:
   #     site: datadoghq.com
   #     key: ${DD_API_KEY}
 
+connectors:
+  spanmetrics:
+    histogram:
+      dimensions:
+        - name: url.scheme
+          default: https
+      explicit:
+        buckets: [100us, 1ms, 2ms, 6ms, 10ms, 100ms, 250ms]
+    dimensions:
+      - name: http.method
+        default: GET
+      - name: http.status_code
+    calls_dimensions:
+      - name: http.url
+        default: /ping
+    exemplars:
+      enabled: true
+    exclude_dimensions: ['status.code']
+    aggregation_temporality: "AGGREGATION_TEMPORALITY_CUMULATIVE"
+    metrics_flush_interval: 15s
+    metrics_expiration: 5m
+    events:
+      enabled: true
+      dimensions:
+        - name: exception.type
+        - name: exception.message
+    resource_metrics_key_attributes:
+      - service.name
+      - telemetry.sdk.language
+      - telemetry.sdk.name
+    include_instrumentation_scope:
+      - express
+
 service:
   extensions: [health_check, pprof, zpages]
+  telemetry:
+    logs:
+      level: "debug"
   pipelines:
     traces:
       receivers: [otlp]
       processors: [batch, resource]
-      exporters: [otlp] # Change to [otlp, datadog] when enabling Datadog above
+      exporters: [otlp, spanmetrics] # Change to [otlp, datadog] when enabling Datadog above
     metrics:
       receivers: [otlp]
       processors: [batch, resource]
+      exporters: [prometheus]
+    metrics/spanmetrics:
+      receivers: [spanmetrics]
       exporters: [prometheus]
