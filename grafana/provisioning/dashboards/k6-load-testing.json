@@ -30,6 +30,164 @@
             "fieldConfig": {
                 "defaults": {
                     "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unitScale": true
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "value {instrumentation=\"default\", scenario=\"default\", status=\"400\", success=\"false\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Default DB Error Rate"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "value {instrumentation=\"default\", scenario=\"default\", status=\"500\", success=\"false\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Default HTTP Error Rate"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "value {instrumentation=\"ebpf\", scenario=\"default\", status=\"400\", success=\"false\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "eBPF DB Error Rate"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "value {instrumentation=\"ebpf\", scenario=\"default\", status=\"500\", success=\"false\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "eBPF HTTP Error Rate"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "value {instrumentation=\"manual\", scenario=\"default\", status=\"400\", success=\"false\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Manual DB Error Rate"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "value {instrumentation=\"manual\", scenario=\"default\", status=\"500\", success=\"false\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Manual HTTP Error Rate"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "value {instrumentation=\"orchestrion\", scenario=\"default\", status=\"400\", success=\"false\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Orchestrion DB Error Rate"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "value {instrumentation=\"orchestrion\", scenario=\"default\", status=\"500\", success=\"false\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Orchestrion HTTP Error Rate"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 25,
+                "w": 24,
+                "x": 0,
+                "y": 0
+            },
+            "id": 31,
+            "options": {
+                "minVizHeight": 75,
+                "minVizWidth": 75,
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "mean"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "sizing": "auto"
+            },
+            "pluginVersion": "10.3.3",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_requests_failed\")\n    |> filter(fn: (r) => r.status != \"200\")\n    |> aggregateWindow(every: 1s, fn: count, createEmpty: false)",
+                    "refId": "A"
+                }
+            ],
+            "title": "Rate (Avg Requests/Second)",
+            "transformations": [],
+            "type": "gauge"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P951FEA4DE68E13C5"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
                         "mode": "palette-classic"
                     },
                     "custom": {
@@ -181,9 +339,9 @@
             },
             "gridPos": {
                 "h": 13,
-                "w": 17,
+                "w": 24,
                 "x": 0,
-                "y": 0
+                "y": 25
             },
             "id": 22,
             "options": {
@@ -219,164 +377,6 @@
             ],
             "title": "Number Requests",
             "type": "timeseries"
-        },
-        {
-            "datasource": {
-                "type": "influxdb",
-                "uid": "P951FEA4DE68E13C5"
-            },
-            "fieldConfig": {
-                "defaults": {
-                    "color": {
-                        "mode": "thresholds"
-                    },
-                    "mappings": [],
-                    "thresholds": {
-                        "mode": "absolute",
-                        "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            }
-                        ]
-                    },
-                    "unitScale": true
-                },
-                "overrides": [
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "value {instrumentation=\"default\", scenario=\"default\", status=\"400\", success=\"false\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Default DB Error Rate"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "value {instrumentation=\"default\", scenario=\"default\", status=\"500\", success=\"false\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Default HTTP Error Rate"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "value {instrumentation=\"ebpf\", scenario=\"default\", status=\"400\", success=\"false\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "eBPF DB Error Rate"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "value {instrumentation=\"ebpf\", scenario=\"default\", status=\"500\", success=\"false\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "eBPF HTTP Error Rate"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "value {instrumentation=\"manual\", scenario=\"default\", status=\"400\", success=\"false\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Manual DB Error Rate"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "value {instrumentation=\"manual\", scenario=\"default\", status=\"500\", success=\"false\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Manual HTTP Error Rate"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "value {instrumentation=\"orchestrion\", scenario=\"default\", status=\"400\", success=\"false\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Orchestrion DB Error Rate"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "value {instrumentation=\"orchestrion\", scenario=\"default\", status=\"500\", success=\"false\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Orchestrion HTTP Error Rate"
-                            }
-                        ]
-                    }
-                ]
-            },
-            "gridPos": {
-                "h": 26,
-                "w": 7,
-                "x": 17,
-                "y": 0
-            },
-            "id": 31,
-            "options": {
-                "minVizHeight": 75,
-                "minVizWidth": 75,
-                "orientation": "auto",
-                "reduceOptions": {
-                    "calcs": [
-                        "mean"
-                    ],
-                    "fields": "",
-                    "values": false
-                },
-                "showThresholdLabels": false,
-                "showThresholdMarkers": true,
-                "sizing": "auto"
-            },
-            "pluginVersion": "10.3.3",
-            "targets": [
-                {
-                    "datasource": {
-                        "type": "influxdb",
-                        "uid": "P951FEA4DE68E13C5"
-                    },
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_requests_failed\")\n    |> filter(fn: (r) => r.status != \"200\")\n    |> aggregateWindow(every: 1s, fn: count, createEmpty: false)",
-                    "refId": "A"
-                }
-            ],
-            "title": "Rate (Avg Requests/Second)",
-            "transformations": [],
-            "type": "gauge"
         },
         {
             "datasource": {
@@ -539,10 +539,10 @@
                 ]
             },
             "gridPos": {
-                "h": 13,
-                "w": 17,
+                "h": 12,
+                "w": 24,
                 "x": 0,
-                "y": 13
+                "y": 38
             },
             "id": 19,
             "options": {
@@ -577,12 +577,404 @@
                 "h": 1,
                 "w": 24,
                 "x": 0,
-                "y": 26
+                "y": 50
             },
             "id": 17,
             "panels": [],
             "title": "System Information",
             "type": "row"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P951FEA4DE68E13C5"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unit": "clockms",
+                    "unitScale": true
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "{instrumentation=\"default\", status=\"200\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Success"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "{instrumentation=\"default\", status=\"500\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "HTTP Error"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "{instrumentation=\"default\", status=\"400\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "DB Error"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 51
+            },
+            "id": 23,
+            "options": {
+                "minVizHeight": 75,
+                "minVizWidth": 75,
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "mean"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "sizing": "auto"
+            },
+            "pluginVersion": "10.3.3",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_request_duration\")\n    |> filter(fn: (r) => r.instrumentation == \"default\")\n    |> group(columns: [\"instrumentation\", \"status\"], mode: \"by\")\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)",
+                    "refId": "A"
+                }
+            ],
+            "title": "Default Durations (ms/req)",
+            "type": "gauge"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P951FEA4DE68E13C5"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unit": "clockms",
+                    "unitScale": true
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "{instrumentation=\"manual\", status=\"200\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Success"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "{instrumentation=\"manual\", status=\"500\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "HTTP Error"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "{instrumentation=\"manual\", status=\"400\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "DB Error"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 51
+            },
+            "id": 24,
+            "options": {
+                "minVizHeight": 75,
+                "minVizWidth": 75,
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "mean"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "sizing": "auto"
+            },
+            "pluginVersion": "10.3.3",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_request_duration\")\n    |> filter(fn: (r) => r.instrumentation == \"manual\")\n    |> group(columns: [\"instrumentation\", \"status\"], mode: \"by\")\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)",
+                    "refId": "A"
+                }
+            ],
+            "title": "Manual Durations (ms/req)",
+            "type": "gauge"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P951FEA4DE68E13C5"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unit": "clockms",
+                    "unitScale": true
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "{instrumentation=\"orchestrion\", status=\"200\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Success"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "{instrumentation=\"orchestrion\", status=\"500\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "HTTP Error"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "{instrumentation=\"orchestrion\", status=\"400\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "DB Error"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 59
+            },
+            "id": 25,
+            "options": {
+                "minVizHeight": 75,
+                "minVizWidth": 75,
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "mean"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "sizing": "auto"
+            },
+            "pluginVersion": "10.3.3",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_request_duration\")\n    |> filter(fn: (r) => r.instrumentation == \"orchestrion\")\n    |> group(columns: [\"instrumentation\", \"status\"], mode: \"by\")\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)",
+                    "refId": "A"
+                }
+            ],
+            "title": "Orchestrion Durations (ms/req)",
+            "type": "gauge"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P951FEA4DE68E13C5"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unit": "clockms",
+                    "unitScale": true
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "{instrumentation=\"ebpf\", status=\"200\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Success"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "{instrumentation=\"ebpf\", status=\"500\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "HTTP Error"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "{instrumentation=\"ebpf\", status=\"400\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "DB Error"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 59
+            },
+            "id": 26,
+            "options": {
+                "minVizHeight": 75,
+                "minVizWidth": 75,
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "mean"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "sizing": "auto"
+            },
+            "pluginVersion": "10.3.3",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_request_duration\")\n    |> filter(fn: (r) => r.instrumentation == \"ebpf\")\n    |> group(columns: [\"instrumentation\", \"status\"], mode: \"by\")\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)",
+                    "refId": "A"
+                }
+            ],
+            "title": "eBPF Durations (ms/req)",
+            "type": "gauge"
         },
         {
             "datasource": {
@@ -698,9 +1090,9 @@
             },
             "gridPos": {
                 "h": 16,
-                "w": 12,
+                "w": 24,
                 "x": 0,
-                "y": 27
+                "y": 67
             },
             "id": 21,
             "options": {
@@ -728,398 +1120,6 @@
             "title": "p99 Duration (ms/request)",
             "transformations": [],
             "type": "timeseries"
-        },
-        {
-            "datasource": {
-                "type": "influxdb",
-                "uid": "P951FEA4DE68E13C5"
-            },
-            "fieldConfig": {
-                "defaults": {
-                    "color": {
-                        "mode": "thresholds"
-                    },
-                    "mappings": [],
-                    "thresholds": {
-                        "mode": "absolute",
-                        "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            }
-                        ]
-                    },
-                    "unit": "clockms",
-                    "unitScale": true
-                },
-                "overrides": [
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "{instrumentation=\"default\", status=\"200\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Success"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "{instrumentation=\"default\", status=\"500\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "HTTP Error"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "{instrumentation=\"default\", status=\"400\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "DB Error"
-                            }
-                        ]
-                    }
-                ]
-            },
-            "gridPos": {
-                "h": 8,
-                "w": 12,
-                "x": 12,
-                "y": 27
-            },
-            "id": 23,
-            "options": {
-                "minVizHeight": 75,
-                "minVizWidth": 75,
-                "orientation": "auto",
-                "reduceOptions": {
-                    "calcs": [
-                        "mean"
-                    ],
-                    "fields": "",
-                    "values": false
-                },
-                "showThresholdLabels": false,
-                "showThresholdMarkers": true,
-                "sizing": "auto"
-            },
-            "pluginVersion": "10.3.3",
-            "targets": [
-                {
-                    "datasource": {
-                        "type": "influxdb",
-                        "uid": "P951FEA4DE68E13C5"
-                    },
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_request_duration\")\n    |> filter(fn: (r) => r.instrumentation == \"default\")\n    |> group(columns: [\"instrumentation\", \"status\"], mode: \"by\")\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)",
-                    "refId": "A"
-                }
-            ],
-            "title": "Default Durations (ms/req)",
-            "type": "gauge"
-        },
-        {
-            "datasource": {
-                "type": "influxdb",
-                "uid": "P951FEA4DE68E13C5"
-            },
-            "fieldConfig": {
-                "defaults": {
-                    "color": {
-                        "mode": "thresholds"
-                    },
-                    "mappings": [],
-                    "thresholds": {
-                        "mode": "absolute",
-                        "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            }
-                        ]
-                    },
-                    "unit": "clockms",
-                    "unitScale": true
-                },
-                "overrides": [
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "{instrumentation=\"manual\", status=\"200\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Success"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "{instrumentation=\"manual\", status=\"500\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "HTTP Error"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "{instrumentation=\"manual\", status=\"400\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "DB Error"
-                            }
-                        ]
-                    }
-                ]
-            },
-            "gridPos": {
-                "h": 8,
-                "w": 12,
-                "x": 12,
-                "y": 35
-            },
-            "id": 24,
-            "options": {
-                "minVizHeight": 75,
-                "minVizWidth": 75,
-                "orientation": "auto",
-                "reduceOptions": {
-                    "calcs": [
-                        "mean"
-                    ],
-                    "fields": "",
-                    "values": false
-                },
-                "showThresholdLabels": false,
-                "showThresholdMarkers": true,
-                "sizing": "auto"
-            },
-            "pluginVersion": "10.3.3",
-            "targets": [
-                {
-                    "datasource": {
-                        "type": "influxdb",
-                        "uid": "P951FEA4DE68E13C5"
-                    },
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_request_duration\")\n    |> filter(fn: (r) => r.instrumentation == \"manual\")\n    |> group(columns: [\"instrumentation\", \"status\"], mode: \"by\")\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)",
-                    "refId": "A"
-                }
-            ],
-            "title": "Manual Durations (ms/req)",
-            "type": "gauge"
-        },
-        {
-            "datasource": {
-                "type": "influxdb",
-                "uid": "P951FEA4DE68E13C5"
-            },
-            "fieldConfig": {
-                "defaults": {
-                    "color": {
-                        "mode": "thresholds"
-                    },
-                    "mappings": [],
-                    "thresholds": {
-                        "mode": "absolute",
-                        "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            }
-                        ]
-                    },
-                    "unit": "clockms",
-                    "unitScale": true
-                },
-                "overrides": [
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "{instrumentation=\"orchestrion\", status=\"200\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Success"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "{instrumentation=\"orchestrion\", status=\"500\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "HTTP Error"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "{instrumentation=\"orchestrion\", status=\"400\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "DB Error"
-                            }
-                        ]
-                    }
-                ]
-            },
-            "gridPos": {
-                "h": 8,
-                "w": 12,
-                "x": 0,
-                "y": 43
-            },
-            "id": 25,
-            "options": {
-                "minVizHeight": 75,
-                "minVizWidth": 75,
-                "orientation": "auto",
-                "reduceOptions": {
-                    "calcs": [
-                        "mean"
-                    ],
-                    "fields": "",
-                    "values": false
-                },
-                "showThresholdLabels": false,
-                "showThresholdMarkers": true,
-                "sizing": "auto"
-            },
-            "pluginVersion": "10.3.3",
-            "targets": [
-                {
-                    "datasource": {
-                        "type": "influxdb",
-                        "uid": "P951FEA4DE68E13C5"
-                    },
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_request_duration\")\n    |> filter(fn: (r) => r.instrumentation == \"orchestrion\")\n    |> group(columns: [\"instrumentation\", \"status\"], mode: \"by\")\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)",
-                    "refId": "A"
-                }
-            ],
-            "title": "Orchestrion Durations (ms/req)",
-            "type": "gauge"
-        },
-        {
-            "datasource": {
-                "type": "influxdb",
-                "uid": "P951FEA4DE68E13C5"
-            },
-            "fieldConfig": {
-                "defaults": {
-                    "color": {
-                        "mode": "thresholds"
-                    },
-                    "mappings": [],
-                    "thresholds": {
-                        "mode": "absolute",
-                        "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            }
-                        ]
-                    },
-                    "unit": "clockms",
-                    "unitScale": true
-                },
-                "overrides": [
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "{instrumentation=\"ebpf\", status=\"200\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Success"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "{instrumentation=\"ebpf\", status=\"500\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "HTTP Error"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "{instrumentation=\"ebpf\", status=\"400\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "DB Error"
-                            }
-                        ]
-                    }
-                ]
-            },
-            "gridPos": {
-                "h": 8,
-                "w": 12,
-                "x": 12,
-                "y": 43
-            },
-            "id": 26,
-            "options": {
-                "minVizHeight": 75,
-                "minVizWidth": 75,
-                "orientation": "auto",
-                "reduceOptions": {
-                    "calcs": [
-                        "mean"
-                    ],
-                    "fields": "",
-                    "values": false
-                },
-                "showThresholdLabels": false,
-                "showThresholdMarkers": true,
-                "sizing": "auto"
-            },
-            "pluginVersion": "10.3.3",
-            "targets": [
-                {
-                    "datasource": {
-                        "type": "influxdb",
-                        "uid": "P951FEA4DE68E13C5"
-                    },
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_request_duration\")\n    |> filter(fn: (r) => r.instrumentation == \"ebpf\")\n    |> group(columns: [\"instrumentation\", \"status\"], mode: \"by\")\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)",
-                    "refId": "A"
-                }
-            ],
-            "title": "eBPF Durations (ms/req)",
-            "type": "gauge"
         },
         {
             "datasource": {
@@ -1188,7 +1188,7 @@
                 "h": 14,
                 "w": 12,
                 "x": 0,
-                "y": 51
+                "y": 83
             },
             "id": 18,
             "options": {
@@ -1351,7 +1351,7 @@
                 "h": 7,
                 "w": 6,
                 "x": 12,
-                "y": 51
+                "y": 83
             },
             "id": 27,
             "options": {
@@ -1518,7 +1518,7 @@
                 "h": 7,
                 "w": 6,
                 "x": 18,
-                "y": 51
+                "y": 83
             },
             "id": 30,
             "options": {
@@ -1685,7 +1685,7 @@
                 "h": 7,
                 "w": 6,
                 "x": 12,
-                "y": 58
+                "y": 90
             },
             "id": 29,
             "options": {
@@ -1852,7 +1852,7 @@
                 "h": 7,
                 "w": 6,
                 "x": 18,
-                "y": 58
+                "y": 90
             },
             "id": 28,
             "options": {
@@ -2056,7 +2056,7 @@
                 "h": 12,
                 "w": 24,
                 "x": 0,
-                "y": 65
+                "y": 97
             },
             "id": 14,
             "options": {
@@ -2353,7 +2353,7 @@
             "type": "timeseries"
         }
     ],
-    "refresh": "auto",
+    "refresh": "5s",
     "schemaVersion": 39,
     "tags": [
         "k6",

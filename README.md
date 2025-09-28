@@ -1,5 +1,16 @@
 # gopherconus-2025
 
+Presented at GopherconUS 2025. Slides for the presentation are [here](./GopherCon%20US%202025.pdf).
+
+This project is still very much a work in progress, even after GopherCon is over! Upcoming work to:
+
+- [ ] Better incorporate the demo with a Linux VM, such as Lima
+- [ ] Enable parallel, continuous runs of the code (currently, all scenarios run in sequence)
+- [ ] More metrics! Specifically, we want a whole lot more of Go runtime metrics, like allocations and GC activity. 
+- [ ] Integration with DataDog dashboards to visualize traces
+
+## About
+
 This repo tests four different scenarios for running the same web script:
 
 1. No instrumentation
@@ -30,7 +41,7 @@ To run load tests with all dependencies checked automatically:
 ./loadtest.sh all
 ```
 
-Important: eBPF is only available on Linux kernels. If you do not have one by default, check out available VMs like [Lima](https://lima-vm.io/).
+Important: eBPF is only available on Linux kernels. If you do not have one by default, check out available VMs like [Lima](https://lima-vm.io/) or [Orb](https://orbstack.dev/).
 
 ### Service Management
 
@@ -79,3 +90,7 @@ Interested in (auto) instrumentation? Here are a couple of blog posts and articl
 3. [Compile-Time Instrumentation SIG](https://opentelemetry.io/blog/2025/go-compile-time-instrumentation/)
 4. [Flight Recording in Go](https://github.com/golang/go/issues/63185)
 5. [What is eBPF](https://ebpf.io/what-is-ebpf/)
+
+## Shoutout
+
+Shoutout to [Kemal](https://github.com/kakkoyun) for teaching me all about Orchestrion and eBPF, and for donating his machine to run code on a Linux VM!!
