@@ -21,7 +21,7 @@ export const options = {
         warmup: {
             executor: 'constant-vus',
             vus: 50,
-            duration: '15s',
+            duration: '30s',
             startTime: '0s',
             gracefulStop: '5s',
         },
@@ -29,22 +29,24 @@ export const options = {
         // avg load-testing
         avgLoad: {
             executor: 'constant-arrival-rate',
-            startTime: '15s',
+            startTime: '30s',
             duration: '45s',
             rate: 30,
             timeUnit: '1s',
-            preAllocatedVUs: 5,
+            preAllocatedVUs: 20,
             maxVUs: 20,
             gracefulStop: '5s',
         },
 
         // heavy load-testing
         heavyLoad: {
-            executor: 'constant-vus',
-            startTime: '15s',
+            executor: 'constant-arrival-rate',
+            startTime: '30s',
             duration: '45s',
-            vus: 5,
-            gracefulStop: '5s',
+            rate: 300,
+            timeUnit: '1s',
+            preAllocatedVUs: 20,
+            gracefulStop: '0s',
         },
     },
     summaryTrendStats: ['avg', 'min', 'med', 'max', 'p(90)', 'p(95)', 'p(99)', 'p(99.9)', 'count'],
@@ -93,6 +95,8 @@ export default function () {
     }
     duration.add(res.timings.duration, tags);
 
-    // brief sleep between iterations
-    sleep(2);
+    // brief sleep between iterations, unless we are intentionally running a heavy load test
+    if (__ENV.SCENARIO !== 'heavyLoad') {
+        sleep(2);
+    }
 }
