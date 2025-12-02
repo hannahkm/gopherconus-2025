@@ -926,7 +926,7 @@
                 "x": 6,
                 "y": 43
             },
-            "id": 30,
+            "id": 37,
             "options": {
                 "minVizHeight": 75,
                 "minVizWidth": 75,
@@ -949,12 +949,11 @@
                         "type": "influxdb",
                         "uid": "P951FEA4DE68E13C5"
                     },
-                    "hide": false,
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"runtime_goroutines\")\n    |> filter(fn: (r) => r.instrumentation == \"manual\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 5s, fn: last)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"runtime_goroutines\"}))",
-                    "refId": "B"
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"runtime_goroutines\")\n    |> filter(fn: (r) => r.instrumentation == \"default\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 5s, fn: last)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"runtime_goroutines\"}))",
+                    "refId": "A"
                 }
             ],
-            "title": "Number of goroutines (manual)",
+            "title": "Number of goroutines (default)",
             "transformations": [],
             "type": "gauge"
         },
@@ -1350,8 +1349,6 @@
                         "mode": "thresholds"
                     },
                     "mappings": [],
-                    "max": 1,
-                    "min": 0,
                     "thresholds": {
                         "mode": "absolute",
                         "steps": [
@@ -1395,7 +1392,7 @@
                         "uid": "P951FEA4DE68E13C5"
                     },
                     "hide": false,
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"runtime_gc\")\n    |> filter(fn: (r) => r.instrumentation == \"default\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 5s, fn: last)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"runtime_gc\"}))",
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"runtime_gc\")\n    |> filter(fn: (r) => r.instrumentation == \"default\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 5s, fn: mean)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"runtime_gc\"}))",
                     "refId": "B"
                 }
             ],
@@ -1414,8 +1411,6 @@
                         "mode": "thresholds"
                     },
                     "mappings": [],
-                    "max": 1,
-                    "min": 0,
                     "thresholds": {
                         "mode": "absolute",
                         "steps": [
@@ -1477,9 +1472,8 @@
                     "color": {
                         "mode": "thresholds"
                     },
+                    "fieldMinMax": false,
                     "mappings": [],
-                    "max": 1,
-                    "min": 0,
                     "thresholds": {
                         "mode": "absolute",
                         "steps": [
@@ -1542,8 +1536,6 @@
                         "mode": "thresholds"
                     },
                     "mappings": [],
-                    "max": 1,
-                    "min": 0,
                     "thresholds": {
                         "mode": "absolute",
                         "steps": [
@@ -1761,6 +1753,108 @@
                             "viz": false
                         },
                         "insertNulls": false,
+                        "lineInterpolation": "linear",
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "auto",
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "mappings": [],
+                    "max": 1,
+                    "min": 0,
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unitScale": true
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 9,
+                "w": 24,
+                "x": 0,
+                "y": 78
+            },
+            "id": 30,
+            "options": {
+                "legend": {
+                    "calcs": [],
+                    "displayMode": "list",
+                    "placement": "bottom",
+                    "showLegend": true
+                },
+                "tooltip": {
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "pluginVersion": "10.3.3",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "hide": false,
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"runtime_goroutines\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"runtime_goroutines\"}))",
+                    "refId": "B"
+                },
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "hide": false,
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"runtime_goroutines\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"runtime_goroutines\"}))",
+                    "refId": "A"
+                }
+            ],
+            "title": "Number of goroutines (manual)",
+            "transformations": [],
+            "type": "timeseries"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P951FEA4DE68E13C5"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisBorderShow": false,
+                        "axisCenteredZero": false,
+                        "axisColorMode": "text",
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "drawStyle": "line",
+                        "fillOpacity": 0,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "insertNulls": false,
                         "lineInterpolation": "smooth",
                         "lineStyle": {
                             "fill": "solid"
@@ -1802,7 +1896,7 @@
                 "h": 12,
                 "w": 24,
                 "x": 0,
-                "y": 78
+                "y": 87
             },
             "id": 14,
             "options": {
