@@ -16,16 +16,37 @@ const uptime = new Counter('uptime_milliseconds')
 
 // Load testing scenarios
 export const options = {
-    stages: [
-        // avg load-testing
-        { duration: '15s', target: 100 }, // traffic ramp-up
-        { duration: '30s', target: 100 }, // hold steady
-        { duration: '15s', target: 0 }, // ramp-down to 0 users
+    scenarios: {
+        // warmup
+        warmup: {
+            executor: 'constant-vus',
+            vus: 50,
+            duration: '15s',
+            startTime: '0s',
+            gracefulStop: '5s',
+        },
 
-        // spike-testing
-        { duration: '2s', target: 1000 }, // sudden jump to 1000 users
-        { duration: '2s', target: 0 }, // drop down to 0 users
-    ],
+        // avg load-testing
+        avgLoad: {
+            executor: 'constant-arrival-rate',
+            startTime: '15s',
+            duration: '45s',
+            rate: 30,
+            timeUnit: '1s',
+            preAllocatedVUs: 5,
+            maxVUs: 20,
+            gracefulStop: '5s',
+        },
+
+        // heavy load-testing
+        heavyLoad: {
+            executor: 'constant-vus',
+            startTime: '15s',
+            duration: '45s',
+            vus: 5,
+            gracefulStop: '5s',
+        },
+    },
     summaryTrendStats: ['avg', 'min', 'med', 'max', 'p(90)', 'p(95)', 'p(99)', 'p(99.9)', 'count'],
 }
 
