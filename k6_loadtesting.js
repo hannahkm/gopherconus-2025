@@ -10,9 +10,13 @@ const cpuUser = new Trend('cpu_user');
 const cpuSystem = new Trend('cpu_system');
 const cpuIdle = new Trend('cpu_idle');
 const cpuTotal = new Trend('cpu_total');
-const memoryTotal = new Trend('memory_total');
-const memoryUsed = new Trend('memory_used');
-const uptime = new Counter('uptime_milliseconds')
+const memoryHeapSystem = new Trend('memory_heap_system');
+const memoryHeapAllocated = new Trend('memory_heap_allocated');
+const memoryHeapIdle = new Trend('memory_heap_idle');
+const uptime = new Counter('uptime_milliseconds');
+const runtimeGoroutines = new Trend('runtime_goroutines');
+const runtimeGCs = new Trend('runtime_gc');
+const runtimeTotalSTWPause = new Trend('runtime_total_stw_pause');
 
 // Load testing scenarios
 export const options = {
@@ -59,9 +63,13 @@ export default function () {
         cpuSystem.add(systemInfo.cpu.system, tags);
         cpuIdle.add(systemInfo.cpu.idle, tags);
         cpuTotal.add(systemInfo.cpu.total, tags);
-        memoryTotal.add(systemInfo.memory.total, tags);
-        memoryUsed.add(systemInfo.memory.used, tags);
+        memoryHeapSystem.add(systemInfo.memory.memory_system, tags);
+        memoryHeapAllocated.add(systemInfo.memory.memory_heap_allocated, tags);
+        memoryHeapIdle.add(systemInfo.memory.memory_heap_idle, tags);
         uptime.add(systemInfo.uptime.milliseconds, tags);
+        runtimeGoroutines.add(systemInfo.runtime.goroutines, tags);
+        runtimeGCs.add(systemInfo.runtime.gc, tags);
+        runtimeTotalSTWPause.add(systemInfo.runtime.total_pause, tags);
     }
 
     numRequests.add(1, tags);

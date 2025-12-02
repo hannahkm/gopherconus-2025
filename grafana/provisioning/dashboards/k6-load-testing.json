@@ -23,162 +23,17 @@
     "liveNow": false,
     "panels": [
         {
-            "datasource": {
-                "type": "influxdb",
-                "uid": "P951FEA4DE68E13C5"
-            },
-            "fieldConfig": {
-                "defaults": {
-                    "color": {
-                        "mode": "thresholds"
-                    },
-                    "mappings": [],
-                    "thresholds": {
-                        "mode": "absolute",
-                        "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            }
-                        ]
-                    },
-                    "unitScale": true
-                },
-                "overrides": [
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "value {instrumentation=\"default\", scenario=\"default\", status=\"400\", success=\"false\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Default DB Error Rate"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "value {instrumentation=\"default\", scenario=\"default\", status=\"500\", success=\"false\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Default HTTP Error Rate"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "value {instrumentation=\"ebpf\", scenario=\"default\", status=\"400\", success=\"false\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "eBPF DB Error Rate"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "value {instrumentation=\"ebpf\", scenario=\"default\", status=\"500\", success=\"false\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "eBPF HTTP Error Rate"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "value {instrumentation=\"manual\", scenario=\"default\", status=\"400\", success=\"false\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Manual DB Error Rate"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "value {instrumentation=\"manual\", scenario=\"default\", status=\"500\", success=\"false\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Manual HTTP Error Rate"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "value {instrumentation=\"orchestrion\", scenario=\"default\", status=\"400\", success=\"false\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Orchestrion DB Error Rate"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "value {instrumentation=\"orchestrion\", scenario=\"default\", status=\"500\", success=\"false\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Orchestrion HTTP Error Rate"
-                            }
-                        ]
-                    }
-                ]
-            },
+            "collapsed": false,
             "gridPos": {
-                "h": 25,
+                "h": 1,
                 "w": 24,
                 "x": 0,
                 "y": 0
             },
-            "id": 31,
-            "options": {
-                "minVizHeight": 75,
-                "minVizWidth": 75,
-                "orientation": "auto",
-                "reduceOptions": {
-                    "calcs": [
-                        "mean"
-                    ],
-                    "fields": "",
-                    "values": false
-                },
-                "showThresholdLabels": false,
-                "showThresholdMarkers": true,
-                "sizing": "auto"
-            },
-            "pluginVersion": "10.3.3",
-            "targets": [
-                {
-                    "datasource": {
-                        "type": "influxdb",
-                        "uid": "P951FEA4DE68E13C5"
-                    },
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_requests_failed\")\n    |> filter(fn: (r) => r.status != \"200\")\n    |> aggregateWindow(every: 1s, fn: count, createEmpty: false)",
-                    "refId": "A"
-                }
-            ],
-            "title": "Rate (Avg Requests/Second)",
-            "transformations": [],
-            "type": "gauge"
+            "id": 35,
+            "panels": [],
+            "title": "Request Information",
+            "type": "row"
         },
         {
             "datasource": {
@@ -341,7 +196,7 @@
                 "h": 13,
                 "w": 24,
                 "x": 0,
-                "y": 25
+                "y": 1
             },
             "id": 22,
             "options": {
@@ -377,6 +232,398 @@
             ],
             "title": "Number Requests",
             "type": "timeseries"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P951FEA4DE68E13C5"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unit": "clockms",
+                    "unitScale": true
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "{instrumentation=\"default\", status=\"200\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Success"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "{instrumentation=\"default\", status=\"500\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "HTTP Error"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "{instrumentation=\"default\", status=\"400\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "DB Error"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 14
+            },
+            "id": 23,
+            "options": {
+                "minVizHeight": 75,
+                "minVizWidth": 75,
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "mean"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "sizing": "auto"
+            },
+            "pluginVersion": "10.3.3",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_request_duration\")\n    |> filter(fn: (r) => r.instrumentation == \"default\")\n    |> group(columns: [\"instrumentation\", \"status\"], mode: \"by\")\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)",
+                    "refId": "A"
+                }
+            ],
+            "title": "Default Durations (ms/req)",
+            "type": "gauge"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P951FEA4DE68E13C5"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unit": "clockms",
+                    "unitScale": true
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "{instrumentation=\"manual\", status=\"200\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Success"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "{instrumentation=\"manual\", status=\"500\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "HTTP Error"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "{instrumentation=\"manual\", status=\"400\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "DB Error"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 14
+            },
+            "id": 24,
+            "options": {
+                "minVizHeight": 75,
+                "minVizWidth": 75,
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "mean"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "sizing": "auto"
+            },
+            "pluginVersion": "10.3.3",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_request_duration\")\n    |> filter(fn: (r) => r.instrumentation == \"manual\")\n    |> group(columns: [\"instrumentation\", \"status\"], mode: \"by\")\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)",
+                    "refId": "A"
+                }
+            ],
+            "title": "Manual Durations (ms/req)",
+            "type": "gauge"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P951FEA4DE68E13C5"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unit": "clockms",
+                    "unitScale": true
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "{instrumentation=\"orchestrion\", status=\"200\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Success"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "{instrumentation=\"orchestrion\", status=\"500\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "HTTP Error"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "{instrumentation=\"orchestrion\", status=\"400\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "DB Error"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 22
+            },
+            "id": 25,
+            "options": {
+                "minVizHeight": 75,
+                "minVizWidth": 75,
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "mean"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "sizing": "auto"
+            },
+            "pluginVersion": "10.3.3",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_request_duration\")\n    |> filter(fn: (r) => r.instrumentation == \"orchestrion\")\n    |> group(columns: [\"instrumentation\", \"status\"], mode: \"by\")\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)",
+                    "refId": "A"
+                }
+            ],
+            "title": "Orchestrion Durations (ms/req)",
+            "type": "gauge"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P951FEA4DE68E13C5"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unit": "clockms",
+                    "unitScale": true
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "{instrumentation=\"ebpf\", status=\"200\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "Success"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "{instrumentation=\"ebpf\", status=\"500\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "HTTP Error"
+                            }
+                        ]
+                    },
+                    {
+                        "matcher": {
+                            "id": "byName",
+                            "options": "{instrumentation=\"ebpf\", status=\"400\"}"
+                        },
+                        "properties": [
+                            {
+                                "id": "displayName",
+                                "value": "DB Error"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 22
+            },
+            "id": 26,
+            "options": {
+                "minVizHeight": 75,
+                "minVizWidth": 75,
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "mean"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "sizing": "auto"
+            },
+            "pluginVersion": "10.3.3",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_request_duration\")\n    |> filter(fn: (r) => r.instrumentation == \"ebpf\")\n    |> group(columns: [\"instrumentation\", \"status\"], mode: \"by\")\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)",
+                    "refId": "A"
+                }
+            ],
+            "title": "eBPF Durations (ms/req)",
+            "type": "gauge"
         },
         {
             "datasource": {
@@ -542,7 +789,7 @@
                 "h": 12,
                 "w": 24,
                 "x": 0,
-                "y": 38
+                "y": 30
             },
             "id": 19,
             "options": {
@@ -577,7 +824,7 @@
                 "h": 1,
                 "w": 24,
                 "x": 0,
-                "y": 50
+                "y": 42
             },
             "id": 17,
             "panels": [],
@@ -595,6 +842,8 @@
                         "mode": "thresholds"
                     },
                     "mappings": [],
+                    "max": 1,
+                    "min": 0,
                     "thresholds": {
                         "mode": "absolute",
                         "steps": [
@@ -604,62 +853,24 @@
                             }
                         ]
                     },
-                    "unit": "clockms",
                     "unitScale": true
                 },
-                "overrides": [
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "{instrumentation=\"default\", status=\"200\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Success"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "{instrumentation=\"default\", status=\"500\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "HTTP Error"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "{instrumentation=\"default\", status=\"400\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "DB Error"
-                            }
-                        ]
-                    }
-                ]
+                "overrides": []
             },
             "gridPos": {
-                "h": 8,
-                "w": 12,
+                "h": 7,
+                "w": 6,
                 "x": 0,
-                "y": 51
+                "y": 43
             },
-            "id": 23,
+            "id": 27,
             "options": {
                 "minVizHeight": 75,
                 "minVizWidth": 75,
                 "orientation": "auto",
                 "reduceOptions": {
                     "calcs": [
-                        "mean"
+                        "lastNotNull"
                     ],
                     "fields": "",
                     "values": false
@@ -675,451 +886,205 @@
                         "type": "influxdb",
                         "uid": "P951FEA4DE68E13C5"
                     },
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_request_duration\")\n    |> filter(fn: (r) => r.instrumentation == \"default\")\n    |> group(columns: [\"instrumentation\", \"status\"], mode: \"by\")\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)",
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"runtime_goroutines\")\n    |> filter(fn: (r) => r.instrumentation == \"default\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 5s, fn: last)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"runtime_goroutines\"}))",
                     "refId": "A"
                 }
             ],
-            "title": "Default Durations (ms/req)",
-            "type": "gauge"
-        },
-        {
-            "datasource": {
-                "type": "influxdb",
-                "uid": "P951FEA4DE68E13C5"
-            },
-            "fieldConfig": {
-                "defaults": {
-                    "color": {
-                        "mode": "thresholds"
-                    },
-                    "mappings": [],
-                    "thresholds": {
-                        "mode": "absolute",
-                        "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            }
-                        ]
-                    },
-                    "unit": "clockms",
-                    "unitScale": true
-                },
-                "overrides": [
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "{instrumentation=\"manual\", status=\"200\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Success"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "{instrumentation=\"manual\", status=\"500\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "HTTP Error"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "{instrumentation=\"manual\", status=\"400\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "DB Error"
-                            }
-                        ]
-                    }
-                ]
-            },
-            "gridPos": {
-                "h": 8,
-                "w": 12,
-                "x": 12,
-                "y": 51
-            },
-            "id": 24,
-            "options": {
-                "minVizHeight": 75,
-                "minVizWidth": 75,
-                "orientation": "auto",
-                "reduceOptions": {
-                    "calcs": [
-                        "mean"
-                    ],
-                    "fields": "",
-                    "values": false
-                },
-                "showThresholdLabels": false,
-                "showThresholdMarkers": true,
-                "sizing": "auto"
-            },
-            "pluginVersion": "10.3.3",
-            "targets": [
-                {
-                    "datasource": {
-                        "type": "influxdb",
-                        "uid": "P951FEA4DE68E13C5"
-                    },
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_request_duration\")\n    |> filter(fn: (r) => r.instrumentation == \"manual\")\n    |> group(columns: [\"instrumentation\", \"status\"], mode: \"by\")\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)",
-                    "refId": "A"
-                }
-            ],
-            "title": "Manual Durations (ms/req)",
-            "type": "gauge"
-        },
-        {
-            "datasource": {
-                "type": "influxdb",
-                "uid": "P951FEA4DE68E13C5"
-            },
-            "fieldConfig": {
-                "defaults": {
-                    "color": {
-                        "mode": "thresholds"
-                    },
-                    "mappings": [],
-                    "thresholds": {
-                        "mode": "absolute",
-                        "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            }
-                        ]
-                    },
-                    "unit": "clockms",
-                    "unitScale": true
-                },
-                "overrides": [
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "{instrumentation=\"orchestrion\", status=\"200\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Success"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "{instrumentation=\"orchestrion\", status=\"500\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "HTTP Error"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "{instrumentation=\"orchestrion\", status=\"400\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "DB Error"
-                            }
-                        ]
-                    }
-                ]
-            },
-            "gridPos": {
-                "h": 8,
-                "w": 12,
-                "x": 0,
-                "y": 59
-            },
-            "id": 25,
-            "options": {
-                "minVizHeight": 75,
-                "minVizWidth": 75,
-                "orientation": "auto",
-                "reduceOptions": {
-                    "calcs": [
-                        "mean"
-                    ],
-                    "fields": "",
-                    "values": false
-                },
-                "showThresholdLabels": false,
-                "showThresholdMarkers": true,
-                "sizing": "auto"
-            },
-            "pluginVersion": "10.3.3",
-            "targets": [
-                {
-                    "datasource": {
-                        "type": "influxdb",
-                        "uid": "P951FEA4DE68E13C5"
-                    },
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_request_duration\")\n    |> filter(fn: (r) => r.instrumentation == \"orchestrion\")\n    |> group(columns: [\"instrumentation\", \"status\"], mode: \"by\")\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)",
-                    "refId": "A"
-                }
-            ],
-            "title": "Orchestrion Durations (ms/req)",
-            "type": "gauge"
-        },
-        {
-            "datasource": {
-                "type": "influxdb",
-                "uid": "P951FEA4DE68E13C5"
-            },
-            "fieldConfig": {
-                "defaults": {
-                    "color": {
-                        "mode": "thresholds"
-                    },
-                    "mappings": [],
-                    "thresholds": {
-                        "mode": "absolute",
-                        "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            }
-                        ]
-                    },
-                    "unit": "clockms",
-                    "unitScale": true
-                },
-                "overrides": [
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "{instrumentation=\"ebpf\", status=\"200\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Success"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "{instrumentation=\"ebpf\", status=\"500\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "HTTP Error"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "{instrumentation=\"ebpf\", status=\"400\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "DB Error"
-                            }
-                        ]
-                    }
-                ]
-            },
-            "gridPos": {
-                "h": 8,
-                "w": 12,
-                "x": 12,
-                "y": 59
-            },
-            "id": 26,
-            "options": {
-                "minVizHeight": 75,
-                "minVizWidth": 75,
-                "orientation": "auto",
-                "reduceOptions": {
-                    "calcs": [
-                        "mean"
-                    ],
-                    "fields": "",
-                    "values": false
-                },
-                "showThresholdLabels": false,
-                "showThresholdMarkers": true,
-                "sizing": "auto"
-            },
-            "pluginVersion": "10.3.3",
-            "targets": [
-                {
-                    "datasource": {
-                        "type": "influxdb",
-                        "uid": "P951FEA4DE68E13C5"
-                    },
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_request_duration\")\n    |> filter(fn: (r) => r.instrumentation == \"ebpf\")\n    |> group(columns: [\"instrumentation\", \"status\"], mode: \"by\")\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)",
-                    "refId": "A"
-                }
-            ],
-            "title": "eBPF Durations (ms/req)",
-            "type": "gauge"
-        },
-        {
-            "datasource": {
-                "type": "influxdb",
-                "uid": "P951FEA4DE68E13C5"
-            },
-            "fieldConfig": {
-                "defaults": {
-                    "color": {
-                        "mode": "palette-classic"
-                    },
-                    "custom": {
-                        "axisBorderShow": false,
-                        "axisCenteredZero": false,
-                        "axisColorMode": "text",
-                        "axisLabel": "",
-                        "axisPlacement": "auto",
-                        "barAlignment": 0,
-                        "drawStyle": "line",
-                        "fillOpacity": 0,
-                        "gradientMode": "none",
-                        "hideFrom": {
-                            "legend": false,
-                            "tooltip": false,
-                            "viz": false
-                        },
-                        "insertNulls": false,
-                        "lineInterpolation": "smooth",
-                        "lineStyle": {
-                            "fill": "solid"
-                        },
-                        "lineWidth": 1,
-                        "pointSize": 5,
-                        "scaleDistribution": {
-                            "type": "linear"
-                        },
-                        "showPoints": "never",
-                        "spanNulls": false,
-                        "stacking": {
-                            "group": "A",
-                            "mode": "none"
-                        },
-                        "thresholdsStyle": {
-                            "mode": "off"
-                        }
-                    },
-                    "mappings": [],
-                    "thresholds": {
-                        "mode": "absolute",
-                        "steps": [
-                            {
-                                "color": "green",
-                                "value": null
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
-                            }
-                        ]
-                    },
-                    "unitScale": true
-                },
-                "overrides": [
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "_value {instrumentation=\"default\", status=\"200\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Default"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "_value {instrumentation=\"ebpf\", status=\"200\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "eBPF"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "_value {instrumentation=\"manual\", status=\"200\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Manual"
-                            }
-                        ]
-                    },
-                    {
-                        "matcher": {
-                            "id": "byName",
-                            "options": "_value {instrumentation=\"orchestrion\", status=\"200\"}"
-                        },
-                        "properties": [
-                            {
-                                "id": "displayName",
-                                "value": "Orchestrion"
-                            }
-                        ]
-                    }
-                ]
-            },
-            "gridPos": {
-                "h": 16,
-                "w": 24,
-                "x": 0,
-                "y": 67
-            },
-            "id": 21,
-            "options": {
-                "legend": {
-                    "calcs": [],
-                    "displayMode": "list",
-                    "placement": "bottom",
-                    "showLegend": true
-                },
-                "tooltip": {
-                    "mode": "single",
-                    "sort": "none"
-                }
-            },
-            "targets": [
-                {
-                    "datasource": {
-                        "type": "influxdb",
-                        "uid": "P951FEA4DE68E13C5"
-                    },
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"http_request_duration\")\n    |> group(columns: [\"instrumentation\", \"status\"], mode: \"by\")\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)",
-                    "refId": "A"
-                }
-            ],
-            "title": "p99 Duration (ms/request)",
+            "title": "Number of goroutines (default)",
             "transformations": [],
-            "type": "timeseries"
+            "type": "gauge"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P951FEA4DE68E13C5"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "max": 1,
+                    "min": 0,
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unitScale": true
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 7,
+                "w": 6,
+                "x": 6,
+                "y": 43
+            },
+            "id": 30,
+            "options": {
+                "minVizHeight": 75,
+                "minVizWidth": 75,
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "sizing": "auto"
+            },
+            "pluginVersion": "10.3.3",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "hide": false,
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"runtime_goroutines\")\n    |> filter(fn: (r) => r.instrumentation == \"manual\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 5s, fn: last)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"runtime_goroutines\"}))",
+                    "refId": "B"
+                }
+            ],
+            "title": "Number of goroutines (manual)",
+            "transformations": [],
+            "type": "gauge"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P951FEA4DE68E13C5"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "max": 1,
+                    "min": 0,
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unitScale": true
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 7,
+                "w": 6,
+                "x": 12,
+                "y": 43
+            },
+            "id": 29,
+            "options": {
+                "minVizHeight": 75,
+                "minVizWidth": 75,
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "sizing": "auto"
+            },
+            "pluginVersion": "10.3.3",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "hide": false,
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"runtime_goroutines\")\n    |> filter(fn: (r) => r.instrumentation == \"orchestrion\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 5s, fn: last)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"runtime_goroutines\"}))",
+                    "refId": "B"
+                }
+            ],
+            "title": "Number of goroutines (Orchestrion)",
+            "transformations": [],
+            "type": "gauge"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P951FEA4DE68E13C5"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "max": 1,
+                    "min": 0,
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            }
+                        ]
+                    },
+                    "unitScale": true
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 7,
+                "w": 6,
+                "x": 18,
+                "y": 43
+            },
+            "id": 28,
+            "options": {
+                "minVizHeight": 75,
+                "minVizWidth": 75,
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "sizing": "auto"
+            },
+            "pluginVersion": "10.3.3",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "hide": false,
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"runtime_goroutines\")\n    |> filter(fn: (r) => r.instrumentation == \"ebpf\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 5s, fn: last)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"runtime_goroutines\"}))",
+                    "refId": "B"
+                }
+            ],
+            "title": "Number of goroutines (eBPF)",
+            "transformations": [],
+            "type": "gauge"
         },
         {
             "datasource": {
@@ -1185,10 +1150,10 @@
                 "overrides": []
             },
             "gridPos": {
-                "h": 14,
-                "w": 12,
+                "h": 13,
+                "w": 24,
                 "x": 0,
-                "y": 83
+                "y": 50
             },
             "id": 18,
             "options": {
@@ -1209,7 +1174,7 @@
                         "type": "influxdb",
                         "uid": "P951FEA4DE68E13C5"
                     },
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"memory_total\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"memory_total\"}))",
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"memory_heap_system\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"memory_heap_system\"}))",
                     "refId": "A"
                 },
                 {
@@ -1218,20 +1183,29 @@
                         "uid": "P951FEA4DE68E13C5"
                     },
                     "hide": false,
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"memory_used\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"memory_used\"}))",
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"memory_heap_allocated\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"memory_heap_allocated\"}))",
                     "refId": "B"
+                },
+                {
+                    "datasource": {
+                        "type": "influxdb",
+                        "uid": "P951FEA4DE68E13C5"
+                    },
+                    "hide": false,
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"memory_heap_idle\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"memory_heap_idle\"}))",
+                    "refId": "C"
                 }
             ],
-            "title": "Memory Usage % (p99)",
+            "title": "Memory Usage %",
             "transformations": [
                 {
                     "id": "calculateField",
                     "options": {
-                        "alias": "% Memory Used (Default)",
+                        "alias": "allocated (default)",
                         "binary": {
-                            "left": "_value {instrumentation=\"default\", name=\"memory_used\"}",
+                            "left": "_value {instrumentation=\"default\", name=\"memory_heap_allocated\"}",
                             "operator": "/",
-                            "right": "_value {instrumentation=\"default\", name=\"memory_total\"}"
+                            "right": "_value {instrumentation=\"default\", name=\"memory_heap_system\"}"
                         },
                         "mode": "binary",
                         "reduce": {
@@ -1242,11 +1216,11 @@
                 {
                     "id": "calculateField",
                     "options": {
-                        "alias": "% Memory Used (Manual)",
+                        "alias": "idle (default)",
                         "binary": {
-                            "left": "_value {instrumentation=\"manual\", name=\"memory_used\"}",
+                            "left": "_value {instrumentation=\"default\", name=\"memory_heap_idle\"}",
                             "operator": "/",
-                            "right": "_value {instrumentation=\"manual\", name=\"memory_total\"}"
+                            "right": "_value {instrumentation=\"default\", name=\"memory_heap_system\"}"
                         },
                         "mode": "binary",
                         "reduce": {
@@ -1257,11 +1231,11 @@
                 {
                     "id": "calculateField",
                     "options": {
-                        "alias": "% Memory Used (Orchestrion)",
+                        "alias": "allocated (manual)",
                         "binary": {
-                            "left": "_value {instrumentation=\"orchestrion\", name=\"memory_used\"}",
+                            "left": "_value {instrumentation=\"manual\", name=\"memory_heap_allocated\"}",
                             "operator": "/",
-                            "right": "_value {instrumentation=\"orchestrion\", name=\"memory_total\"}"
+                            "right": "_value {instrumentation=\"manual\", name=\"memory_heap_system\"}"
                         },
                         "mode": "binary",
                         "reduce": {
@@ -1272,11 +1246,11 @@
                 {
                     "id": "calculateField",
                     "options": {
-                        "alias": "% Memory Used (ebpf)",
+                        "alias": "idle (manual)",
                         "binary": {
-                            "left": "_value {instrumentation=\"ebpf\", name=\"memory_used\"}",
+                            "left": "_value {instrumentation=\"manual\", name=\"memory_heap_idle\"}",
                             "operator": "/",
-                            "right": "_value {instrumentation=\"ebpf\", name=\"memory_total\"}"
+                            "right": "_value {instrumentation=\"manual\", name=\"memory_heap_system\"}"
                         },
                         "mode": "binary",
                         "reduce": {
@@ -1285,37 +1259,81 @@
                     }
                 },
                 {
-                    "id": "organize",
+                    "id": "calculateField",
                     "options": {
-                        "excludeByName": {
-                            "_field {instrumentation=\"default\", name=\"memory_total\"}": true,
-                            "_field {instrumentation=\"default\", name=\"memory_used\"}": true,
-                            "_field {instrumentation=\"ebpf\", name=\"memory_total\"}": true,
-                            "_field {instrumentation=\"ebpf\", name=\"memory_used\"}": true,
-                            "_field {instrumentation=\"manual\", name=\"memory_total\"}": true,
-                            "_field {instrumentation=\"manual\", name=\"memory_used\"}": true,
-                            "_field {instrumentation=\"orchestrion\", name=\"memory_total\"}": true,
-                            "_field {instrumentation=\"orchestrion\", name=\"memory_used\"}": true,
-                            "_value {instrumentation=\"default\", name=\"memory_total\"}": true,
-                            "_value {instrumentation=\"default\", name=\"memory_used\"}": true,
-                            "_value {instrumentation=\"ebpf\", name=\"memory_total\"}": true,
-                            "_value {instrumentation=\"ebpf\", name=\"memory_used\"}": true,
-                            "_value {instrumentation=\"manual\", name=\"memory_total\"}": true,
-                            "_value {instrumentation=\"manual\", name=\"memory_used\"}": true,
-                            "_value {instrumentation=\"orchestrion\", name=\"memory_total\"}": true,
-                            "_value {instrumentation=\"orchestrion\", name=\"memory_used\"}": true,
-                            "value {instrumentation=\"default\", name=\"memory_total\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"default\", name=\"memory_used\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"ebpf\", name=\"memory_total\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"ebpf\", name=\"memory_used\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"manual\", name=\"memory_total\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"manual\", name=\"memory_used\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"orchestrion\", name=\"memory_total\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"orchestrion\", name=\"memory_used\", scenario=\"default\", status=\"200\", success=\"true\"}": true
+                        "alias": "allocated (Orchestrion)",
+                        "binary": {
+                            "left": "_value {instrumentation=\"orchestrion\", name=\"memory_heap_allocated\"}",
+                            "operator": "/",
+                            "right": "_value {instrumentation=\"orchestrion\", name=\"memory_heap_system\"}"
                         },
-                        "includeByName": {},
-                        "indexByName": {},
-                        "renameByName": {}
+                        "mode": "binary",
+                        "reduce": {
+                            "reducer": "sum"
+                        }
+                    }
+                },
+                {
+                    "id": "calculateField",
+                    "options": {
+                        "alias": "idle (Orchestrion)",
+                        "binary": {
+                            "left": "_value {instrumentation=\"orchestrion\", name=\"memory_heap_idle\"}",
+                            "operator": "/",
+                            "right": "_value {instrumentation=\"orchestrion\", name=\"memory_heap_system\"}"
+                        },
+                        "mode": "binary",
+                        "reduce": {
+                            "reducer": "sum"
+                        }
+                    }
+                },
+                {
+                    "id": "calculateField",
+                    "options": {
+                        "alias": "allocated (eBPF)",
+                        "binary": {
+                            "left": "_value {instrumentation=\"ebpf\", name=\"memory_heap_allocated\"}",
+                            "operator": "/",
+                            "right": "_value {instrumentation=\"ebpf\", name=\"memory_heap_system\"}"
+                        },
+                        "mode": "binary",
+                        "reduce": {
+                            "reducer": "sum"
+                        }
+                    }
+                },
+                {
+                    "id": "calculateField",
+                    "options": {
+                        "alias": "idle (eBPF)",
+                        "binary": {
+                            "left": "_value {instrumentation=\"ebpf\", name=\"memory_heap_idle\"}",
+                            "operator": "/",
+                            "right": "_value {instrumentation=\"ebpf\", name=\"memory_heap_system\"}"
+                        },
+                        "mode": "binary",
+                        "reduce": {
+                            "reducer": "sum"
+                        }
+                    }
+                },
+                {
+                    "id": "filterFieldsByName",
+                    "options": {
+                        "include": {
+                            "names": [
+                                "_time",
+                                "allocated (default)",
+                                "idle (default)",
+                                "allocated (manual)",
+                                "idle (manual)",
+                                "allocated (Orchestrion)",
+                                "allocated (eBPF)",
+                                "idle (eBPF)",
+                                "idle (Orchestrion)"
+                            ]
+                        }
                     }
                 }
             ],
@@ -1350,17 +1368,17 @@
             "gridPos": {
                 "h": 7,
                 "w": 6,
-                "x": 12,
-                "y": 83
+                "x": 0,
+                "y": 63
             },
-            "id": 27,
+            "id": 31,
             "options": {
                 "minVizHeight": 75,
                 "minVizWidth": 75,
                 "orientation": "auto",
                 "reduceOptions": {
                     "calcs": [
-                        "mean"
+                        "lastNotNull"
                     ],
                     "fields": "",
                     "values": false
@@ -1376,116 +1394,13 @@
                         "type": "influxdb",
                         "uid": "P951FEA4DE68E13C5"
                     },
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"memory_total\")\n    |> filter(fn: (r) => r.instrumentation == \"default\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"memory_total\"}))",
-                    "refId": "A"
-                },
-                {
-                    "datasource": {
-                        "type": "influxdb",
-                        "uid": "P951FEA4DE68E13C5"
-                    },
                     "hide": false,
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"memory_used\")\n    |> filter(fn: (r) => r.instrumentation == \"default\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"memory_used\"}))",
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"runtime_gc\")\n    |> filter(fn: (r) => r.instrumentation == \"default\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 5s, fn: last)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"runtime_gc\"}))",
                     "refId": "B"
                 }
             ],
-            "title": "Default Memory Usage % (p99)",
-            "transformations": [
-                {
-                    "id": "calculateField",
-                    "options": {
-                        "alias": "% Memory Used (Default)",
-                        "binary": {
-                            "left": "_value {instrumentation=\"default\", name=\"memory_used\"}",
-                            "operator": "/",
-                            "right": "_value {instrumentation=\"default\", name=\"memory_total\"}"
-                        },
-                        "mode": "binary",
-                        "reduce": {
-                            "reducer": "sum"
-                        }
-                    }
-                },
-                {
-                    "id": "calculateField",
-                    "options": {
-                        "alias": "% Memory Used (Manual)",
-                        "binary": {
-                            "left": "_value {instrumentation=\"manual\", name=\"memory_used\"}",
-                            "operator": "/",
-                            "right": "_value {instrumentation=\"manual\", name=\"memory_total\"}"
-                        },
-                        "mode": "binary",
-                        "reduce": {
-                            "reducer": "sum"
-                        }
-                    }
-                },
-                {
-                    "id": "calculateField",
-                    "options": {
-                        "alias": "% Memory Used (Orchestrion)",
-                        "binary": {
-                            "left": "_value {instrumentation=\"orchestrion\", name=\"memory_used\"}",
-                            "operator": "/",
-                            "right": "_value {instrumentation=\"orchestrion\", name=\"memory_total\"}"
-                        },
-                        "mode": "binary",
-                        "reduce": {
-                            "reducer": "sum"
-                        }
-                    }
-                },
-                {
-                    "id": "calculateField",
-                    "options": {
-                        "alias": "% Memory Used (ebpf)",
-                        "binary": {
-                            "left": "_value {instrumentation=\"ebpf\", name=\"memory_used\"}",
-                            "operator": "/",
-                            "right": "_value {instrumentation=\"ebpf\", name=\"memory_total\"}"
-                        },
-                        "mode": "binary",
-                        "reduce": {
-                            "reducer": "sum"
-                        }
-                    }
-                },
-                {
-                    "id": "organize",
-                    "options": {
-                        "excludeByName": {
-                            "_field {instrumentation=\"default\", name=\"memory_total\"}": true,
-                            "_field {instrumentation=\"default\", name=\"memory_used\"}": true,
-                            "_field {instrumentation=\"ebpf\", name=\"memory_total\"}": true,
-                            "_field {instrumentation=\"ebpf\", name=\"memory_used\"}": true,
-                            "_field {instrumentation=\"manual\", name=\"memory_total\"}": true,
-                            "_field {instrumentation=\"manual\", name=\"memory_used\"}": true,
-                            "_field {instrumentation=\"orchestrion\", name=\"memory_total\"}": true,
-                            "_field {instrumentation=\"orchestrion\", name=\"memory_used\"}": true,
-                            "_value {instrumentation=\"default\", name=\"memory_total\"}": true,
-                            "_value {instrumentation=\"default\", name=\"memory_used\"}": true,
-                            "_value {instrumentation=\"ebpf\", name=\"memory_total\"}": true,
-                            "_value {instrumentation=\"ebpf\", name=\"memory_used\"}": true,
-                            "_value {instrumentation=\"manual\", name=\"memory_total\"}": true,
-                            "_value {instrumentation=\"manual\", name=\"memory_used\"}": true,
-                            "_value {instrumentation=\"orchestrion\", name=\"memory_total\"}": true,
-                            "_value {instrumentation=\"orchestrion\", name=\"memory_used\"}": true,
-                            "value {instrumentation=\"default\", name=\"memory_total\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"default\", name=\"memory_used\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"ebpf\", name=\"memory_total\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"ebpf\", name=\"memory_used\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"manual\", name=\"memory_total\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"manual\", name=\"memory_used\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"orchestrion\", name=\"memory_total\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"orchestrion\", name=\"memory_used\", scenario=\"default\", status=\"200\", success=\"true\"}": true
-                        },
-                        "includeByName": {},
-                        "indexByName": {},
-                        "renameByName": {}
-                    }
-                }
-            ],
+            "title": "Number of GC Cycles (default)",
+            "transformations": [],
             "type": "gauge"
         },
         {
@@ -1517,17 +1432,17 @@
             "gridPos": {
                 "h": 7,
                 "w": 6,
-                "x": 18,
-                "y": 83
+                "x": 6,
+                "y": 63
             },
-            "id": 30,
+            "id": 32,
             "options": {
                 "minVizHeight": 75,
                 "minVizWidth": 75,
                 "orientation": "auto",
                 "reduceOptions": {
                     "calcs": [
-                        "mean"
+                        "lastNotNull"
                     ],
                     "fields": "",
                     "values": false
@@ -1543,116 +1458,13 @@
                         "type": "influxdb",
                         "uid": "P951FEA4DE68E13C5"
                     },
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"memory_total\")\n    |> filter(fn: (r) => r.instrumentation == \"manual\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"memory_total\"}))",
-                    "refId": "A"
-                },
-                {
-                    "datasource": {
-                        "type": "influxdb",
-                        "uid": "P951FEA4DE68E13C5"
-                    },
                     "hide": false,
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"memory_used\")\n    |> filter(fn: (r) => r.instrumentation == \"manual\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"memory_used\"}))",
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"runtime_gc\")\n    |> filter(fn: (r) => r.instrumentation == \"manual\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 5s, fn: last)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"runtime_gc\"}))",
                     "refId": "B"
                 }
             ],
-            "title": "Manual Memory Usage % (p99)",
-            "transformations": [
-                {
-                    "id": "calculateField",
-                    "options": {
-                        "alias": "% Memory Used (Default)",
-                        "binary": {
-                            "left": "_value {instrumentation=\"default\", name=\"memory_used\"}",
-                            "operator": "/",
-                            "right": "_value {instrumentation=\"default\", name=\"memory_total\"}"
-                        },
-                        "mode": "binary",
-                        "reduce": {
-                            "reducer": "sum"
-                        }
-                    }
-                },
-                {
-                    "id": "calculateField",
-                    "options": {
-                        "alias": "% Memory Used (Manual)",
-                        "binary": {
-                            "left": "_value {instrumentation=\"manual\", name=\"memory_used\"}",
-                            "operator": "/",
-                            "right": "_value {instrumentation=\"manual\", name=\"memory_total\"}"
-                        },
-                        "mode": "binary",
-                        "reduce": {
-                            "reducer": "sum"
-                        }
-                    }
-                },
-                {
-                    "id": "calculateField",
-                    "options": {
-                        "alias": "% Memory Used (Orchestrion)",
-                        "binary": {
-                            "left": "_value {instrumentation=\"orchestrion\", name=\"memory_used\"}",
-                            "operator": "/",
-                            "right": "_value {instrumentation=\"orchestrion\", name=\"memory_total\"}"
-                        },
-                        "mode": "binary",
-                        "reduce": {
-                            "reducer": "sum"
-                        }
-                    }
-                },
-                {
-                    "id": "calculateField",
-                    "options": {
-                        "alias": "% Memory Used (ebpf)",
-                        "binary": {
-                            "left": "_value {instrumentation=\"ebpf\", name=\"memory_used\"}",
-                            "operator": "/",
-                            "right": "_value {instrumentation=\"ebpf\", name=\"memory_total\"}"
-                        },
-                        "mode": "binary",
-                        "reduce": {
-                            "reducer": "sum"
-                        }
-                    }
-                },
-                {
-                    "id": "organize",
-                    "options": {
-                        "excludeByName": {
-                            "_field {instrumentation=\"default\", name=\"memory_total\"}": true,
-                            "_field {instrumentation=\"default\", name=\"memory_used\"}": true,
-                            "_field {instrumentation=\"ebpf\", name=\"memory_total\"}": true,
-                            "_field {instrumentation=\"ebpf\", name=\"memory_used\"}": true,
-                            "_field {instrumentation=\"manual\", name=\"memory_total\"}": true,
-                            "_field {instrumentation=\"manual\", name=\"memory_used\"}": true,
-                            "_field {instrumentation=\"orchestrion\", name=\"memory_total\"}": true,
-                            "_field {instrumentation=\"orchestrion\", name=\"memory_used\"}": true,
-                            "_value {instrumentation=\"default\", name=\"memory_total\"}": true,
-                            "_value {instrumentation=\"default\", name=\"memory_used\"}": true,
-                            "_value {instrumentation=\"ebpf\", name=\"memory_total\"}": true,
-                            "_value {instrumentation=\"ebpf\", name=\"memory_used\"}": true,
-                            "_value {instrumentation=\"manual\", name=\"memory_total\"}": true,
-                            "_value {instrumentation=\"manual\", name=\"memory_used\"}": true,
-                            "_value {instrumentation=\"orchestrion\", name=\"memory_total\"}": true,
-                            "_value {instrumentation=\"orchestrion\", name=\"memory_used\"}": true,
-                            "value {instrumentation=\"default\", name=\"memory_total\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"default\", name=\"memory_used\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"ebpf\", name=\"memory_total\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"ebpf\", name=\"memory_used\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"manual\", name=\"memory_total\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"manual\", name=\"memory_used\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"orchestrion\", name=\"memory_total\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"orchestrion\", name=\"memory_used\", scenario=\"default\", status=\"200\", success=\"true\"}": true
-                        },
-                        "includeByName": {},
-                        "indexByName": {},
-                        "renameByName": {}
-                    }
-                }
-            ],
+            "title": "Number of GC Cycles (manual)",
+            "transformations": [],
             "type": "gauge"
         },
         {
@@ -1685,16 +1497,16 @@
                 "h": 7,
                 "w": 6,
                 "x": 12,
-                "y": 90
+                "y": 63
             },
-            "id": 29,
+            "id": 34,
             "options": {
                 "minVizHeight": 75,
                 "minVizWidth": 75,
                 "orientation": "auto",
                 "reduceOptions": {
                     "calcs": [
-                        "mean"
+                        "lastNotNull"
                     ],
                     "fields": "",
                     "values": false
@@ -1710,116 +1522,13 @@
                         "type": "influxdb",
                         "uid": "P951FEA4DE68E13C5"
                     },
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"memory_total\")\n    |> filter(fn: (r) => r.instrumentation == \"orchestrion\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"memory_total\"}))",
-                    "refId": "A"
-                },
-                {
-                    "datasource": {
-                        "type": "influxdb",
-                        "uid": "P951FEA4DE68E13C5"
-                    },
                     "hide": false,
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"memory_used\")\n    |> filter(fn: (r) => r.instrumentation == \"orchestrion\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"memory_used\"}))",
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"runtime_gc\")\n    |> filter(fn: (r) => r.instrumentation == \"orchestrion\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 5s, fn: last)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"runtime_gc\"}))",
                     "refId": "B"
                 }
             ],
-            "title": "Orchestrion Memory Usage % (p99)",
-            "transformations": [
-                {
-                    "id": "calculateField",
-                    "options": {
-                        "alias": "% Memory Used (Default)",
-                        "binary": {
-                            "left": "_value {instrumentation=\"default\", name=\"memory_used\"}",
-                            "operator": "/",
-                            "right": "_value {instrumentation=\"default\", name=\"memory_total\"}"
-                        },
-                        "mode": "binary",
-                        "reduce": {
-                            "reducer": "sum"
-                        }
-                    }
-                },
-                {
-                    "id": "calculateField",
-                    "options": {
-                        "alias": "% Memory Used (Manual)",
-                        "binary": {
-                            "left": "_value {instrumentation=\"manual\", name=\"memory_used\"}",
-                            "operator": "/",
-                            "right": "_value {instrumentation=\"manual\", name=\"memory_total\"}"
-                        },
-                        "mode": "binary",
-                        "reduce": {
-                            "reducer": "sum"
-                        }
-                    }
-                },
-                {
-                    "id": "calculateField",
-                    "options": {
-                        "alias": "% Memory Used (Orchestrion)",
-                        "binary": {
-                            "left": "_value {instrumentation=\"orchestrion\", name=\"memory_used\"}",
-                            "operator": "/",
-                            "right": "_value {instrumentation=\"orchestrion\", name=\"memory_total\"}"
-                        },
-                        "mode": "binary",
-                        "reduce": {
-                            "reducer": "sum"
-                        }
-                    }
-                },
-                {
-                    "id": "calculateField",
-                    "options": {
-                        "alias": "% Memory Used (ebpf)",
-                        "binary": {
-                            "left": "_value {instrumentation=\"ebpf\", name=\"memory_used\"}",
-                            "operator": "/",
-                            "right": "_value {instrumentation=\"ebpf\", name=\"memory_total\"}"
-                        },
-                        "mode": "binary",
-                        "reduce": {
-                            "reducer": "sum"
-                        }
-                    }
-                },
-                {
-                    "id": "organize",
-                    "options": {
-                        "excludeByName": {
-                            "_field {instrumentation=\"default\", name=\"memory_total\"}": true,
-                            "_field {instrumentation=\"default\", name=\"memory_used\"}": true,
-                            "_field {instrumentation=\"ebpf\", name=\"memory_total\"}": true,
-                            "_field {instrumentation=\"ebpf\", name=\"memory_used\"}": true,
-                            "_field {instrumentation=\"manual\", name=\"memory_total\"}": true,
-                            "_field {instrumentation=\"manual\", name=\"memory_used\"}": true,
-                            "_field {instrumentation=\"orchestrion\", name=\"memory_total\"}": true,
-                            "_field {instrumentation=\"orchestrion\", name=\"memory_used\"}": true,
-                            "_value {instrumentation=\"default\", name=\"memory_total\"}": true,
-                            "_value {instrumentation=\"default\", name=\"memory_used\"}": true,
-                            "_value {instrumentation=\"ebpf\", name=\"memory_total\"}": true,
-                            "_value {instrumentation=\"ebpf\", name=\"memory_used\"}": true,
-                            "_value {instrumentation=\"manual\", name=\"memory_total\"}": true,
-                            "_value {instrumentation=\"manual\", name=\"memory_used\"}": true,
-                            "_value {instrumentation=\"orchestrion\", name=\"memory_total\"}": true,
-                            "_value {instrumentation=\"orchestrion\", name=\"memory_used\"}": true,
-                            "value {instrumentation=\"default\", name=\"memory_total\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"default\", name=\"memory_used\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"ebpf\", name=\"memory_total\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"ebpf\", name=\"memory_used\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"manual\", name=\"memory_total\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"manual\", name=\"memory_used\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"orchestrion\", name=\"memory_total\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"orchestrion\", name=\"memory_used\", scenario=\"default\", status=\"200\", success=\"true\"}": true
-                        },
-                        "includeByName": {},
-                        "indexByName": {},
-                        "renameByName": {}
-                    }
-                }
-            ],
+            "title": "Number of GC Cycles (Orchestrion)",
+            "transformations": [],
             "type": "gauge"
         },
         {
@@ -1852,16 +1561,16 @@
                 "h": 7,
                 "w": 6,
                 "x": 18,
-                "y": 90
+                "y": 63
             },
-            "id": 28,
+            "id": 33,
             "options": {
                 "minVizHeight": 75,
                 "minVizWidth": 75,
                 "orientation": "auto",
                 "reduceOptions": {
                     "calcs": [
-                        "mean"
+                        "lastNotNull"
                     ],
                     "fields": "",
                     "values": false
@@ -1877,29 +1586,86 @@
                         "type": "influxdb",
                         "uid": "P951FEA4DE68E13C5"
                     },
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"memory_total\")\n    |> filter(fn: (r) => r.instrumentation == \"ebpf\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"memory_total\"}))",
-                    "refId": "A"
+                    "hide": false,
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"runtime_gc\")\n    |> filter(fn: (r) => r.instrumentation == \"ebpf\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 5s, fn: last)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"runtime_gc\"}))",
+                    "refId": "B"
+                }
+            ],
+            "title": "Number of GC Cycles (eBPF)",
+            "transformations": [],
+            "type": "gauge"
+        },
+        {
+            "datasource": {
+                "type": "influxdb",
+                "uid": "P951FEA4DE68E13C5"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": null
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unitScale": true
                 },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 24,
+                "x": 0,
+                "y": 70
+            },
+            "id": 36,
+            "options": {
+                "minVizHeight": 75,
+                "minVizWidth": 75,
+                "orientation": "auto",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showThresholdLabels": false,
+                "showThresholdMarkers": true,
+                "sizing": "auto"
+            },
+            "pluginVersion": "10.3.3",
+            "targets": [
                 {
                     "datasource": {
                         "type": "influxdb",
                         "uid": "P951FEA4DE68E13C5"
                     },
-                    "hide": false,
-                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"memory_used\")\n    |> filter(fn: (r) => r.instrumentation == \"ebpf\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> aggregateWindow(every: 1s, fn: (column, tables=<-) => \n        tables |> quantile(q: 0.99, column: column), createEmpty: false)\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"memory_used\"}))",
-                    "refId": "B"
+                    "query": "from(bucket: \"k6testing\")\n    |> range(start: -1h)\n    |> filter(fn: (r) => r._measurement == \"runtime_total_stw_pause\")\n    |> group(columns: [\"instrumentation\", \"_measurement\"], mode: \"by\")\n    |> drop(columns: [\"_start\", \"_stop\"])\n    |> map(fn: (r) => ({r with _field: \"runtime_total_stw_pause\"}))",
+                    "refId": "A"
                 }
             ],
-            "title": "eBPF Memory Usage % (p99)",
+            "title": "Cumulative STW Pauses (ms)",
             "transformations": [
                 {
                     "id": "calculateField",
                     "options": {
-                        "alias": "% Memory Used (Default)",
+                        "alias": "default STW",
                         "binary": {
-                            "left": "_value {instrumentation=\"default\", name=\"memory_used\"}",
+                            "left": "_value {instrumentation=\"default\", name=\"runtime_total_stw_pause\"}",
                             "operator": "/",
-                            "right": "_value {instrumentation=\"default\", name=\"memory_total\"}"
+                            "right": "1000000"
                         },
                         "mode": "binary",
                         "reduce": {
@@ -1910,11 +1676,11 @@
                 {
                     "id": "calculateField",
                     "options": {
-                        "alias": "% Memory Used (Manual)",
+                        "alias": "manual STW",
                         "binary": {
-                            "left": "_value {instrumentation=\"manual\", name=\"memory_used\"}",
+                            "left": "_value {instrumentation=\"manual\", name=\"runtime_total_stw_pause\"}",
                             "operator": "/",
-                            "right": "_value {instrumentation=\"manual\", name=\"memory_total\"}"
+                            "right": "1000000"
                         },
                         "mode": "binary",
                         "reduce": {
@@ -1925,11 +1691,11 @@
                 {
                     "id": "calculateField",
                     "options": {
-                        "alias": "% Memory Used (Orchestrion)",
+                        "alias": "orchestrion STW",
                         "binary": {
-                            "left": "_value {instrumentation=\"orchestrion\", name=\"memory_used\"}",
+                            "left": "_value {instrumentation=\"orchestrion\", name=\"runtime_total_stw_pause\"}",
                             "operator": "/",
-                            "right": "_value {instrumentation=\"orchestrion\", name=\"memory_total\"}"
+                            "right": "1000000"
                         },
                         "mode": "binary",
                         "reduce": {
@@ -1940,11 +1706,11 @@
                 {
                     "id": "calculateField",
                     "options": {
-                        "alias": "% Memory Used (ebpf)",
+                        "alias": "eBPF STW",
                         "binary": {
-                            "left": "_value {instrumentation=\"ebpf\", name=\"memory_used\"}",
+                            "left": "_value {instrumentation=\"ebpf\", name=\"runtime_total_stw_pause\"}",
                             "operator": "/",
-                            "right": "_value {instrumentation=\"ebpf\", name=\"memory_total\"}"
+                            "right": "1000000"
                         },
                         "mode": "binary",
                         "reduce": {
@@ -1953,37 +1719,17 @@
                     }
                 },
                 {
-                    "id": "organize",
+                    "id": "filterFieldsByName",
                     "options": {
-                        "excludeByName": {
-                            "_field {instrumentation=\"default\", name=\"memory_total\"}": true,
-                            "_field {instrumentation=\"default\", name=\"memory_used\"}": true,
-                            "_field {instrumentation=\"ebpf\", name=\"memory_total\"}": true,
-                            "_field {instrumentation=\"ebpf\", name=\"memory_used\"}": true,
-                            "_field {instrumentation=\"manual\", name=\"memory_total\"}": true,
-                            "_field {instrumentation=\"manual\", name=\"memory_used\"}": true,
-                            "_field {instrumentation=\"orchestrion\", name=\"memory_total\"}": true,
-                            "_field {instrumentation=\"orchestrion\", name=\"memory_used\"}": true,
-                            "_value {instrumentation=\"default\", name=\"memory_total\"}": true,
-                            "_value {instrumentation=\"default\", name=\"memory_used\"}": true,
-                            "_value {instrumentation=\"ebpf\", name=\"memory_total\"}": true,
-                            "_value {instrumentation=\"ebpf\", name=\"memory_used\"}": true,
-                            "_value {instrumentation=\"manual\", name=\"memory_total\"}": true,
-                            "_value {instrumentation=\"manual\", name=\"memory_used\"}": true,
-                            "_value {instrumentation=\"orchestrion\", name=\"memory_total\"}": true,
-                            "_value {instrumentation=\"orchestrion\", name=\"memory_used\"}": true,
-                            "value {instrumentation=\"default\", name=\"memory_total\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"default\", name=\"memory_used\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"ebpf\", name=\"memory_total\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"ebpf\", name=\"memory_used\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"manual\", name=\"memory_total\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"manual\", name=\"memory_used\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"orchestrion\", name=\"memory_total\", scenario=\"default\", status=\"200\", success=\"true\"}": true,
-                            "value {instrumentation=\"orchestrion\", name=\"memory_used\", scenario=\"default\", status=\"200\", success=\"true\"}": true
-                        },
-                        "includeByName": {},
-                        "indexByName": {},
-                        "renameByName": {}
+                        "include": {
+                            "names": [
+                                "success {instrumentation=\"manual\", name=\"runtime_total_stw_pause\"}",
+                                "default STW",
+                                "manual STW",
+                                "orchestrion STW",
+                                "eBPF STW"
+                            ]
+                        }
                     }
                 }
             ],
@@ -2056,7 +1802,7 @@
                 "h": 12,
                 "w": 24,
                 "x": 0,
-                "y": 97
+                "y": 78
             },
             "id": 14,
             "options": {
@@ -2353,7 +2099,7 @@
             "type": "timeseries"
         }
     ],
-    "refresh": "5s",
+    "refresh": false,
     "schemaVersion": 39,
     "tags": [
         "k6",
