@@ -398,6 +398,8 @@ for INSTRUMENTATION in "${TESTS_TO_RUN[@]}"; do
 		log_error "Failed to get server port after 30 attempts"
 		echo "❌ Failed to get server port. Server output:"
 		cat "$SERVER_OUTPUT" 2>/dev/null || echo "No output file found"
+		echo "--- Checking for 'SERVER_PORT=' pattern ---"
+    	grep "SERVER_PORT=" "$SERVER_OUTPUT" 2>/dev/null || echo "Pattern not found"
 		cleanup
 		exit 1
 	fi
