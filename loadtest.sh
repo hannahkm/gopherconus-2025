@@ -441,7 +441,7 @@ for INSTRUMENTATION in "${TESTS_TO_RUN[@]}"; do
 	# Stop eBPF services if they were started for this test
 	if [[ "$INSTRUMENTATION" == "ebpf" && "$EBPF_SERVICES_STARTED" == "true" ]]; then
 		echo "Stopping eBPF auto-instrumentation services..."
-		$DOCKER_COMPOSE --profile with-auto-instrumentation stop
+		$DOCKER_COMPOSE stop go-auto
 		EBPF_SERVICES_STARTED=false
 	fi
 
