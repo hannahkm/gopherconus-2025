@@ -40,6 +40,8 @@ type RuntimeStats struct {
 	Goroutines    uint64 `json:"goroutines"`
 	GCs           uint64 `json:"gc"`
 	TotalSTWPause uint64 `json:"total_pause"`
+	StackInUse    uint64 `json:"stack_in_use"`
+	StackSys      uint64 `json:"stack_sys"`
 }
 
 func getSystemStats() *SystemStats {
@@ -77,6 +79,8 @@ func getSystemStats() *SystemStats {
 			Goroutines:    uint64(runtime.NumGoroutine()),
 			GCs:           uint64(ms.NumGC),
 			TotalSTWPause: ms.PauseTotalNs,
+			StackInUse:    ms.StackInuse,
+			StackSys:      ms.StackSys,
 		},
 	}
 }

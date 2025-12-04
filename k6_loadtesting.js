@@ -17,6 +17,8 @@ const uptime = new Counter('uptime_milliseconds');
 const runtimeGoroutines = new Trend('runtime_goroutines');
 const runtimeGCs = new Trend('runtime_gc');
 const runtimeTotalSTWPause = new Trend('runtime_total_stw_pause');
+const runtimeStackInUse = new Trend('runtime_stack_in_use');
+const runtimeStackSys = new Trend('runtime_stack_sys');
 
 // Load testing scenarios
 export const options = {
@@ -93,6 +95,8 @@ export default function () {
         runtimeGoroutines.add(systemInfo.runtime.goroutines, tags);
         runtimeGCs.add(systemInfo.runtime.gc, tags);
         runtimeTotalSTWPause.add(systemInfo.runtime.total_pause, tags);
+        runtimeStackInUse.add(systemInfo.runtime.stack_in_use, tags);
+        runtimeStackSys.add(systemInfo.runtime.stack_sys, tags);
     }
 
     numRequests.add(1, tags);
