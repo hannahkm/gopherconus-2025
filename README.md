@@ -83,11 +83,13 @@ Running any load test will start up Grafana at `localhost:3000` where you can fi
 
 ### Viewing Data
 
-By default, metrics and traces will be sent to Datadog. Remember to set your `DD_API_KEY` in `.env` to ensure traces are sent properly. If you are unable to use Datadog, you may instead send metrics and traces to Grafana using InfluxDB by making the following edits:
+By default, metrics and traces will be sent to Datadog. After running `./loadtest.sh`, navigate to your Datadog account and create a dashboard. To quick start, you can import the dashboard JSON available in [datadog_dashboard.json](./datadog_dashboard.json). Remember to set your `DD_API_KEY` in `.env` to ensure traces are sent properly. 
 
-1. In `otel-collector-config.yaml`, comment out the Datadog exporter
-2. In `otel-collector-config.yaml`, set the exporter to `[otlp]` for traces and to `[prometheus]` for metrics.
-3. In `loadtest.sh`, uncomment out the lines for InfluxDB and comment out the lines for OpenTelemetry.
+If you are unable to use Datadog, you may instead send metrics and traces to Grafana using InfluxDB by making the following edits:
+
+1. In [otel-collector-config.yaml](./otel-collector-config.yaml), comment out the Datadog exporter
+2. In [otel-collector-config.yaml](./otel-collector-config.yaml), set the exporter to `[otlp]` for traces and to `[prometheus]` for metrics.
+3. In [loadtest.sh](./loadtest.sh), uncomment out the lines for InfluxDB and comment out the lines for OpenTelemetry.
 
 The Grafana dashboard will be hosted at `localhost:3000`.
 

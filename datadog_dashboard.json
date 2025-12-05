@@ -1,0 +1,507 @@
+{
+    "title": "GopherCon Dashboard",
+    "description": null,
+    "widgets": [
+        {
+            "id": 436270615072288,
+            "definition": {
+                "title": "Successful and Failed HTTP Requests",
+                "title_size": "16",
+                "title_align": "left",
+                "show_legend": true,
+                "legend_layout": "auto",
+                "legend_columns": [
+                    "avg",
+                    "min",
+                    "max",
+                    "value",
+                    "sum"
+                ],
+                "type": "timeseries",
+                "requests": [
+                    {
+                        "response_format": "timeseries",
+                        "queries": [
+                            {
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "query": "avg:k6_http_requests_success{*} by {service}.as_count()"
+                            },
+                            {
+                                "data_source": "metrics",
+                                "name": "query2",
+                                "query": "avg:k6_http_requests_failed{*} by {service}.as_count()"
+                            }
+                        ],
+                        "formulas": [
+                            {
+                                "formula": "query1"
+                            },
+                            {
+                                "formula": "query2"
+                            }
+                        ],
+                        "style": {
+                            "palette": "dog_classic",
+                            "order_by": "values",
+                            "line_type": "solid",
+                            "line_width": "normal"
+                        },
+                        "display_type": "bars"
+                    }
+                ]
+            },
+            "layout": {
+                "x": 0,
+                "y": 0,
+                "width": 4,
+                "height": 3
+            }
+        },
+        {
+            "id": 2748411992591598,
+            "definition": {
+                "title": "CPU Usage by Scenario",
+                "title_size": "16",
+                "title_align": "left",
+                "type": "query_table",
+                "requests": [
+                    {
+                        "response_format": "scalar",
+                        "queries": [
+                            {
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "query": "avg:k6_cpu_user{*} by {service}",
+                                "aggregator": "avg"
+                            },
+                            {
+                                "data_source": "metrics",
+                                "name": "query2",
+                                "query": "avg:k6_cpu_idle{*} by {service}",
+                                "aggregator": "avg"
+                            },
+                            {
+                                "data_source": "metrics",
+                                "name": "query3",
+                                "query": "avg:k6_cpu_system{*} by {service}",
+                                "aggregator": "avg"
+                            },
+                            {
+                                "data_source": "metrics",
+                                "name": "query4",
+                                "query": "avg:k6_cpu_total{*} by {service}",
+                                "aggregator": "avg"
+                            }
+                        ],
+                        "sort": {
+                            "count": 500,
+                            "order_by": [
+                                {
+                                    "type": "formula",
+                                    "index": 0,
+                                    "order": "desc"
+                                }
+                            ]
+                        },
+                        "formulas": [
+                            {
+                                "cell_display_mode": "bar",
+                                "alias": "User",
+                                "formula": "query1"
+                            },
+                            {
+                                "cell_display_mode": "bar",
+                                "alias": "Idle",
+                                "formula": "query2"
+                            },
+                            {
+                                "cell_display_mode": "bar",
+                                "alias": "System",
+                                "formula": "query3"
+                            },
+                            {
+                                "cell_display_mode": "bar",
+                                "alias": "Total",
+                                "formula": "query4"
+                            }
+                        ]
+                    }
+                ],
+                "has_search_bar": "auto"
+            },
+            "layout": {
+                "x": 4,
+                "y": 0,
+                "width": 8,
+                "height": 3
+            }
+        },
+        {
+            "id": 6250993459491125,
+            "definition": {
+                "title": "HTTP Req Durations (ms)",
+                "title_size": "16",
+                "title_align": "left",
+                "type": "toplist",
+                "requests": [
+                    {
+                        "queries": [
+                            {
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "query": "avg:k6_http_request_duration{*} by {service}",
+                                "aggregator": "avg"
+                            }
+                        ],
+                        "response_format": "scalar",
+                        "formulas": [
+                            {
+                                "formula": "query1"
+                            }
+                        ],
+                        "sort": {
+                            "count": 10,
+                            "order_by": [
+                                {
+                                    "type": "formula",
+                                    "index": 0,
+                                    "order": "desc"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "style": {
+                    "display": {
+                        "type": "stacked",
+                        "legend": "automatic"
+                    }
+                }
+            },
+            "layout": {
+                "x": 0,
+                "y": 3,
+                "width": 4,
+                "height": 3
+            }
+        },
+        {
+            "id": 5816816647232967,
+            "definition": {
+                "title": "Avg Number of Goroutines",
+                "title_size": "16",
+                "title_align": "left",
+                "time": {},
+                "type": "toplist",
+                "requests": [
+                    {
+                        "queries": [
+                            {
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "query": "avg:k6_runtime_goroutines{*} by {service}",
+                                "aggregator": "avg"
+                            }
+                        ],
+                        "response_format": "scalar",
+                        "formulas": [
+                            {
+                                "formula": "query1"
+                            }
+                        ],
+                        "sort": {
+                            "count": 10,
+                            "order_by": [
+                                {
+                                    "type": "formula",
+                                    "index": 0,
+                                    "order": "desc"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "style": {
+                    "display": {
+                        "type": "stacked"
+                    },
+                    "palette": "dog_classic"
+                }
+            },
+            "layout": {
+                "x": 4,
+                "y": 3,
+                "width": 4,
+                "height": 3
+            }
+        },
+        {
+            "id": 7394395895029990,
+            "definition": {
+                "title": "Cumulative STW Pauses (ms)",
+                "title_size": "16",
+                "title_align": "left",
+                "time": {},
+                "type": "toplist",
+                "requests": [
+                    {
+                        "queries": [
+                            {
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "query": "avg:k6_runtime_total_stw_pause{*} by {service}",
+                                "aggregator": "avg"
+                            }
+                        ],
+                        "response_format": "scalar",
+                        "formulas": [
+                            {
+                                "formula": "query1 / 1000000"
+                            }
+                        ],
+                        "sort": {
+                            "count": 10,
+                            "order_by": [
+                                {
+                                    "type": "formula",
+                                    "index": 0,
+                                    "order": "desc"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "style": {
+                    "display": {
+                        "type": "stacked",
+                        "legend": "automatic"
+                    }
+                }
+            },
+            "layout": {
+                "x": 8,
+                "y": 3,
+                "width": 4,
+                "height": 3
+            }
+        },
+        {
+            "id": 1127292017101200,
+            "definition": {
+                "title": "Memory Usage by Scenario (%)",
+                "title_size": "16",
+                "title_align": "left",
+                "show_legend": true,
+                "legend_layout": "auto",
+                "legend_columns": [
+                    "avg",
+                    "min",
+                    "max",
+                    "value",
+                    "sum"
+                ],
+                "type": "timeseries",
+                "requests": [
+                    {
+                        "response_format": "timeseries",
+                        "queries": [
+                            {
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "query": "avg:k6_memory_heap_allocated{*} by {service}.rollup(avg, 1)"
+                            },
+                            {
+                                "data_source": "metrics",
+                                "name": "query2",
+                                "query": "avg:k6_memory_heap_idle{*} by {service}.rollup(avg, 1)"
+                            },
+                            {
+                                "data_source": "metrics",
+                                "name": "query3",
+                                "query": "avg:k6_memory_heap_system{*} by {service}.rollup(avg, 1)"
+                            }
+                        ],
+                        "formulas": [
+                            {
+                                "alias": "% Allocated",
+                                "formula": "(query1 / query3) * 100"
+                            },
+                            {
+                                "alias": "% Idle",
+                                "formula": "(query2 / query3) * 100"
+                            }
+                        ],
+                        "style": {
+                            "palette": "dog_classic",
+                            "order_by": "values",
+                            "line_type": "solid",
+                            "line_width": "normal"
+                        },
+                        "display_type": "line"
+                    }
+                ]
+            },
+            "layout": {
+                "x": 0,
+                "y": 6,
+                "width": 4,
+                "height": 4
+            }
+        },
+        {
+            "id": 6853917484808630,
+            "definition": {
+                "title": "Live Goroutines by Service",
+                "title_size": "16",
+                "title_align": "left",
+                "show_legend": true,
+                "legend_layout": "auto",
+                "legend_columns": [
+                    "avg",
+                    "min",
+                    "max",
+                    "value",
+                    "sum"
+                ],
+                "time": {},
+                "type": "timeseries",
+                "requests": [
+                    {
+                        "formulas": [
+                            {
+                                "number_format": {
+                                    "unit": {
+                                        "type": "custom_unit_label",
+                                        "label": "goroutine"
+                                    }
+                                },
+                                "alias": "Avg",
+                                "formula": "query1"
+                            },
+                            {
+                                "number_format": {
+                                    "unit": {
+                                        "type": "custom_unit_label",
+                                        "label": "goroutine"
+                                    }
+                                },
+                                "alias": "Max",
+                                "formula": "query2"
+                            },
+                            {
+                                "number_format": {
+                                    "unit": {
+                                        "type": "custom_unit_label",
+                                        "label": "goroutine"
+                                    }
+                                },
+                                "alias": "Min",
+                                "formula": "query3"
+                            }
+                        ],
+                        "queries": [
+                            {
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "query": "avg:k6_runtime_goroutines{*} by {service}.fill(null)"
+                            },
+                            {
+                                "data_source": "metrics",
+                                "name": "query2",
+                                "query": "max:k6_runtime_goroutines{*} by {service}.fill(null)"
+                            },
+                            {
+                                "data_source": "metrics",
+                                "name": "query3",
+                                "query": "min:k6_runtime_goroutines{*} by {service}.fill(null)"
+                            }
+                        ],
+                        "response_format": "timeseries",
+                        "style": {
+                            "palette": "dog_classic",
+                            "line_type": "solid",
+                            "line_width": "normal"
+                        },
+                        "display_type": "line"
+                    }
+                ]
+            },
+            "layout": {
+                "x": 4,
+                "y": 6,
+                "width": 4,
+                "height": 4
+            }
+        },
+        {
+            "id": 8158513172788892,
+            "definition": {
+                "title": "Garbage Collections Per Second",
+                "title_size": "16",
+                "title_align": "left",
+                "show_legend": true,
+                "legend_layout": "auto",
+                "legend_columns": [
+                    "avg",
+                    "min",
+                    "max",
+                    "value",
+                    "sum"
+                ],
+                "type": "timeseries",
+                "requests": [
+                    {
+                        "formulas": [
+                            {
+                                "number_format": {
+                                    "unit": {
+                                        "type": "canonical_unit",
+                                        "unit_name": "garbage collection",
+                                        "per_unit_name": "second"
+                                    }
+                                },
+                                "alias": "Avg",
+                                "style": {
+                                    "palette": "classic",
+                                    "palette_index": 1
+                                },
+                                "formula": "query1 / query2"
+                            }
+                        ],
+                        "queries": [
+                            {
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "query": "sum:k6_runtime_gc{*} by {service}.as_count()"
+                            },
+                            {
+                                "data_source": "metrics",
+                                "name": "query2",
+                                "query": "avg:k6_runtime_gc{*} by {service}"
+                            }
+                        ],
+                        "response_format": "timeseries",
+                        "style": {
+                            "palette": "dog_classic",
+                            "line_type": "solid",
+                            "line_width": "normal"
+                        },
+                        "display_type": "line"
+                    }
+                ]
+            },
+            "layout": {
+                "x": 8,
+                "y": 6,
+                "width": 4,
+                "height": 4
+            }
+        }
+    ],
+    "template_variables": [],
+    "layout_type": "ordered",
+    "notify_list": [],
+    "reflow_type": "fixed",
+    "pause_auto_refresh": false
+}
