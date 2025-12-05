@@ -34,6 +34,9 @@ type MemoryStats struct {
 	MemoryHeapSystem    uint64 `json:"memory_system"`
 	MemoryHeapAllocated uint64 `json:"memory_heap_allocated"`
 	MemoryHeapIdle      uint64 `json:"memory_heap_idle"`
+	MemoryHeapInuse     uint64 `json:"memory_heap_inuse"`
+	MemoryHeapReleased  uint64 `json:"memory_heap_released"`
+	MemoryHeapObjects   uint64 `json:"memory_heap_objects"`
 }
 
 type RuntimeStats struct {
@@ -71,6 +74,9 @@ func getSystemStats() *SystemStats {
 			MemoryHeapSystem:    ms.HeapSys,
 			MemoryHeapAllocated: ms.HeapAlloc,
 			MemoryHeapIdle:      ms.HeapIdle,
+			MemoryHeapInuse:     ms.HeapInuse,
+			MemoryHeapReleased:  ms.HeapReleased,
+			MemoryHeapObjects:   ms.HeapObjects,
 		},
 		Uptime: UptimeStats{
 			Milliseconds: uint64(uptime.Milliseconds()),
