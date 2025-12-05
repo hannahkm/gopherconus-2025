@@ -10,9 +10,18 @@ const cpuUser = new Trend('cpu_user');
 const cpuSystem = new Trend('cpu_system');
 const cpuIdle = new Trend('cpu_idle');
 const cpuTotal = new Trend('cpu_total');
-const memoryTotal = new Trend('memory_total');
-const memoryUsed = new Trend('memory_used');
-const uptime = new Counter('uptime_milliseconds')
+const memoryHeapSystem = new Trend('memory_heap_system');
+const memoryHeapAllocated = new Trend('memory_heap_allocated');
+const memoryHeapIdle = new Trend('memory_heap_idle');
+const memoryHeapInuse = new Trend('memory_heap_inuse');
+const memoryHeapReleased = new Trend('memory_heap_released');
+const memoryHeapObjects = new Trend('memory_heap_objects');
+const uptime = new Counter('uptime_milliseconds');
+const runtimeGoroutines = new Trend('runtime_goroutines');
+const runtimeGCs = new Trend('runtime_gc');
+const runtimeTotalSTWPause = new Trend('runtime_total_stw_pause');
+const runtimeStackInUse = new Trend('runtime_stack_in_use');
+const runtimeStackSys = new Trend('runtime_stack_sys');
 
 // Load testing scenarios
 export const options = {
@@ -82,9 +91,18 @@ export default function () {
         cpuSystem.add(systemInfo.cpu.system, tags);
         cpuIdle.add(systemInfo.cpu.idle, tags);
         cpuTotal.add(systemInfo.cpu.total, tags);
-        memoryTotal.add(systemInfo.memory.total, tags);
-        memoryUsed.add(systemInfo.memory.used, tags);
+        memoryHeapSystem.add(systemInfo.memory.memory_system, tags);
+        memoryHeapAllocated.add(systemInfo.memory.memory_heap_allocated, tags);
+        memoryHeapIdle.add(systemInfo.memory.memory_heap_idle, tags);
+        memoryHeapInuse.add(systemInfo.memory.memory_heap_inuse, tags);
+        memoryHeapReleased.add(systemInfo.memory.memory_heap_released, tags);
+        memoryHeapObjects.add(systemInfo.memory.memory_heap_objects, tags);
         uptime.add(systemInfo.uptime.milliseconds, tags);
+        runtimeGoroutines.add(systemInfo.runtime.goroutines, tags);
+        runtimeGCs.add(systemInfo.runtime.gc, tags);
+        runtimeTotalSTWPause.add(systemInfo.runtime.total_pause, tags);
+        runtimeStackInUse.add(systemInfo.runtime.stack_in_use, tags);
+        runtimeStackSys.add(systemInfo.runtime.stack_sys, tags);
     }
 
     numRequests.add(1, tags);

@@ -5,16 +5,17 @@ package handlers
 
 import (
 	"fmt"
+	"runtime"
 
 	"github.com/mackerelio/go-osstat/cpu"
-	"github.com/mackerelio/go-osstat/memory"
 	"github.com/mackerelio/go-osstat/uptime"
 )
 
 type SystemStats struct {
-	CPU    CPUStats    `json:"cpu"`
-	Memory MemoryStats `json:"memory"`
-	Uptime UptimeStats `json:"uptime"`
+	CPU     CPUStats     `json:"cpu"`
+	Memory  MemoryStats  `json:"memory"`
+	Uptime  UptimeStats  `json:"uptime"`
+	Runtime RuntimeStats `json:"runtime"`
 }
 
 type CPUStats struct {
@@ -24,13 +25,26 @@ type CPUStats struct {
 	Total  uint64 `json:"total"`
 }
 
-type MemoryStats struct {
-	Total uint64 `json:"total"`
-	Used  uint64 `json:"used"`
-}
-
 type UptimeStats struct {
 	Milliseconds uint64 `json:"milliseconds"`
+}
+
+type MemoryStats struct {
+	MemoryAllocated     uint64 `json:"memory_allocated"`
+	MemoryHeapSystem    uint64 `json:"memory_system"`
+	MemoryHeapAllocated uint64 `json:"memory_heap_allocated"`
+	MemoryHeapIdle      uint64 `json:"memory_heap_idle"`
+	MemoryHeapInuse     uint64 `json:"memory_heap_inuse"`
+	MemoryHeapReleased  uint64 `json:"memory_heap_released"`
+	MemoryHeapObjects   uint64 `json:"memory_heap_objects"`
+}
+
+type RuntimeStats struct {
+	Goroutines    uint64 `json:"goroutines"`
+	GCs           uint64 `json:"gc"`
+	TotalSTWPause uint64 `json:"total_pause"`
+	StackInUse    uint64 `json:"stack_in_use"`
+	StackSys      uint64 `json:"stack_sys"`
 }
 
 func getSystemStats() *SystemStats {
@@ -40,17 +54,14 @@ func getSystemStats() *SystemStats {
 		return nil
 	}
 
-	memory, err := memory.Get()
-	if err != nil {
-		fmt.Printf("error getting memory stats: %s\n", err)
-		return nil
-	}
-
 	uptime, err := uptime.Get()
 	if err != nil {
 		fmt.Printf("error getting network stats: %s\n", err)
 		return nil
 	}
+
+	var ms runtime.MemStats
+	runtime.ReadMemStats(&ms)
 
 	return &SystemStats{
 		CPU: CPUStats{
@@ -60,11 +71,22 @@ func getSystemStats() *SystemStats {
 			Total:  cpu.Total,
 		},
 		Memory: MemoryStats{
-			Total: memory.Total,
-			Used:  memory.Used,
+			MemoryHeapSystem:    ms.HeapSys,
+			MemoryHeapAllocated: ms.HeapAlloc,
+			MemoryHeapIdle:      ms.HeapIdle,
+			MemoryHeapInuse:     ms.HeapInuse,
+			MemoryHeapReleased:  ms.HeapReleased,
+			MemoryHeapObjects:   ms.HeapObjects,
 		},
 		Uptime: UptimeStats{
 			Milliseconds: uint64(uptime.Milliseconds()),
+		},
+		Runtime: RuntimeStats{
+			Goroutines:    uint64(runtime.NumGoroutine()),
+			GCs:           uint64(ms.NumGC),
+			TotalSTWPause: ms.PauseTotalNs,
+			StackInUse:    ms.StackInuse,
+			StackSys:      ms.StackSys,
 		},
 	}
 }
