@@ -78,8 +78,7 @@ The script automatically validates dependencies and services via `pre-flight-che
 
 Running any load test will start up Grafana at `localhost:3000` where you can find the 'k6 Load Testing Results' dashboard.
 
-![system info](./example_img/sample_dashboard1.png)
-![testing info](./example_img/sample_dashboard2.png)
+![sample dashboard](./example_img/datadog_dashboard.png)
 
 ### Viewing Data
 
