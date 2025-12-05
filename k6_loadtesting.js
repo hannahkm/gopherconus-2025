@@ -121,9 +121,4 @@ export default function () {
         numFailure.add(1, tags);
     }
     duration.add(res.timings.duration, tags);
-
-    // brief sleep between iterations, unless we are intentionally running a heavy load test
-    if (__ENV.SCENARIO !== 'heavyLoad') {
-        sleep(2);
-    }
 }
