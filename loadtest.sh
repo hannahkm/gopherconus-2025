@@ -433,10 +433,15 @@ for INSTRUMENTATION in "${TESTS_TO_RUN[@]}"; do
 	# Run load tests
 	echo "🚀 Starting k6 load test..."
 
-	# Build InfluxDB URL for the xk6-influxdb extension
-	INFLUXDB_URL="http://localhost:8086?bucket=${K6_INFLUXDB_BUCKET}&organization=${K6_INFLUXDB_ORGANIZATION}&token=${K6_INFLUXDB_TOKEN}"
-	echo "Running k6 with InfluxDB extension..."
-	"$K6_BINARY" run --out "xk6-influxdb=${INFLUXDB_URL}" k6_loadtesting.js
+	# If you would prefer to use Grafana with InfluxDB, uncomment the following lines instead:
+	## Build InfluxDB URL for the xk6-influxdb extension
+	# INFLUXDB_URL="http://localhost:8086?bucket=${K6_INFLUXDB_BUCKET}&organization=${K6_INFLUXDB_ORGANIZATION}&token=${K6_INFLUXDB_TOKEN}"
+	# echo "Running k6 with InfluxDB extension..."
+	# "$K6_BINARY" run --out "xk6-influxdb=${INFLUXDB_URL}" k6_loadtesting.js
+
+	# And if you are using Grafana with InfluxDB, be sure to comment out these two lines
+	echo "Running k6 with OpenTelemetry extension..."
+	K6_OTEL_GRPC_EXPORTER_ENDPOINT=localhost:4317 K6_OTEL_GRPC_EXPORTER_INSECURE=true K6_OTEL_METRIC_PREFIX=k6_ "$K6_BINARY" run -o experimental-opentelemetry k6_loadtesting.js
 
 	# Stop eBPF services if they were started for this test
 	if [[ "$INSTRUMENTATION" == "ebpf" && "$EBPF_SERVICES_STARTED" == "true" ]]; then
