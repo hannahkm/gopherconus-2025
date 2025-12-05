@@ -8,7 +8,7 @@
                 "title": "Successful and Failed HTTP Requests",
                 "title_size": "16",
                 "title_align": "left",
-                "show_legend": true,
+                "show_legend": false,
                 "legend_layout": "auto",
                 "legend_columns": [
                     "avg",
@@ -17,6 +17,7 @@
                     "value",
                     "sum"
                 ],
+                "time": {},
                 "type": "timeseries",
                 "requests": [
                     {
@@ -25,19 +26,21 @@
                             {
                                 "data_source": "metrics",
                                 "name": "query1",
-                                "query": "avg:k6_http_requests_success{*} by {service}.as_count()"
+                                "query": "avg:k6_http_requests_success{!scenario:warmup} by {service}.as_count()"
                             },
                             {
                                 "data_source": "metrics",
                                 "name": "query2",
-                                "query": "avg:k6_http_requests_failed{*} by {service}.as_count()"
+                                "query": "avg:k6_http_requests_failed{!scenario:warmup} by {service}.as_count()"
                             }
                         ],
                         "formulas": [
                             {
+                                "alias": "success",
                                 "formula": "query1"
                             },
                             {
+                                "alias": "failed",
                                 "formula": "query2"
                             }
                         ],
@@ -64,6 +67,7 @@
                 "title": "CPU Usage by Scenario",
                 "title_size": "16",
                 "title_align": "left",
+                "time": {},
                 "type": "query_table",
                 "requests": [
                     {
@@ -72,25 +76,25 @@
                             {
                                 "data_source": "metrics",
                                 "name": "query1",
-                                "query": "avg:k6_cpu_user{*} by {service}",
+                                "query": "avg:k6_cpu_user{!scenario:warmup} by {service}",
                                 "aggregator": "avg"
                             },
                             {
                                 "data_source": "metrics",
                                 "name": "query2",
-                                "query": "avg:k6_cpu_idle{*} by {service}",
+                                "query": "avg:k6_cpu_idle{!scenario:warmup} by {service}",
                                 "aggregator": "avg"
                             },
                             {
                                 "data_source": "metrics",
                                 "name": "query3",
-                                "query": "avg:k6_cpu_system{*} by {service}",
+                                "query": "avg:k6_cpu_system{!scenario:warmup} by {service}",
                                 "aggregator": "avg"
                             },
                             {
                                 "data_source": "metrics",
                                 "name": "query4",
-                                "query": "avg:k6_cpu_total{*} by {service}",
+                                "query": "avg:k6_cpu_total{!scenario:warmup} by {service}",
                                 "aggregator": "avg"
                             }
                         ],
@@ -143,6 +147,7 @@
                 "title": "HTTP Req Durations (ms)",
                 "title_size": "16",
                 "title_align": "left",
+                "time": {},
                 "type": "toplist",
                 "requests": [
                     {
@@ -150,7 +155,7 @@
                             {
                                 "data_source": "metrics",
                                 "name": "query1",
-                                "query": "avg:k6_http_request_duration{*} by {service}",
+                                "query": "avg:k6_http_request_duration{!scenario:warmup} by {service,scenario}",
                                 "aggregator": "avg"
                             }
                         ],
@@ -200,7 +205,7 @@
                             {
                                 "data_source": "metrics",
                                 "name": "query1",
-                                "query": "avg:k6_runtime_goroutines{*} by {service}",
+                                "query": "avg:k6_runtime_goroutines{!scenario:warmup} by {service,scenario}",
                                 "aggregator": "avg"
                             }
                         ],
@@ -250,7 +255,7 @@
                             {
                                 "data_source": "metrics",
                                 "name": "query1",
-                                "query": "avg:k6_runtime_total_stw_pause{*} by {service}",
+                                "query": "avg:k6_runtime_total_stw_pause{!scenario:warmup} by {service,scenario}",
                                 "aggregator": "avg"
                             }
                         ],
@@ -292,8 +297,8 @@
                 "title": "Memory Usage by Scenario (%)",
                 "title_size": "16",
                 "title_align": "left",
-                "show_legend": true,
-                "legend_layout": "auto",
+                "show_legend": false,
+                "legend_layout": "horizontal",
                 "legend_columns": [
                     "avg",
                     "min",
@@ -301,6 +306,7 @@
                     "value",
                     "sum"
                 ],
+                "time": {},
                 "type": "timeseries",
                 "requests": [
                     {
@@ -309,17 +315,27 @@
                             {
                                 "data_source": "metrics",
                                 "name": "query1",
-                                "query": "avg:k6_memory_heap_allocated{*} by {service}.rollup(avg, 1)"
-                            },
-                            {
-                                "data_source": "metrics",
-                                "name": "query2",
-                                "query": "avg:k6_memory_heap_idle{*} by {service}.rollup(avg, 1)"
+                                "query": "avg:k6_memory_heap_allocated{!scenario:warmup} by {service}.rollup(avg, 1)"
                             },
                             {
                                 "data_source": "metrics",
                                 "name": "query3",
-                                "query": "avg:k6_memory_heap_system{*} by {service}.rollup(avg, 1)"
+                                "query": "avg:k6_memory_heap_system{!scenario:warmup} by {service}.rollup(avg, 1)"
+                            },
+                            {
+                                "data_source": "metrics",
+                                "name": "query2",
+                                "query": "avg:k6_memory_heap_idle{!scenario:warmup} by {service}.rollup(avg, 1)"
+                            },
+                            {
+                                "data_source": "metrics",
+                                "name": "query4",
+                                "query": "avg:k6_memory_heap_inuse{!scenario:warmup} by {service}.rollup(avg, 1)"
+                            },
+                            {
+                                "data_source": "metrics",
+                                "name": "query5",
+                                "query": "avg:k6_memory_heap_released{!scenario:warmup} by {service}.rollup(avg, 1)"
                             }
                         ],
                         "formulas": [
@@ -330,6 +346,14 @@
                             {
                                 "alias": "% Idle",
                                 "formula": "(query2 / query3) * 100"
+                            },
+                            {
+                                "alias": "% In Use",
+                                "formula": "(query4 / query3) * 100"
+                            },
+                            {
+                                "alias": "% Released",
+                                "formula": "(query5 / query3) * 100"
                             }
                         ],
                         "style": {
@@ -355,7 +379,7 @@
                 "title": "Live Goroutines by Service",
                 "title_size": "16",
                 "title_align": "left",
-                "show_legend": true,
+                "show_legend": false,
                 "legend_layout": "auto",
                 "legend_columns": [
                     "avg",
@@ -404,17 +428,17 @@
                             {
                                 "data_source": "metrics",
                                 "name": "query1",
-                                "query": "avg:k6_runtime_goroutines{*} by {service}.fill(null)"
+                                "query": "avg:k6_runtime_goroutines{!scenario:warmup} by {service}.fill(null)"
                             },
                             {
                                 "data_source": "metrics",
                                 "name": "query2",
-                                "query": "max:k6_runtime_goroutines{*} by {service}.fill(null)"
+                                "query": "max:k6_runtime_goroutines{!scenario:warmup} by {service}.fill(null)"
                             },
                             {
                                 "data_source": "metrics",
                                 "name": "query3",
-                                "query": "min:k6_runtime_goroutines{*} by {service}.fill(null)"
+                                "query": "min:k6_runtime_goroutines{!scenario:warmup} by {service}.fill(null)"
                             }
                         ],
                         "response_format": "timeseries",
@@ -440,7 +464,7 @@
                 "title": "Garbage Collections Per Second",
                 "title_size": "16",
                 "title_align": "left",
-                "show_legend": true,
+                "show_legend": false,
                 "legend_layout": "auto",
                 "legend_columns": [
                     "avg",
@@ -449,6 +473,7 @@
                     "value",
                     "sum"
                 ],
+                "time": {},
                 "type": "timeseries",
                 "requests": [
                     {
@@ -473,12 +498,12 @@
                             {
                                 "data_source": "metrics",
                                 "name": "query1",
-                                "query": "sum:k6_runtime_gc{*} by {service}.as_count()"
+                                "query": "sum:k6_runtime_gc{!scenario:warmup} by {service}.as_count()"
                             },
                             {
                                 "data_source": "metrics",
                                 "name": "query2",
-                                "query": "avg:k6_runtime_gc{*} by {service}"
+                                "query": "avg:k6_runtime_gc{!scenario:warmup} by {service}"
                             }
                         ],
                         "response_format": "timeseries",
@@ -495,6 +520,104 @@
                 "x": 8,
                 "y": 6,
                 "width": 4,
+                "height": 4
+            }
+        },
+        {
+            "id": 5048490879956398,
+            "definition": {
+                "title": "Avg # of Heap Objects by Scenario",
+                "title_size": "16",
+                "title_align": "left",
+                "show_legend": false,
+                "legend_layout": "auto",
+                "legend_columns": [
+                    "avg",
+                    "min",
+                    "max",
+                    "value",
+                    "sum"
+                ],
+                "time": {},
+                "type": "timeseries",
+                "requests": [
+                    {
+                        "response_format": "timeseries",
+                        "queries": [
+                            {
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "query": "avg:k6_memory_heap_objects{!scenario:warmup} by {service,scenario}"
+                            }
+                        ],
+                        "formulas": [
+                            {
+                                "formula": "query1"
+                            }
+                        ],
+                        "style": {
+                            "palette": "dog_classic",
+                            "order_by": "values",
+                            "line_type": "solid",
+                            "line_width": "normal"
+                        },
+                        "display_type": "bars"
+                    }
+                ]
+            },
+            "layout": {
+                "x": 0,
+                "y": 10,
+                "width": 6,
+                "height": 4
+            }
+        },
+        {
+            "id": 6493281281516234,
+            "definition": {
+                "title": "Avg Bytes in Stack Spans",
+                "title_size": "16",
+                "title_align": "left",
+                "show_legend": false,
+                "legend_layout": "auto",
+                "legend_columns": [
+                    "avg",
+                    "min",
+                    "max",
+                    "value",
+                    "sum"
+                ],
+                "time": {},
+                "type": "timeseries",
+                "requests": [
+                    {
+                        "response_format": "timeseries",
+                        "queries": [
+                            {
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "query": "avg:k6_runtime_stack_in_use{!scenario:warmup} by {service,scenario}"
+                            }
+                        ],
+                        "formulas": [
+                            {
+                                "formula": "query1"
+                            }
+                        ],
+                        "style": {
+                            "palette": "dog_classic",
+                            "order_by": "values",
+                            "line_type": "solid",
+                            "line_width": "normal"
+                        },
+                        "display_type": "bars"
+                    }
+                ]
+            },
+            "layout": {
+                "x": 6,
+                "y": 10,
+                "width": 6,
                 "height": 4
             }
         }
