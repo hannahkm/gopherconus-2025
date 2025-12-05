@@ -33,6 +33,9 @@ export const options = {
             duration: '30s',
             startTime: '0s',
             gracefulStop: '5s',
+            tags: {
+                scenario: 'warmup',
+            },
         },
 
         // avg load-testing
@@ -45,6 +48,9 @@ export const options = {
             preAllocatedVUs: 20,
             maxVUs: 20,
             gracefulStop: '5s',
+            tags: {
+                scenario: 'average',
+            },
         },
 
         // heavy load-testing
@@ -56,6 +62,9 @@ export const options = {
             timeUnit: '1s',
             preAllocatedVUs: 20,
             gracefulStop: '0s',
+            tags: {
+                scenario: 'heavy',
+            },
         },
     },
     summaryTrendStats: ['avg', 'min', 'med', 'max', 'p(90)', 'p(95)', 'p(99)', 'p(99.9)', 'count'],
