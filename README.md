@@ -76,8 +76,6 @@ The script automatically validates dependencies and services via `pre-flight-che
 - Docker daemon status
 - Service health checks
 
-Running any load test will start up Grafana at `localhost:3000` where you can find the 'k6 Load Testing Results' dashboard.
-
 ![sample dashboard](./example_img/datadog_dashboard.png)
 
 ### Viewing Data
@@ -90,7 +88,7 @@ If you are unable to use Datadog, you may instead send metrics and traces to Gra
 2. In [otel-collector-config.yaml](./otel-collector-config.yaml), set the exporter to `[otlp]` for traces and to `[prometheus]` for metrics.
 3. In [loadtest.sh](./loadtest.sh), uncomment out the lines for InfluxDB and comment out the lines for OpenTelemetry.
 
-The Grafana dashboard will be hosted at `localhost:3000`.
+Then, running any load test will start up Grafana at `localhost:3000` where you can find the 'k6 Load Testing Results' dashboard.
 
 ## Read More
 
