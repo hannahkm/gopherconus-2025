@@ -299,6 +299,9 @@ for INSTRUMENTATION in "${TESTS_TO_RUN[@]}"; do
 	# Add delay between tests (except for the first one)
 	if [[ $TEST_COUNT -gt 0 ]]; then
 		echo "⏳ Pausing 5 seconds between tests for better graph separation..."
+		# Clean up any leftover eBPF containers from previous test
+		$DOCKER_COMPOSE --profile with-auto-instrumentation stop go-auto go-server-ebpf 2>/dev/null || true
+		$DOCKER_COMPOSE --profile with-auto-instrumentation rm -f go-auto go-server-ebpf 2>/dev/null || true
 		sleep 5
 	fi
 
