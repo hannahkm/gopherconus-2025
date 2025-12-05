@@ -31,7 +31,7 @@ exporters:
     endpoint: jaeger:4317
     tls:
       insecure: true
-  datadog:  # Uncomment these lines and update pipeline below when DD_API_KEY is available
+  datadog:  # Comment out these lines and update pipeline below if DD_API_KEY is not available
     api:
       site: datadoghq.com
       key: ${DD_API_KEY}
@@ -78,11 +78,11 @@ service:
     traces:
       receivers: [otlp]
       processors: [batch, resource]
-      exporters: [otlp, datadog, spanmetrics] # Change to [otlp, datadog, spanmetrics] when enabling Datadog above
+      exporters: [otlp, datadog, spanmetrics] # Change to [otlp] when disabling Datadog
     metrics:
       receivers: [otlp]
       processors: [batch, resource]
-      exporters: [prometheus]
+      exporters: [prometheus, datadog] # Change to [prometheus] when disabling Datadog
     metrics/spanmetrics:
       receivers: [spanmetrics]
       exporters: [prometheus]
