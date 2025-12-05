@@ -78,7 +78,7 @@ service:
     traces:
       receivers: [otlp]
       processors: [batch, resource]
-      exporters: [otlp, datadog] # Change to [otlp, datadog] when enabling Datadog above
+      exporters: [otlp, datadog, spanmetrics] # Change to [otlp, datadog, spanmetrics] when enabling Datadog above
     metrics:
       receivers: [otlp]
       processors: [batch, resource]
