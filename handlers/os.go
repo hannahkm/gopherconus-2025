@@ -5,88 +5,49 @@ package handlers
 
 import (
 	"fmt"
-	"runtime"
-
-	"github.com/mackerelio/go-osstat/cpu"
-	"github.com/mackerelio/go-osstat/uptime"
+	"runtime/metrics"
 )
 
-type SystemStats struct {
-	CPU     CPUStats     `json:"cpu"`
-	Memory  MemoryStats  `json:"memory"`
-	Uptime  UptimeStats  `json:"uptime"`
-	Runtime RuntimeStats `json:"runtime"`
-}
-
-type CPUStats struct {
-	User   uint64 `json:"user"`
-	System uint64 `json:"system"`
-	Idle   uint64 `json:"idle"`
-	Total  uint64 `json:"total"`
-}
-
-type UptimeStats struct {
-	Milliseconds uint64 `json:"milliseconds"`
-}
-
-type MemoryStats struct {
-	MemoryAllocated     uint64 `json:"memory_allocated"`
-	MemoryHeapSystem    uint64 `json:"memory_system"`
-	MemoryHeapAllocated uint64 `json:"memory_heap_allocated"`
-	MemoryHeapIdle      uint64 `json:"memory_heap_idle"`
-	MemoryHeapInuse     uint64 `json:"memory_heap_inuse"`
-	MemoryHeapReleased  uint64 `json:"memory_heap_released"`
-	MemoryHeapObjects   uint64 `json:"memory_heap_objects"`
-}
-
-type RuntimeStats struct {
-	Goroutines    uint64 `json:"goroutines"`
-	GCs           uint64 `json:"gc"`
-	TotalSTWPause uint64 `json:"total_pause"`
-	StackInUse    uint64 `json:"stack_in_use"`
-	StackSys      uint64 `json:"stack_sys"`
-}
+type SystemStats map[string]float64
 
 func getSystemStats() *SystemStats {
-	cpu, err := cpu.Get()
-	if err != nil {
-		fmt.Printf("error getting CPU stats: %s\n", err)
-		return nil
+	stats := SystemStats{}
+
+	samples := []metrics.Sample{
+		{Name: "/cpu/classes/gc/pause:cpu-seconds"},   // estimated CPU time spent performing GC tasks
+		{Name: "/cpu/classes/gc/total:cpu-seconds"},   // total CPU time spent performing GC tasks
+		{Name: "/cpu/classes/total:cpu-seconds"},      // estimated total available CPU time for Go code and/or Go runtime
+		{Name: "/cpu/classes/user:cpu-seconds"},       // estimated CPU time spent running user code
+		{Name: "/cpu/classes/idle:cpu-seconds"},       // estimated total available CPU time not spent executing Go code and/or Go runtime code
+		{Name: "/gc/cycles/total:gc-cycles"},          // total number of GC cycles performed
+		{Name: "/gc/heap/allocs:bytes"},               // total sum of bytes allocated
+		{Name: "/gc/heap/allocs:objects"},             // total sum of allocations triggered by application
+		{Name: "/gc/heap/objects:objects"},            // number of objects occupying heap memory
+		{Name: "/memory/classes/heap/free:bytes"},     // memory available to be returned to the system
+		{Name: "/memory/classes/heap/objects:bytes"},  // memory occupied by live and dead, but not freed objects
+		{Name: "/memory/classes/heap/released:bytes"}, // memory free and returned to the system
+		{Name: "/memory/classes/heap/unused:bytes"},   // memory reserved, but not already used, for heap objects
+		{Name: "/sched/goroutines:goroutines"},        // live goroutines
+		{Name: "/sync/mutex/wait/total:seconds"},      // estimated total time goroutines have spent waiting for mutexes
 	}
 
-	uptime, err := uptime.Get()
-	if err != nil {
-		fmt.Printf("error getting network stats: %s\n", err)
-		return nil
-	}
+	metrics.Read(samples)
 
-	var ms runtime.MemStats
-	runtime.ReadMemStats(&ms)
-
-	return &SystemStats{
-		CPU: CPUStats{
-			User:   cpu.User,
-			System: cpu.System,
-			Idle:   cpu.Idle,
-			Total:  cpu.Total,
-		},
-		Memory: MemoryStats{
-			MemoryHeapSystem:    ms.HeapSys,
-			MemoryHeapAllocated: ms.HeapAlloc,
-			MemoryHeapIdle:      ms.HeapIdle,
-			MemoryHeapInuse:     ms.HeapInuse,
-			MemoryHeapReleased:  ms.HeapReleased,
-			MemoryHeapObjects:   ms.HeapObjects,
-		},
-		Uptime: UptimeStats{
-			Milliseconds: uint64(uptime.Milliseconds()),
-		},
-		Runtime: RuntimeStats{
-			Goroutines:    uint64(runtime.NumGoroutine()),
-			GCs:           uint64(ms.NumGC),
-			TotalSTWPause: ms.PauseTotalNs,
-			StackInUse:    ms.StackInuse,
-			StackSys:      ms.StackSys,
-		},
+	for _, v := range samples {
+		name, value := v.Name, v.Value
+		switch value.Kind() {
+		case metrics.KindBad:
+			fmt.Println("bad metric, skipping")
+			continue
+		case metrics.KindFloat64:
+			stats[name] = value.Float64()
+		case metrics.KindUint64:
+			stats[name] = float64(value.Uint64())
+		default:
+			fmt.Println("unsupported metric kind, skipping")
+			continue
+		}
 	}
+	return &stats
+
 }

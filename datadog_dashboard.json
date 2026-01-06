@@ -8,7 +8,7 @@
                 "title": "Successful and Failed HTTP Requests",
                 "title_size": "16",
                 "title_align": "left",
-                "show_legend": true,
+                "show_legend": false,
                 "legend_layout": "auto",
                 "legend_columns": [
                     "avg",
@@ -25,19 +25,21 @@
                             {
                                 "data_source": "metrics",
                                 "name": "query1",
-                                "query": "avg:k6_http_requests_success{*} by {service}.as_count()"
+                                "query": "avg:k6_http_requests_success{!scenario:warmup} by {service}.as_count()"
                             },
                             {
                                 "data_source": "metrics",
                                 "name": "query2",
-                                "query": "avg:k6_http_requests_failed{*} by {service}.as_count()"
+                                "query": "avg:k6_http_requests_failed{!scenario:warmup} by {service}.as_count()"
                             }
                         ],
                         "formulas": [
                             {
+                                "alias": "success",
                                 "formula": "query1"
                             },
                             {
+                                "alias": "failed",
                                 "formula": "query2"
                             }
                         ],
@@ -64,6 +66,7 @@
                 "title": "CPU Usage by Scenario",
                 "title_size": "16",
                 "title_align": "left",
+                "time": {},
                 "type": "query_table",
                 "requests": [
                     {
@@ -72,25 +75,19 @@
                             {
                                 "data_source": "metrics",
                                 "name": "query1",
-                                "query": "avg:k6_cpu_user{*} by {service}",
+                                "query": "avg:k6_cpu_user{!scenario:warmup} by {service}",
                                 "aggregator": "avg"
                             },
                             {
                                 "data_source": "metrics",
                                 "name": "query2",
-                                "query": "avg:k6_cpu_idle{*} by {service}",
-                                "aggregator": "avg"
-                            },
-                            {
-                                "data_source": "metrics",
-                                "name": "query3",
-                                "query": "avg:k6_cpu_system{*} by {service}",
+                                "query": "avg:k6_cpu_idle{!scenario:warmup} by {service}",
                                 "aggregator": "avg"
                             },
                             {
                                 "data_source": "metrics",
                                 "name": "query4",
-                                "query": "avg:k6_cpu_total{*} by {service}",
+                                "query": "avg:k6_cpu_total{!scenario:warmup} by {service}",
                                 "aggregator": "avg"
                             }
                         ],
@@ -114,11 +111,6 @@
                                 "cell_display_mode": "bar",
                                 "alias": "Idle",
                                 "formula": "query2"
-                            },
-                            {
-                                "cell_display_mode": "bar",
-                                "alias": "System",
-                                "formula": "query3"
                             },
                             {
                                 "cell_display_mode": "bar",
@@ -150,7 +142,7 @@
                             {
                                 "data_source": "metrics",
                                 "name": "query1",
-                                "query": "avg:k6_http_request_duration{*} by {service}",
+                                "query": "avg:k6_http_request_duration{!scenario:warmup} by {service,scenario}",
                                 "aggregator": "avg"
                             }
                         ],
@@ -200,7 +192,7 @@
                             {
                                 "data_source": "metrics",
                                 "name": "query1",
-                                "query": "avg:k6_runtime_goroutines{*} by {service}",
+                                "query": "avg:k6_goroutines{!scenario:warmup} by {service,scenario}",
                                 "aggregator": "avg"
                             }
                         ],
@@ -237,9 +229,9 @@
             }
         },
         {
-            "id": 7394395895029990,
+            "id": 1522915398711507,
             "definition": {
-                "title": "Cumulative STW Pauses (ms)",
+                "title": "Time spent waiting for mutex (s)",
                 "title_size": "16",
                 "title_align": "left",
                 "time": {},
@@ -250,14 +242,14 @@
                             {
                                 "data_source": "metrics",
                                 "name": "query1",
-                                "query": "avg:k6_runtime_total_stw_pause{*} by {service}",
+                                "query": "sum:k6_mutex_wait_total{!scenario:warmup} by {service,scenario}.as_count()",
                                 "aggregator": "avg"
                             }
                         ],
                         "response_format": "scalar",
                         "formulas": [
                             {
-                                "formula": "query1 / 1000000"
+                                "formula": "query1"
                             }
                         ],
                         "sort": {
@@ -275,7 +267,7 @@
                 "style": {
                     "display": {
                         "type": "stacked",
-                        "legend": "automatic"
+                        "legend": "none"
                     }
                 }
             },
@@ -289,11 +281,11 @@
         {
             "id": 1127292017101200,
             "definition": {
-                "title": "Memory Usage by Scenario (%)",
+                "title": "Memory Usage by Scenario",
                 "title_size": "16",
                 "title_align": "left",
-                "show_legend": true,
-                "legend_layout": "auto",
+                "show_legend": false,
+                "legend_layout": "horizontal",
                 "legend_columns": [
                     "avg",
                     "min",
@@ -301,6 +293,7 @@
                     "value",
                     "sum"
                 ],
+                "time": {},
                 "type": "timeseries",
                 "requests": [
                     {
@@ -309,27 +302,40 @@
                             {
                                 "data_source": "metrics",
                                 "name": "query1",
-                                "query": "avg:k6_memory_heap_allocated{*} by {service}.rollup(avg, 1)"
+                                "query": "avg:k6_heap_objects_bytes{!scenario:warmup} by {service}.rollup(avg, 1)"
                             },
                             {
                                 "data_source": "metrics",
                                 "name": "query2",
-                                "query": "avg:k6_memory_heap_idle{*} by {service}.rollup(avg, 1)"
+                                "query": "avg:k6_heap_free_bytes{!scenario:warmup} by {service}.rollup(avg, 1)"
                             },
                             {
                                 "data_source": "metrics",
-                                "name": "query3",
-                                "query": "avg:k6_memory_heap_system{*} by {service}.rollup(avg, 1)"
+                                "name": "query4",
+                                "query": "avg:k6_heap_released_bytes{!scenario:warmup} by {service}.rollup(avg, 1)"
+                            },
+                            {
+                                "data_source": "metrics",
+                                "name": "query5",
+                                "query": "avg:k6_heap_unused_bytes{!scenario:warmup} by {service}.rollup(avg, 1)"
                             }
                         ],
                         "formulas": [
                             {
-                                "alias": "% Allocated",
-                                "formula": "(query1 / query3) * 100"
+                                "alias": "Objects",
+                                "formula": "query1"
                             },
                             {
-                                "alias": "% Idle",
-                                "formula": "(query2 / query3) * 100"
+                                "alias": "Free",
+                                "formula": "query2"
+                            },
+                            {
+                                "alias": "Released",
+                                "formula": "query4"
+                            },
+                            {
+                                "alias": "Unused",
+                                "formula": "query5"
                             }
                         ],
                         "style": {
@@ -345,92 +351,7 @@
             "layout": {
                 "x": 0,
                 "y": 6,
-                "width": 4,
-                "height": 4
-            }
-        },
-        {
-            "id": 6853917484808630,
-            "definition": {
-                "title": "Live Goroutines by Service",
-                "title_size": "16",
-                "title_align": "left",
-                "show_legend": true,
-                "legend_layout": "auto",
-                "legend_columns": [
-                    "avg",
-                    "min",
-                    "max",
-                    "value",
-                    "sum"
-                ],
-                "time": {},
-                "type": "timeseries",
-                "requests": [
-                    {
-                        "formulas": [
-                            {
-                                "number_format": {
-                                    "unit": {
-                                        "type": "custom_unit_label",
-                                        "label": "goroutine"
-                                    }
-                                },
-                                "alias": "Avg",
-                                "formula": "query1"
-                            },
-                            {
-                                "number_format": {
-                                    "unit": {
-                                        "type": "custom_unit_label",
-                                        "label": "goroutine"
-                                    }
-                                },
-                                "alias": "Max",
-                                "formula": "query2"
-                            },
-                            {
-                                "number_format": {
-                                    "unit": {
-                                        "type": "custom_unit_label",
-                                        "label": "goroutine"
-                                    }
-                                },
-                                "alias": "Min",
-                                "formula": "query3"
-                            }
-                        ],
-                        "queries": [
-                            {
-                                "data_source": "metrics",
-                                "name": "query1",
-                                "query": "avg:k6_runtime_goroutines{*} by {service}.fill(null)"
-                            },
-                            {
-                                "data_source": "metrics",
-                                "name": "query2",
-                                "query": "max:k6_runtime_goroutines{*} by {service}.fill(null)"
-                            },
-                            {
-                                "data_source": "metrics",
-                                "name": "query3",
-                                "query": "min:k6_runtime_goroutines{*} by {service}.fill(null)"
-                            }
-                        ],
-                        "response_format": "timeseries",
-                        "style": {
-                            "palette": "dog_classic",
-                            "line_type": "solid",
-                            "line_width": "normal"
-                        },
-                        "display_type": "line"
-                    }
-                ]
-            },
-            "layout": {
-                "x": 4,
-                "y": 6,
-                "width": 4,
+                "width": 6,
                 "height": 4
             }
         },
@@ -440,7 +361,7 @@
                 "title": "Garbage Collections Per Second",
                 "title_size": "16",
                 "title_align": "left",
-                "show_legend": true,
+                "show_legend": false,
                 "legend_layout": "auto",
                 "legend_columns": [
                     "avg",
@@ -449,6 +370,7 @@
                     "value",
                     "sum"
                 ],
+                "time": {},
                 "type": "timeseries",
                 "requests": [
                     {
@@ -473,12 +395,12 @@
                             {
                                 "data_source": "metrics",
                                 "name": "query1",
-                                "query": "sum:k6_runtime_gc{*} by {service}.as_count()"
+                                "query": "sum:k6_gc_total{!scenario:warmup} by {service}.as_count()"
                             },
                             {
                                 "data_source": "metrics",
                                 "name": "query2",
-                                "query": "avg:k6_runtime_gc{*} by {service}"
+                                "query": "avg:k6_gc_total{!scenario:warmup} by {service}"
                             }
                         ],
                         "response_format": "timeseries",
@@ -492,16 +414,135 @@
                 ]
             },
             "layout": {
-                "x": 8,
+                "x": 6,
                 "y": 6,
-                "width": 4,
+                "width": 6,
                 "height": 4
+            }
+        },
+        {
+            "id": 7394395895029990,
+            "definition": {
+                "title": "GC Pauses (s)",
+                "title_size": "16",
+                "title_align": "left",
+                "time": {},
+                "type": "toplist",
+                "requests": [
+                    {
+                        "queries": [
+                            {
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "query": "avg:k6_gc_pause{!scenario:warmup} by {service,scenario}",
+                                "aggregator": "avg"
+                            }
+                        ],
+                        "response_format": "scalar",
+                        "formulas": [
+                            {
+                                "formula": "query1"
+                            }
+                        ],
+                        "sort": {
+                            "count": 10,
+                            "order_by": [
+                                {
+                                    "type": "formula",
+                                    "index": 0,
+                                    "order": "desc"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "style": {
+                    "display": {
+                        "type": "stacked",
+                        "legend": "automatic"
+                    }
+                }
+            },
+            "layout": {
+                "x": 0,
+                "y": 10,
+                "width": 6,
+                "height": 3
+            }
+        },
+        {
+            "id": 121061242500193,
+            "definition": {
+                "title": "GC Heap Metrics",
+                "title_size": "16",
+                "title_align": "left",
+                "time": {},
+                "type": "query_table",
+                "requests": [
+                    {
+                        "queries": [
+                            {
+                                "data_source": "metrics",
+                                "name": "query1",
+                                "query": "sum:k6_gc_heap_alloc_bytes{!scenario:warmup} by {service}.as_count()",
+                                "aggregator": "avg"
+                            },
+                            {
+                                "data_source": "metrics",
+                                "name": "query2",
+                                "query": "sum:k6_gc_heap_alloc_objects{!scenario:warmup} by {service}.as_count()",
+                                "aggregator": "avg"
+                            },
+                            {
+                                "data_source": "metrics",
+                                "name": "query3",
+                                "query": "sum:k6_gc_heap_objects{!scenario:warmup} by {service}.as_count()",
+                                "aggregator": "avg"
+                            }
+                        ],
+                        "response_format": "scalar",
+                        "sort": {
+                            "count": 500,
+                            "order_by": [
+                                {
+                                    "type": "formula",
+                                    "index": 0,
+                                    "order": "desc"
+                                }
+                            ]
+                        },
+                        "formulas": [
+                            {
+                                "cell_display_mode": "bar",
+                                "alias": "Total Bytes",
+                                "formula": "query1"
+                            },
+                            {
+                                "cell_display_mode": "bar",
+                                "alias": "Sum of Allocs",
+                                "formula": "query2"
+                            },
+                            {
+                                "cell_display_mode": "bar",
+                                "alias": "# Objects",
+                                "formula": "query3"
+                            }
+                        ]
+                    }
+                ],
+                "has_search_bar": "auto"
+            },
+            "layout": {
+                "x": 6,
+                "y": 10,
+                "width": 6,
+                "height": 3
             }
         }
     ],
     "template_variables": [],
     "layout_type": "ordered",
     "notify_list": [],
-    "reflow_type": "fixed",
-    "pause_auto_refresh": false
+    "pause_auto_refresh": false,
+    "reflow_type": "fixed"
 }

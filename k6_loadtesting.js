@@ -6,22 +6,23 @@ const numRequests = new Counter('http_requests');
 const numSuccess = new Counter('http_requests_success');
 const numFailure = new Counter('http_requests_failed');
 const duration = new Trend('http_request_duration');
-const cpuUser = new Trend('cpu_user');
-const cpuSystem = new Trend('cpu_system');
-const cpuIdle = new Trend('cpu_idle');
+
+const gcPause = new Trend('gc_pause');
+const gcTotal = new Trend('gc_total');
 const cpuTotal = new Trend('cpu_total');
-const memoryHeapSystem = new Trend('memory_heap_system');
-const memoryHeapAllocated = new Trend('memory_heap_allocated');
-const memoryHeapIdle = new Trend('memory_heap_idle');
-const memoryHeapInuse = new Trend('memory_heap_inuse');
-const memoryHeapReleased = new Trend('memory_heap_released');
-const memoryHeapObjects = new Trend('memory_heap_objects');
-const uptime = new Counter('uptime_milliseconds');
-const runtimeGoroutines = new Trend('runtime_goroutines');
-const runtimeGCs = new Trend('runtime_gc');
-const runtimeTotalSTWPause = new Trend('runtime_total_stw_pause');
-const runtimeStackInUse = new Trend('runtime_stack_in_use');
-const runtimeStackSys = new Trend('runtime_stack_sys');
+const cpuUser = new Trend('cpu_user');
+const cpuIdle = new Trend('cpu_idle');
+const gcCycles = new Counter('gc_cycles');
+const gcHeapAllocBytes = new Counter('gc_heap_alloc_bytes');
+const gcHeapAllocObjects = new Counter('gc_heap_alloc_objects');
+const gcHeapObjects = new Trend('gc_heap_objects');
+const heapFreeBytes = new Trend('heap_free_bytes');
+const heapObjectsBytes = new Trend('heap_objects_bytes');
+const heapReleasedBytes = new Trend('heap_released_bytes');
+const heapUnusedBytes = new Trend('heap_unused_bytes');
+const goroutines = new Trend('goroutines');
+const mutexWaitTotal = new Counter('mutex_wait_total');
+
 
 // Load testing scenarios
 export const options = {
@@ -87,22 +88,21 @@ export default function () {
     }
 
     if (systemInfo) {
-        cpuUser.add(systemInfo.cpu.user, tags);
-        cpuSystem.add(systemInfo.cpu.system, tags);
-        cpuIdle.add(systemInfo.cpu.idle, tags);
-        cpuTotal.add(systemInfo.cpu.total, tags);
-        memoryHeapSystem.add(systemInfo.memory.memory_system, tags);
-        memoryHeapAllocated.add(systemInfo.memory.memory_heap_allocated, tags);
-        memoryHeapIdle.add(systemInfo.memory.memory_heap_idle, tags);
-        memoryHeapInuse.add(systemInfo.memory.memory_heap_inuse, tags);
-        memoryHeapReleased.add(systemInfo.memory.memory_heap_released, tags);
-        memoryHeapObjects.add(systemInfo.memory.memory_heap_objects, tags);
-        uptime.add(systemInfo.uptime.milliseconds, tags);
-        runtimeGoroutines.add(systemInfo.runtime.goroutines, tags);
-        runtimeGCs.add(systemInfo.runtime.gc, tags);
-        runtimeTotalSTWPause.add(systemInfo.runtime.total_pause, tags);
-        runtimeStackInUse.add(systemInfo.runtime.stack_in_use, tags);
-        runtimeStackSys.add(systemInfo.runtime.stack_sys, tags);
+        gcPause.add(systemInfo['/cpu/classes/gc/pause:cpu-seconds'], tags);
+        gcTotal.add(systemInfo['/cpu/classes/gc/total:cpu-seconds'], tags);
+        cpuTotal.add(systemInfo['/cpu/classes/total:cpu-seconds'], tags);
+        cpuUser.add(systemInfo['/cpu/classes/user:cpu-seconds'], tags);
+        cpuIdle.add(systemInfo['/cpu/classes/idle:cpu-seconds'], tags);
+        gcCycles.add(systemInfo['/gc/cycles/total:gc-cycles'], tags);
+        gcHeapAllocBytes.add(systemInfo['/gc/heap/allocs:bytes'], tags);
+        gcHeapAllocObjects.add(systemInfo['/gc/heap/allocs:objects'], tags);
+        gcHeapObjects.add(systemInfo['/gc/heap/objects:objects'], tags);
+        heapFreeBytes.add(systemInfo['/memory/classes/heap/free:bytes'], tags);
+        heapObjectsBytes.add(systemInfo['/memory/classes/heap/objects:bytes'], tags);
+        heapReleasedBytes.add(systemInfo['/memory/classes/heap/released:bytes'], tags);
+        heapUnusedBytes.add(systemInfo['/memory/classes/heap/unused:bytes'], tags);
+        goroutines.add(systemInfo['/sched/goroutines:goroutines'], tags);
+        mutexWaitTotal.add(systemInfo['/sync/mutex/wait/total:seconds'], tags);
     }
 
     numRequests.add(1, tags);
