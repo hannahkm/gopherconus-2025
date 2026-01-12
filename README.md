@@ -9,7 +9,7 @@ This project is still very much a work in progress, even after GopherCon is over
 - [ ] More metrics! Specifically, we want a whole lot more of Go runtime metrics, like allocations and GC activity. 
 - [ ] Integration with DataDog dashboards to visualize traces
 
-**Update**: We're going to FOSDEM 2026! [Check out our new branch](https://github.com/hannahkm/gopherconus-2025/tree/FOSDEM-2026) as we prepare for our next talk.
+**Update**: We're going to FOSDEM 2026! [Check out our new repo](https://github.com/hannahkm/fosdem-2026) as we prepare for our next talk.
 
 ## About
 
